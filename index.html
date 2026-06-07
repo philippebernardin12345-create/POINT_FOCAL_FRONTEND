@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Point Focal V6 - Système Matrice Hybride</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .logo-container {
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .app-logo { max-width: 120px; height: auto; object-fit: contain; }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background-color: #1e1e1e;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+        h1 { text-align: center; color: #03dac6; margin-bottom: 5px; font-size: 24px; }
+        .subtitle { text-align: center; color: #aaa; font-size: 14px; margin-bottom: 25px; }
+        
+        .lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
+        .lang-btn {
+            background-color: #2d2d2d; color: white; border: 2px solid #333; padding: 15px;
+            font-size: 16px; border-radius: 8px; cursor: pointer; display: flex;
+            flex-direction: column; align-items: center; gap: 8px; font-weight: bold;
+        }
+        .lang-btn:hover { border-color: #03dac6; }
+        .flag { font-size: 30px; }
+
+        .form-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; margin-bottom: 5px; font-size: 14px; color: #ccc; }
+        input {
+            width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #333;
+            background-color: #2d2d2d; color: white; box-sizing: border-box; font-size: 16px;
+        }
+        input:disabled { background-color: #1a1a1a; color: #666; border-color: #222; }
+        
+        button {
+            width: 100%; padding: 12px; background-color: #03dac6; color: #000;
+            border: none; border-radius: 6px; font-size: 16px; font-weight: bold;
+            cursor: pointer; margin-top: 15px;
+        }
+        button:disabled { background-color: #555; color: #aaa; cursor: not-allowed; }
+        
+        .switch-link { text-align: center; margin-top: 15px; font-size: 14px; color: #bb86fc; cursor: pointer; }
+
+        /* ALERTES & CHRONOS */
+        .timer-box { background-color: #ff0000; color: white; font-size: 18px; font-weight: bold; text-align: center; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+        .countdown-48h { background-color: #d32f2f; color: white; font-size: 16px; font-weight: bold; text-align: center; padding: 12px; border-radius: 6px; margin-top: 15px; border: 2px solid white; }
+        .success-box { background-color: #4caf50; color: white; font-size: 15px; font-weight: bold; text-align: center; padding: 12px; border-radius: 6px; margin-bottom: 15px; }
+        
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000; margin-bottom: 20px; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        
+        /* BLOCKCHAIN FORM */
+        .blockchain-form { background-color: #252525; padding: 15px; border-radius: 8px; border: 1px dashed #03dac6; margin-top: 20px; }
+        .blockchain-form h3 { margin-top: 0; color: #03dac6; font-size: 18px; text-align: center; }
+        .km-btn { background-color: #bb86fc; color: #000; margin-top: 10px; }
+
+        .links-box { background-color: #1a3a3a; padding: 15px; border-radius: 8px; border: 2px solid #4caf50; margin-top: 15px; text-align: left; }
+        .links-box p { margin: 5px 0; font-size: 14px; color: #fff; }
+        
+        /* STYLE DU TUNNEL DE DUPLICATION FOLLOW ME */
+        .opp-card { background-color: #2d2d2d; padding: 20px; border-radius: 8px; border-left: 5px solid #bb86fc; margin-top: 15px; background-image: linear-gradient(145deg, #252525, #2d2d2d); }
+        .opp-card h4 { margin-top: 0; color: #ffff00; font-size: 16px; }
+        .btn-action-opp { background-color: #bb86fc; color: black; font-weight: bold; }
+        .btn-validate-opp { background-color: #4caf50; color: white; margin-top: 8px; }
+        
+        .logout-btn { background-color: #cf6679; color: white; margin-top: 25px; }
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <img src="logo.png" alt="Point Focal Logo" class="app-logo" onerror="this.style.display='none';">
+    </div>
+
+    <!-- ÉCRAN 0 : CHOIX DE LA LANGUE -->
+    <div class="container" id="ecran-langue">
+        <h1>Point Focal 👁️</h1>
+        <p class="subtitle">Choose your language / Choisissez votre langue</p>
+        <div class="lang-grid">
+            <button class="lang-btn" onclick="selectionnerLangue('fr')"><span class="flag">🇫🇷</span>Français</button>
+            <button class="lang-btn" onclick="selectionnerLangue('en')"><span class="flag">🇬🇧</span>English</button>
+            <button class="lang-btn" onclick="selectionnerLangue('es')"><span class="flag">🇪🇸</span>Español</button>
+            <button class="lang-btn" onclick="selectionnerLangue('pt')"><span class="flag">🇵🇹</span>Português</button>
+        </div>
+    </div>
+
+    <!-- ÉCRAN 1 : AUTHENTIFICATION -->
+    <div class="container" id="ecran-auth" style="display: none;">
+        <h1 id="auth-title">Connexion</h1>
+        <p class="subtitle">Point Focal V6</p>
+        <div class="form-group" id="group-whatsapp" style="display: none;">
+            <label id="lbl-whatsapp">Numéro WhatsApp</label>
+            <input type="text" id="input-whatsapp" placeholder="+243...">
+        </div>
+        <div class="form-group">
+            <label id="lbl-email">Adresse E-mail</label>
+            <input type="email" id="input-email" placeholder="exemple@mail.com">
+        </div>
+        <div class="form-group">
+            <label id="lbl-password">Mot de passe</label>
+            <input type="password" id="input-password" placeholder="••••••••">
+        </div>
+        <button id="btn-principal" onclick="gererAuthentification()">Se connecter</button>
+        <div class="switch-link" id="btn-switch" onclick="basculerMode()">Pas encore de compte ? S'inscrire</div>
+    </div>
+
+    <!-- POP-UP EMOTIONNEL -->
+    <div class="modal-overlay" id="pop-up-explicatif" style="display: none;">
+        <div class="modal-content">
+            <h2 id="popup-title">IMPORTANT !</h2>
+            <p id="popup-text">Message important...</p>
+            <button id="btn-popup-continuer" disabled>...</button>
+        </div>
+    </div>
+
+    <!-- ÉCRAN 2 : ZONE MEMBRE -->
+    <div class="container" id="ecran-video" style="display: none;">
+        <h1 id="video-title">Espace Membre 👁️</h1>
+        
+        <div class="timer-box" id="main-timer">200s</div>
+        <div class="success-box" id="main-success" style="display: none;">✓ Vidéo visionnée. Étape d'activation disponible.</div>
+        
+        <div class="countdown-48h" id="chrono-48h" style="display: none;">
+            ⚠️ Temps restant pour sécuriser vos accès (48h) : <span id="timer-48h">48:00:00</span>
+        </div>
+
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/9uPybhkqYw4?rel=0" allowfullscreen></iframe>
+        </div>
+
+        <!-- FORMULAIRE MATRICE SÉCURISÉ -->
+        <div class="blockchain-form" id="form-blockchain" style="display: none;">
+            <h3 id="mode-activation-title">Vérification de votre Code Parrain</h3>
+            
+            <!-- CASE 1 -->
+            <div class="form-group">
+                <label id="lbl-case1" style="color:#03dac6; font-weight:bold;">CASE 1 : Code d'invitation du Parrain (Ex: ABCD1000 ou KM-ABCD1000)</label>
+                <input type="text" id="case1-code" placeholder="Entrez le code ici" oninput="analyserCodeParrain()">
+                <small id="status-code" style="display:block; margin-top:5px; font-weight:bold;"></small>
+            </div>
+
+            <!-- CASE 2 -->
+            <div class="form-group">
+                <label id="lbl-case2">CASE 2 : Adresse Cible de paiement</label>
+                <input type="text" id="case2-cible" placeholder="En attente d'un code valide..." disabled>
+            </div>
+            
+            <!-- Bouton Koma Mopao -->
+            <button class="km-btn" id="btn-km" style="display:none;" onclick="declencherKomaMopao()">⚡ KOMA MOPAO (Transmettre au Leader)</button>
+            
+            <hr style="border: 1px dashed #444; margin: 20px 0;">
+
+            <!-- CASE 3 -->
+            <div class="form-group">
+                <label id="lbl-case3" style="color: #ffb300; font-weight: bold;">CASE 3 : Hash de la Transaction (TxHash)</label>
+                <input type="text" id="case3-hash" placeholder="Collez le TxHash ici" oninput="declencherVerificationPaiement()">
+            </div>
+        </div>
+
+        <!-- CODES ET LIENS GÉNÉRÉS APRES VALIDATION CASE 3 -->
+        <div class="links-box" id="zone-liens" style="display: none;">
+            <h4 style="margin:0 0 10px 0; color:#4caf50;">👑 VOS CODES D'INVITATION GÉNÉRÉS :</h4>
+            <p><strong>Code Mode Autonome (Victory Auto) :</strong> <span id="code-victory" style="color:#ffff00; font-weight:bold;"></span></p>
+            <p><strong>Code Mode Partage Équipe (Koma Mopao) :</strong> <span id="code-km" style="color:#ffff00; font-weight:bold;"></span></p>
+        </div>
+
+        <!-- TUNNEL DE DUPLICATION SYSTEMATIQUE (FOLLOW ME) -->
+        <div id="tunnel-opportunites" style="display: none; margin-top: 25px;">
+            <h3 style="color: #03dac6; text-align: center; margin-bottom: 5px;">🚀 TUNNEL FOLLOW-ME</h3>
+            <p style="font-size:12px; color:#aaa; text-align:center; margin:0 0 15px 0;">Sécurisez votre arbre matriciel en joignant les opportunités de votre lignée.</p>
+            
+            <!-- OPPORTUNITÉ 1 -->
+            <div class="opp-card">
+                <h4>🎯 ÉTAPE 1 : REJOINDRE L'OPPORTUNITÉ EN L'OCCURRENCE</h4>
+                <p style="font-size: 13px; margin: 5px 0 12px 0; color: #ccc;">Cliquez ci-dessous pour vous inscrire sous le lien d'opportunité de votre parrain actuel.</p>
+                <button class="btn-action-opp" onclick="actionRejoindreOpportunite()">1. JE REJOINS L'OPPORTUNITÉ</button>
+                
+                <div class="form-group" style="margin-top: 15px;">
+                    <label style="color:#ffb300; font-weight:bold;">2. SÉCURISATION DU REFUGE (Votre Lien personnel) :</label>
+                    <p style="font-size:12px; color:#aaa; margin:2px 0 8px 0;">Collez obligatoirement VOTRE propre lien de cette opportunité pour que vos futurs filleuls s'inscrivent sous vous.</p>
+                    <input type="text" id="input-lien-occurrent" placeholder="https://votre-lien-opportunite.com/register?ref=..." disabled>
+                    <button class="btn-validate-opp" id="btn-valider-base" onclick="validerAlimentationBase()" disabled>3. ALIMENTER LA BASE DE DONNÉES (Bloquer la lignée)</button>
+                </div>
+            </div>
+        </div>
+
+        <button class="logout-btn" id="btn-logout" onclick="deconnexion()">Se déconnecter</button>
+    </div>
+
+    <script>
+        let langueActive = 'fr';
+        let estEnModeConnexion = true;
+        let estUnParcoursKM = false;
+        let chrono48hActif = false;
+        let aCliqueRejoindre = false; // Sécurité pour s'assurer qu'il a cliqué sur le lien parrain
+
+        const traductions = {
+            fr: {
+                connexion: "Connexion", inscription: "Inscription", whatsapp: "Numéro WhatsApp", email: "Adresse E-mail", password: "Mot de passe",
+                switchRegister: "Pas encore de compte ? S'inscrire", switchLogin: "Déjà inscrit ? Se connecter", logout: "Se déconnecter",
+                popupWait: "Analyse algorithmique ({temps}s)...", popupGo: "ACCÉDER À L'ESPACE VIDÉO",
+                popupText: "ATTENTION : Ce système ne fonctionne QUE si nous sommes solidaires. Visionnez la vidéo pendant 200 secondes pour forcer l'algorithme à propulser vos gains FIFO. Pas de triche.",
+                case1Label: "CASE 1 : Code d'invitation du Parrain (Ex: ABCD1000 ou KM-ABCD1000)", case2Label: "CASE 2 : Adresse Cible de paiement",
+                case3Label: "CASE 3 : Hash de la Transaction (TxHash)", case3Mopao: "CASE 3 : Zone Mopao Déverrouillée (En attente du Hash)",
+                validParrain: "✓ Code Parrain valide et authentifié en Base de Données.", invalidParrain: "❌ Refusé : Ce code parrain n'existe pas.",
+                kmAlert: "🔒 Données transmises au Mopao en privé. En attente de validation du Hash.",
+                btnKm: "⚡ KOMA MOPAO (Transmettre au Leader)"
+            },
+            en: {
+                connexion: "Login", inscription: "Registration", whatsapp: "WhatsApp Number", email: "Email Address", password: "Password",
+                switchRegister: "Don't have an account? Register", switchLogin: "Already registered? Login", logout: "Log Out",
+                popupWait: "Algorithmic analysis ({temps}s)...", popupGo: "ACCESS VIDEO AREA",
+                popupText: "WARNING: This system ONLY works if we stand together. Watch the video for 200 seconds to force the algorithm to boost your FIFO earnings. No cheating.",
+                case1Label: "CASE 1: Sponsor Invitation Code (Ex: ABCD1000 or KM-ABCD1000)", case2Label: "CASE 2: Payment Target Address",
+                case3Label: "CASE 3: Transaction Hash (TxHash)", case3Mopao: "CASE 3: Mopao Zone Unlocked (Awaiting Hash)",
+                validParrain: "✓ Valid Sponsor Code authenticated in Database.", invalidParrain: "❌ Denied: This sponsor code does not exist.",
+                kmAlert: "🔒 Data sent to Mopao privately. Awaiting Hash verification.",
+                btnKm: "⚡ KOMA MOPAO (Forward to Leader)"
+            },
+            es: {
+                connexion: "Iniciar Sesión", inscription: "Registro", whatsapp: "Número de WhatsApp", email: "Correo Electrónico", password: "Contraseña",
+                switchRegister: "¿No tienes una cuenta? Regístrate", switchLogin: "¿Ya estás registrado? Conectarse", logout: "Cerrar Sesión",
+                popupWait: "Análisis algorítmico ({temps}s)...", popupGo: "ACCEDER AL ÁREA DE VIDEO",
+                popupText: "ATENCIÓN: Este sistema SOLO funciona si somos solidarios. Vea el video durante 200 segundos para obligar al algoritmo a impulsar sus ganancias FIFO. Sin trampas.",
+                case1Label: "CASO 1: Código de invitación del patrocinador (Ej: ABCD1000 o KM-ABCD1000)", case2Label: "CASO 2: Dirección de pago de destino",
+                case3Label: "CASO 3: Hash de la transacción (TxHash)", case3Mopao: "CASO 3: Zona Mopao desbloqueada (Esperando Hash)",
+                validParrain: "✓ Código de patrocinador válido autenticado en la base de datos.", invalidParrain: "❌ Rechazado: Este código de patrocinador no existe.",
+                kmAlert: "🔒 Datos enviados a Mopao en privado. Esperando la verificación de Hash.",
+                btnKm: "⚡ KOMA MOPAO (Reenviar al líder)"
+            },
+            pt: {
+                connexion: "Entrar", inscription: "Cadastro", whatsapp: "Número do WhatsApp", email: "Endereço de E-mail", password: "Senha",
+                switchRegister: "Não tem uma conta? Cadastre-se", switchLogin: "Já tem uma conta? Entrar", logout: "Sair",
+                popupWait: "Análise algorítmica ({temps}s)...", popupGo: "ACESSAR ÁREA DE VÍDEO",
+                popupText: "ATENÇÃO: Este sistema SÓ funciona se estivermos unidos. Assista ao vídeo por 200 segundos para forçar o algoritmo a aumentar seus ganhos FIFO. Sem trapaça.",
+                case1Label: "CASO 1: Código de convite do patrocinador (Ex: ABCD1000 ou KM-ABCD1000)", case2Label: "CASO 2: Endereço de destino do pagamento",
+                case3Label: "CASO 3: Hash da Transação (TxHash)", case3Mopao: "CASO 3: Zona Mopao desbloqueada (Aguardando Hash)",
+                validParrain: "✓ Código de padrinho válido autenticado no banco de dados.", invalidParrain: "❌ Recusado: Este código de padrinho não existe.",
+                kmAlert: "🔒 Dados enviados ao Mopao em privado. Aguardando verificação do Hash.",
+                btnKm: "⚡ KOMA MOPAO (Encaminhar ao Líder)"
+            }
+        };
+
+        const baseCodesValides = ["XWER1020", "TZUI4050", "SHIL9999", "KM-ABCD1000", "KM-PFV67777"];
+
+        function selectionnerLangue(lang) {
+            langueActive = lang;
+            document.getElementById('ecran-langue').style.display = 'none';
+            document.getElementById('ecran-auth').style.display = 'block';
+            appliquerTraduction();
+        }
+
+        function appliquerTraduction() {
+            const t = traductions[langueActive];
+            document.getElementById('lbl-whatsapp').innerText = t.whatsapp;
+            document.getElementById('lbl-email').innerText = t.email;
+            document.getElementById('lbl-password').innerText = t.password;
+            document.getElementById('btn-logout').innerText = t.logout;
+            document.getElementById('lbl-case1').innerText = t.case1Label;
+            document.getElementById('lbl-case2').innerText = t.case2Label;
+            document.getElementById('btn-km').innerText = t.btnKm;
+            
+            if (estEnModeConnexion) {
+                document.getElementById('auth-title').innerText = t.connexion;
+                document.getElementById('btn-principal').innerText = t.connexion;
+                document.getElementById('btn-switch').innerText = t.switchRegister;
+            } else {
+                document.getElementById('auth-title').innerText = t.inscription;
+                document.getElementById('btn-principal').innerText = t.inscription;
+                document.getElementById('btn-switch').innerText = t.switchLogin;
+            }
+        }
+
+        function basculerMode() {
+            estEnModeConnexion = !estEnModeConnexion;
+            document.getElementById('group-whatsapp').style.display = estEnModeConnexion ? "none" : "block";
+            appliquerTraduction();
+        }
+
+        function gererAuthentification() { ouvrirPopUp(); }
+
+        function ouvrirPopUp() {
+            const t = traductions[langueActive];
+            document.getElementById('pop-up-explicatif').style.display = "flex";
+            document.getElementById('popup-title').innerText = "IMPORTANT !";
+            document.getElementById('popup-text').innerHTML = t.popupText;
+            
+            let temps = 3;
+            const btn = document.getElementById('btn-popup-continuer');
+            btn.disabled = true;
+            btn.innerText = t.popupWait.replace("{temps}", temps);
+            
+            const timer = setInterval(() => {
+                temps--;
+                if(temps > 0) { btn.innerText = t.popupWait.replace("{temps}", temps); }
+                else {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    btn.style.backgroundColor = "#ff0000"; btn.style.color = "#fff";
+                    btn.innerText = t.popupGo;
+                    btn.onclick = () => {
+                        document.getElementById('pop-up-explicatif').style.display = "none";
+                        document.getElementById('ecran-auth').style.display = "none";
+                        document.getElementById('ecran-video').style.display = "block";
+                        lancerChronoVideo200s();
+                    };
+                }
+            }, 1000);
+        }
+
+        function lancerChronoVideo200s() {
+            let temps = 3; // 200 en production
+            const tBox = document.getElementById('main-timer');
+            const interval = setInterval(() => {
+                temps--;
+                if(temps > 0) { tBox.innerText = `${temps}s`; }
+                else {
+                    clearInterval(interval);
+                    tBox.style.display = "none";
+                    document.getElementById('main-success').style.display = "block";
+                    document.getElementById('form-blockchain').style.display = "block";
+                }
+            }, 1000);
+        }
+
+        function analyserCodeParrain() {
+            const codeInput = document.getElementById('case1-code').value.trim().toUpperCase();
+            const statusLabel = document.getElementById('status-code');
+            const case2 = document.getElementById('case2-cible');
+            const btnKm = document.getElementById('btn-km');
+            const inputHash = document.getElementById('case3-hash');
+            const lblCase3 = document.getElementById('lbl-case3');
+            const t = traductions[langueActive];
+
+            let existeEnBase = baseCodesValides.includes(codeInput);
+
+            if (existeEnBase) {
+                statusLabel.style.color = "#4caf50";
+                statusLabel.innerText = t.validParrain;
+                case2.value = "0x9Bc3A762F... (Adresse Réseau VictoryDéduite)";
+                
+                if (codeInput.startsWith("KM-")) {
+                    estUnParcoursKM = true;
+                    document.getElementById('mode-activation-title').innerText = "Koma Mopao Mode";
+                    btnKm.style.display = "block";
+                    inputHash.disabled = true;
+                    lblCase3.innerText = t.case3Mopao;
+                } else {
+                    estUnParcoursKM = false;
+                    document.getElementById('mode-activation-title').innerText = "Victory Auto Mode";
+                    btnKm.style.display = "none";
+                    inputHash.disabled = false;
+                    lblCase3.innerText = t.case3Label;
+                }
+            } else {
+                statusLabel.style.color = "#ff0000";
+                statusLabel.innerText = t.invalidParrain;
+                case2.value = "";
+                btnKm.style.display = "none";
+                inputHash.disabled = true;
+            }
+        }
+
+        function declencherKomaMopao() {
+            const t = traductions[langueActive];
+            alert(t.kmAlert);
+            document.getElementById('case1-code').disabled = true;
+            document.getElementById('btn-km').disabled = true;
+            document.getElementById('case3-hash').disabled = false;
+        }
+
+        function declencherVerificationPaiement() {
+            const hashValue = document.getElementById('case3-hash').value.trim();
+            
+            if (hashValue.length >= 10) { // Simulation longueur de Hash
+                document.getElementById('case3-hash').disabled = true;
+                
+                setTimeout(() => {
+                    alert("✓ Transaction Validée avec succès !");
+                    
+                    // Génération stricte du code d'invitation (4 lettres aléatoires + 1000)
+                    const lettres = Math.random().toString(36).replace(/[^a-z]/g, '').substr(0, 4).toUpperCase();
+                    const identifiantUnique = lettres + "1000";
+
+                    // Affichage des codes générés
+                    document.getElementById('zone-liens').style.display = "block";
+                    document.getElementById('code-victory').innerText = identifiantUnique;
+                    document.getElementById('code-km').innerText = "KM-" + identifiantUnique;
+
+                    if (!estUnParcoursKM) { lancerChrono48Heures(); }
+                    
+                    // DÉBLOCAGE DU TUNNEL DES OPPORTUNITÉS SUIVANTES (FOLLOW ME)
+                    document.getElementById('tunnel-opportunites').style.display = "block";
+                }, 1500);
+            }
+        }
+
+        // Action de l'utilisateur : Rejoindre l'opportunité en l'occurrence
+        function actionRejoindreOpportunite() {
+            window.open('https://victoryworld.io', '_blank'); // Redirection vers le site cible de l'opportunité
+            aCliqueRejoindre = true;
+            
+            // On débloque le champ pour qu'il colle son propre lien en retour
+            document.getElementById('input-lien-occurrent').disabled = false;
+            document.getElementById('btn-valider-base').disabled = false;
+            alert("👉 Étape 1 validée. Une fois inscrit sur la plateforme, copiez VOTRE lien d'affiliation et collez-le dans l'étape 2 pour sécuriser vos droits.");
+        }
+
+        // Validation finale du lien collé par l'utilisateur
+        function validerAlimentationBase() {
+            const lienSaisi = document.getElementById('input-lien-occurrent').value.trim();
+            
+            if(!aCliqueRejoindre) {
+                alert("❌ Vous devez d'abord cliquer sur '1. JE REJOINS L'OPPORTUNITÉ' avant d'alimenter la base.");
+                return;
+            }
+
+            if(!lienSaisi || !lienSaisi.includes('http')) {
+                alert("❌ Veuillez coller un lien d'affiliation valide (ex: https://...) pour l'opportunité en l'occurrence.");
+                return;
+            }
+            
+            alert("🎯 Parfait ! Votre lien personnel de l'opportunité a été enregistré dans la base de données. Vos futurs filleuls seront automatiquement redirigés vers ce lien lors de leur duplication Follow-Me !");
+            document.getElementById('input-lien-occurrent').disabled = true;
+            document.getElementById('btn-valider-base').disabled = true;
+            document.getElementById('btn-valider-base').innerText = "✓ BASE ALIMENTÉE AVEC SUCCÈS";
+        }
+
+        function lancerChrono48Heures() {
+            if(chrono48hActif) return;
+            chrono48hActif = true;
+            document.getElementById('chrono-48h').style.display = "block";
+            let tempsRestant = 2 * 24 * 60 * 60;
+
+            const intervalle = setInterval(() => {
+                tempsRestant--;
+                if(tempsRestant <= 0) {
+                    clearInterval(intervalle);
+                    deconnexion();
+                } else {
+                    let h = Math.floor(tempsRestant / 3600);
+                    let m = Math.floor((tempsRestant % 3600) / 60);
+                    let s = tempsRestant % 60;
+                    document.getElementById('timer-48h').innerText = `${h < 10 ? "0"+h : h}:${m < 10 ? "0"+m : m}:${s < 10 ? "0"+s : s}`;
+                }
+            }, 1000);
+        }
+
+        function deconnexion() {
+            document.getElementById('ecran-video').style.display = "none";
+            document.getElementById('ecran-auth').style.display = "block";
+            basculerMode();
+        }
+    </script>
+</body>
+</html>
