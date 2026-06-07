@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Point Focal - Plateforme MLM</title>
     <style>
+        /* Vos styles existants - gardez les mêmes */
         * {
             margin: 0;
             padding: 0;
@@ -126,6 +127,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            margin: 5px;
         }
 
         .btn-primary {
@@ -351,25 +353,83 @@
             padding: 20px;
             margin-top: 20px;
         }
-
-        .inline-input {
-            display: inline-block;
-            width: auto;
-            margin-right: 10px;
-        }
     </style>
 </head>
 <body>
-    <div class="container" id="app"></div>
+    <div class="container" id="app">
+        <div style="text-align: center; padding: 50px;">
+            <div class="loader"></div>
+            <p>Chargement...</p>
+        </div>
+    </div>
 
     <script>
-        // OPPORTUNITÉS REELLES
-        const REAL_OPPORTUNITIES = [
+        // ==================== CONFIGURATION API ====================
+        // !!! REMPLACEZ CETTE URL PAR CELLE DE VOTRE BACKEND SUR RENDER !!!
+        const API_BASE_URL = 'https://votre-backend.onrender.com/api';
+        
+        // Configuration axios-like
+        const api = {
+            async request(endpoint, options = {}) {
+                const token = localStorage.getItem('token');
+                const headers = {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                };
+                
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+                
+                try {
+                    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                        ...options,
+                        headers
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Erreur serveur');
+                    }
+                    
+                    return data;
+                } catch (error) {
+                    console.error('API Error:', error);
+                    throw error;
+                }
+            },
+            
+            get(endpoint) {
+                return this.request(endpoint, { method: 'GET' });
+            },
+            
+            post(endpoint, body) {
+                return this.request(endpoint, { 
+                    method: 'POST',
+                    body: JSON.stringify(body)
+                });
+            },
+            
+            put(endpoint, body) {
+                return this.request(endpoint, { 
+                    method: 'PUT',
+                    body: JSON.stringify(body)
+                });
+            },
+            
+            delete(endpoint) {
+                return this.request(endpoint, { method: 'DELETE' });
+            }
+        };
+        
+        // ==================== OPPORTUNITÉS ====================
+        const OPPORTUNITIES = [
             { id: 1, name: "Victory Automatic", link: "https://victoryautomatic.com/user/register/lobongo01", active: true, order: 1 },
             { id: 2, name: "Victory World Club", link: "https://victoryworld.club/longa01", active: true, order: 2 }
         ];
-
-        // Traductions
+        
+        // ==================== TRADUCTIONS ====================
         const translations = {
             fr: {
                 appName: 'Point Focal',
@@ -394,17 +454,13 @@
                 faq: 'FAQ',
                 callMopao: '📞 Allô Mopao',
                 myLinks: 'Mes Liens',
-                publicLink: '🔗 Lien Public (Partagez-le sur les réseaux)',
-                kmLink:='🔒 Lien KM (Partage Privé - Réservé Mopao)',
+                publicLink: '🔗 Lien Public',
+                kmLink: '🔒 Lien KM',
                 opportunities: 'Opportunités MLM',
-                admin: 'Administration',
-                addOpportunity: '+ Ajouter une opportunité',
-                deleteOpportunity: 'Supprimer',
-                activate: 'Activer',
-                deactivate: 'Désactiver',
                 yourFilleuls: 'Vos filleuls',
-                noFilleuls: 'Aucun filleul pour le moment',
-                pendingValidations: 'Validations en attente'
+                paymentStatus: 'Statut paiement',
+                validated: 'Validé',
+                pending: 'En attente'
             },
             en: {
                 appName: 'Point Focal',
@@ -429,17 +485,13 @@
                 faq: 'FAQ',
                 callMopao: '📞 Call Mopao',
                 myLinks: 'My Links',
-                publicLink: '🔗 Public Link (Share on social media)',
-                kmLink: '🔒 KM Link (Private Share - Mopao Only)',
+                publicLink: '🔗 Public Link',
+                kmLink: '🔒 KM Link',
                 opportunities: 'MLM Opportunities',
-                admin: 'Admin',
-                addOpportunity: '+ Add opportunity',
-                deleteOpportunity: 'Delete',
-                activate: 'Activate',
-                deactivate: 'Deactivate',
                 yourFilleuls: 'Your referrals',
-                noFilleuls: 'No referrals yet',
-                pendingValidations: 'Pending validations'
+                paymentStatus: 'Payment status',
+                validated: 'Validated',
+                pending: 'Pending'
             },
             es: {
                 appName: 'Point Focal',
@@ -464,17 +516,13 @@
                 faq: 'FAQ',
                 callMopao: '📞 Llamar a Mopao',
                 myLinks: 'Mis Enlaces',
-                publicLink: '🔗 Enlace Público (Compartir en redes)',
-                kmLink: '🔒 Enlace KM (Compartir Privado - Solo Mopao)',
+                publicLink: '🔗 Enlace Público',
+                kmLink: '🔒 Enlace KM',
                 opportunities: 'Oportunidades MLM',
-                admin: 'Administración',
-                addOpportunity: '+ Agregar oportunidad',
-                deleteOpportunity: 'Eliminar',
-                activate: 'Activar',
-                deactivate: 'Desactivar',
                 yourFilleuls: 'Sus referidos',
-                noFilleuls: 'Sin referidos aún',
-                pendingValidations: 'Validaciones pendientes'
+                paymentStatus: 'Estado de pago',
+                validated: 'Validado',
+                pending: 'Pendiente'
             },
             pt: {
                 appName: 'Point Focal',
@@ -499,21 +547,17 @@
                 faq: 'FAQ',
                 callMopao: '📞 Ligar para Mopao',
                 myLinks: 'Meus Links',
-                publicLink: '🔗 Link Público (Compartilhar nas redes)',
-                kmLink: '🔒 Link KM (Compartilhamento Privado - Apenas Mopao)',
+                publicLink: '🔗 Link Público',
+                kmLink: '🔒 Link KM',
                 opportunities: 'Oportunidades MLM',
-                admin: 'Administração',
-                addOpportunity: '+ Adicionar oportunidade',
-                deleteOpportunity: 'Excluir',
-                activate: 'Ativar',
-                deactivate: 'Desativar',
                 yourFilleuls: 'Seus afiliados',
-                noFilleuls: 'Sem afiliados ainda',
-                pendingValidations: 'Validações pendentes'
+                paymentStatus: 'Status do pagamento',
+                validated: 'Validado',
+                pending: 'Pendente'
             }
         };
-
-        // État de l'application
+        
+        // ==================== ÉTAT DE L'APPLICATION ====================
         let currentLang = 'fr';
         let currentUser = null;
         let currentStep = 'login';
@@ -521,21 +565,85 @@
         let videoTimer = null;
         let victoryTimer = null;
         let videoStartTime = null;
+        let victoryStartTime = null;
         
-        // Base de données simulée
-        let users = JSON.parse(localStorage.getItem('pointfocal_users') || '[]');
-        let opportunities = JSON.parse(localStorage.getItem('pointfocal_opportunities') || JSON.stringify(REAL_OPPORTUNITIES));
-        let rotations = JSON.parse(localStorage.getItem('pointfocal_rotations') || '{}');
-        let pendingPayments = JSON.parse(localStorage.getItem('pointfocal_pending') || '[]');
+        // ==================== FONCTIONS API APPELÉES ====================
         
-        // Sauvegarde initiale
-        if (!localStorage.getItem('pointfocal_opportunities')) {
-            localStorage.setItem('pointfocal_opportunities', JSON.stringify(opportunities));
+        async function apiLogin(email, password) {
+            const response = await api.post('/auth/login', { email, password });
+            if (response.token) {
+                localStorage.setItem('token', response.token);
+                localStorage.setItem('user', JSON.stringify(response.user));
+                return response.user;
+            }
+            throw new Error('Login failed');
         }
-
-        // Rendu principal
-        function render() {
+        
+        async function apiRegister(userData) {
+            const response = await api.post('/auth/register', userData);
+            if (response.token) {
+                localStorage.setItem('token', response.token);
+                localStorage.setItem('user', JSON.stringify(response.user));
+                return response.user;
+            }
+            throw new Error('Registration failed');
+        }
+        
+        async function apiVerifyPayment(victoryLink, targetAddress, transactionHash) {
+            return await api.post('/payment/verify', {
+                victoryLink,
+                targetAddress,
+                transactionHash,
+                userId: currentUser?.id
+            });
+        }
+        
+        async function apiGetUserLinks() {
+            return await api.get('/user/links');
+        }
+        
+        async function apiJoinOpportunity(opportunityId, opportunityLink) {
+            return await api.post('/user/join-opportunity', {
+                opportunityId,
+                opportunityLink,
+                sponsorId: currentUser?.sponsorId
+            });
+        }
+        
+        async function apiGetDashboard() {
+            return await api.get('/user/dashboard');
+        }
+        
+        async function apiSendNotification(type, data) {
+            return await api.post('/notifications/send', { type, data });
+        }
+        
+        // ==================== FONCTIONS DE RENDU ====================
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 5000);
+        }
+        
+        async function render() {
             const app = document.getElementById('app');
+            
+            // Vérifier si l'utilisateur est déjà connecté via token
+            const token = localStorage.getItem('token');
+            const savedUser = localStorage.getItem('user');
+            
+            if (token && savedUser && !currentUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    currentStep = 'dashboard';
+                } catch (e) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                }
+            }
             
             if (!currentUser) {
                 if (currentStep === 'register') {
@@ -558,11 +666,10 @@
                 app.innerHTML = renderPaymentForm();
                 attachPaymentEvents();
             } else {
-                app.innerHTML = renderDashboard();
-                attachDashboardEvents();
+                await renderDashboard();
             }
         }
-
+        
         function renderLogin() {
             const t = translations[currentLang];
             return `
@@ -596,7 +703,7 @@
                 </div>
             `;
         }
-
+        
         function renderRegister() {
             const t = translations[currentLang];
             return `
@@ -645,7 +752,7 @@
                 </div>
             `;
         }
-
+        
         function renderYoutubePopup() {
             return `
                 <div class="popup-overlay">
@@ -663,7 +770,7 @@
                 </div>
             `;
         }
-
+        
         function renderVideoStep() {
             const t = translations[currentLang];
             return `
@@ -681,10 +788,10 @@
                 </div>
             `;
         }
-
+        
         function renderVictoryStep() {
             const t = translations[currentLang];
-            const isKM = currentUser?.isKM || false;
+            const isKM = currentUser?.inviteCode?.endsWith('KM') || false;
             
             return `
                 <div class="card">
@@ -700,62 +807,62 @@
                 </div>
             `;
         }
-
+        
         function renderPaymentForm() {
             const t = translations[currentLang];
-            const isKM = currentUser?.isKM || false;
+            const isKM = currentUser?.inviteCode?.endsWith('KM') || false;
             
-            // Déterminer le lien Victory à afficher selon le parrainage
-            let victoryLinkHint = "";
-            if (currentUser?.sponsor) {
-                const sponsor = users.find(u => u.id === currentUser.sponsor);
-                if (sponsor) {
-                    if (sponsor.isKM) {
-                        victoryLinkHint = `https://victoryautomatic.com/user/register/${sponsor.inviteCode}`;
-                    } else {
-                        const activeOpp = opportunities.find(o => o.active);
-                        victoryLinkHint = activeOpp ? activeOpp.link : opportunities[0].link;
-                    }
-                }
-            }
+            // Déterminer le lien Victory à afficher
+            let victoryLinkHint = OPPORTUNITIES.find(o => o.active)?.link || OPPORTUNITIES[0].link;
             
             return `
                 <div class="card">
                     <h2 class="card-title">💳 Validation Paiement - 2.03 USDT (BSC)</h2>
+                    <p style="margin-bottom: 20px; padding: 10px; background: #e8f4f8; border-radius: 8px;">
+                        💡 Envoyez exactement 2.03 USDT sur le réseau BSC (BEP20) à l'adresse ci-dessous, puis remplissez les 3 champs
+                    </p>
                     <div class="form-group">
                         <label>1️⃣ ${t.victoryLink}</label>
-                        <input type="text" id="victoryLink" placeholder="https://victoryautomatic.com/user/register/..." value="${victoryLinkHint || ''}">
+                        <input type="text" id="victoryLink" placeholder="https://victoryautomatic.com/user/register/..." value="${victoryLinkHint}">
                     </div>
                     <div class="form-group">
                         <label>2️⃣ ${t.targetAddress}</label>
-                        <input type="text" id="targetAddress" placeholder="0x... (42 caractères)" pattern="^0x[a-fA-F0-9]{40}$">
-                        <small>Format: 0x suivi de 40 caractères hexadécimaux</small>
+                        <input type="text" id="targetAddress" placeholder="0x... (42 caractères)">
+                        <small>Adresse qui a reçu les 2.03 USDT</small>
                     </div>
                     <div class="form-group">
                         <label>3️⃣ ${t.transactionHash}</label>
-                        <input type="text" id="transactionHash" placeholder="0x... (66 caractères)" pattern="^0x[a-fA-F0-9]{64}$">
-                        <small>Format: 0x suivi de 64 caractères hexadécimaux</small>
+                        <input type="text" id="transactionHash" placeholder="0x... (66 caractères)">
+                        <small>Hash de la transaction BSC</small>
                     </div>
                     <div id="validationStatus" style="margin-top: 20px;"></div>
                     ${isKM ? `
                         <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px;">
-                            <strong>👑 Mode KM Actif:</strong> Votre Mopao va valider votre transaction. Contactez-le pour le hash.
+                            <strong>👑 Mode KM Actif:</strong> Après avoir collé votre lien Victory et votre adresse cible, cliquez sur "Allô Mopao" pour que votre Mopao valide votre transaction.
                         </div>
+                        <button id="callMopaoBtn" class="btn btn-success" style="margin-top: 15px;">📞 Allô Mopao - Prévenir mon Mopao</button>
                     ` : ''}
                 </div>
             `;
         }
-
-        function renderDashboard() {
+        
+        async function renderDashboard() {
             const t = translations[currentLang];
-            const activeOpportunities = opportunities.filter(o => o.active);
-            const isKM = currentUser?.isKM || false;
-            const isAdmin = currentUser?.email === 'admin@pointfocal.com';
+            const app = document.getElementById('app');
+            const isKM = currentUser?.inviteCode?.endsWith('KM') || false;
             
-            // Récupérer les filleuls
-            const myFilleuls = users.filter(u => u.sponsor === currentUser.id);
+            // Récupérer les données du dashboard depuis l'API
+            let dashboardData = { links: {}, filleuls: [], opportunities: [] };
+            try {
+                dashboardData = await apiGetDashboard();
+            } catch (error) {
+                console.error('Erreur chargement dashboard:', error);
+            }
             
-            return `
+            const activeOpportunities = OPPORTUNITIES.filter(o => o.active);
+            const myFilleuls = dashboardData.filleuls || [];
+            
+            app.innerHTML = `
                 <div class="header">
                     <div class="logo">${t.appName}</div>
                     <div>
@@ -773,31 +880,27 @@
                 
                 <div class="dashboard-stats">
                     <div class="stat-card">
-                        <div class="stat-value">${currentUser?.generatedLinks ? '✅' : '⏳'}</div>
-                        <div>Liens générés</div>
+                        <div class="stat-value">${dashboardData.paymentValidated ? '✅' : '⏳'}</div>
+                        <div>${t.paymentStatus}</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value">${myFilleuls.length}</div>
                         <div>${t.yourFilleuls}</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value">${currentUser?.joinedOpportunities?.length || 0}</div>
-                        <div>Opportunités rejointes</div>
-                    </div>
                 </div>
                 
                 <div class="card">
                     <h2 class="card-title">${t.myLinks}</h2>
-                    ${currentUser?.publicLink ? `
+                    ${dashboardData.links?.public ? `
                         <div class="form-group">
                             <label>${t.publicLink}</label>
-                            <input type="text" value="${currentUser.publicLink}" readonly onclick="this.select()" style="background: #f0f0f0;">
-                            <button class="btn btn-secondary" style="margin-top: 5px;" onclick="navigator.clipboard.writeText('${currentUser.publicLink}')">📋 Copier</button>
+                            <input type="text" value="${dashboardData.links.public}" readonly onclick="this.select()" style="background: #f0f0f0;">
+                            <button class="btn btn-secondary" style="margin-top: 5px;" onclick="navigator.clipboard.writeText('${dashboardData.links.public}')">📋 Copier</button>
                         </div>
                         <div class="form-group">
                             <label>${t.kmLink}</label>
-                            <input type="text" value="${currentUser.kmLink}" readonly onclick="this.select()" style="background: #f0f0f0;">
-                            <button class="btn btn-secondary" style="margin-top: 5px;" onclick="navigator.clipboard.writeText('${currentUser.kmLink}')">📋 Copier</button>
+                            <input type="text" value="${dashboardData.links.km}" readonly onclick="this.select()" style="background: #f0f0f0;">
+                            <button class="btn btn-secondary" style="margin-top: 5px;" onclick="navigator.clipboard.writeText('${dashboardData.links.km}')">📋 Copier</button>
                             <small>⚠️ Ce lien est à partager UNIQUEMENT en privé pour vos filleuls KM</small>
                         </div>
                     ` : '<p>⏳ Complétez votre paiement pour générer vos liens de parrainage</p>'}
@@ -813,7 +916,7 @@
                                     <small style="color: #666;">${opp.link}</small>
                                 </div>
                                 <button class="btn btn-primary join-opp-btn" data-opp-id="${opp.id}" data-opp-link="${opp.link}">
-                                    ${currentUser?.joinedOpportunities?.includes(opp.id) ? '✅ Déjà rejoint' : t.joinOpportunity}
+                                    ${t.joinOpportunity}
                                 </button>
                             </div>
                         `).join('')}
@@ -839,53 +942,4 @@
                 <div class="card">
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <button id="communityBtn" class="btn btn-primary">👥 ${t.community}</button>
-                        <button id="faqBtn" class="btn btn-secondary">❓ ${t.faq}</button>
-                        <button id="refreshBtn" class="btn btn-info" style="background: #17a2b8; color: white;">🔄 Actualiser</button>
-                        ${isKM ? `<button id="callMopaoBtn" class="btn btn-success">${t.callMopao}</button>` : ''}
-                    </div>
-                </div>
-                
-                ${isAdmin ? renderAdminPanel() : ''}
-            `;
-        }
-        
-        function renderAdminPanel() {
-            const t = translations[currentLang];
-            return `
-                <div class="card admin-panel">
-                    <h2 class="card-title">⚙️ ${t.admin}</h2>
-                    <div style="margin-bottom: 20px;">
-                        <h3>Gestion des opportunités</h3>
-                        <div id="adminOpportunities">
-                            ${opportunities.map(opp => `
-                                <div class="opportunity-item">
-                                    <div>
-                                        <strong>${opp.name}</strong><br>
-                                        <small>${opp.link}</small>
-                                    </div>
-                                    <div>
-                                        <button class="btn btn-warning toggle-opp-btn" data-opp-id="${opp.id}" style="margin-right: 5px;">
-                                            ${opp.active ? '🔴 Désactiver' : '🟢 Activer'}
-                                        </button>
-                                        <button class="btn btn-danger delete-opp-btn" data-opp-id="${opp.id}">🗑️ ${t.deleteOpportunity}</button>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div style="margin-top: 15px;">
-                            <input type="text" id="newOppName" placeholder="Nom de l'opportunité" class="inline-input">
-                            <input type="text" id="newOppLink" placeholder="Lien d'inscription" class="inline-input">
-                            <button id="addOppBtn" class="btn btn-success">${t.addOpportunity}</button>
-                        </div>
-                    </div>
-                    <div>
-                        <h3>Système de rotation FIFO</h3>
-                        <p>Limite: 2 filleuls max par ID</p>
-                        <button id="resetRotationBtn" class="btn btn-secondary">Réinitialiser la rotation</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Timer YouTube popup
-        function startY
+                        <button id="faqBtn" class="btn btn-secondary">❓ ${t
