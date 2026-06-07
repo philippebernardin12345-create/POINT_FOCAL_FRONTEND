@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Point Focal V6 - Système Matrice Hybride</title>
+    <title>Point Focal - Système Matrice Hybride</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -47,22 +47,27 @@
         .lang-btn:hover { border-color: #03dac6; }
         .flag { font-size: 30px; }
 
-        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group { margin-bottom: 15px; text-align: left; position: relative; }
         label { display: block; margin-bottom: 5px; font-size: 14px; color: #ccc; }
         input {
             width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #333;
-            background-color: #2d2d2d; color: white; box-sizing: border-box; font-size: 16px;
+            background-color: #2d2d2d; color: white; box-sizing: border-box; font-size: 14px;
         }
         input:disabled { background-color: #1a1a1a; color: #666; border-color: #222; }
+        
+        /* Zone d'affichage mot de passe */
+        .password-container { position: relative; display: flex; align-items: center; }
+        .password-container input { padding-right: 45px; }
+        .toggle-password {
+            position: absolute; right: 12px; color: #03dac6; cursor: pointer;
+            font-size: 12px; font-weight: bold; user-select: none;
+        }
         
         button {
             width: 100%; padding: 12px; background-color: #03dac6; color: #000;
             border: none; border-radius: 6px; font-size: 16px; font-weight: bold;
             cursor: pointer; margin-top: 15px;
         }
-        button:disabled { background-color: #555; color: #aaa; cursor: not-allowed; }
-        
-        .switch-link { text-align: center; margin-top: 15px; font-size: 14px; color: #bb86fc; cursor: pointer; }
 
         /* POP-UP ÉMOTIONNEL */
         .modal-overlay {
@@ -74,19 +79,17 @@
             background-color: #252525; padding: 30px; border-radius: 12px;
             max-width: 400px; width: 100%; text-align: center; border: 2px solid #ff0000;
         }
-        .modal-content h2 { color: #ff0000; margin-top: 0; font-size: 22px; }
-        .modal-content p { color: #ddd; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
 
-        /* CHRONOS ET ALERTES */
         .countdown-48h { background-color: #d32f2f; color: white; font-size: 15px; font-weight: bold; text-align: center; padding: 12px; border-radius: 6px; margin-bottom: 15px; border: 2px solid white; }
-        
-        /* FORMULAIRES */
         .blockchain-form { background-color: #252525; padding: 15px; border-radius: 8px; border: 1px dashed #03dac6; margin-top: 20px; }
         .blockchain-form h3 { margin-top: 0; color: #03dac6; font-size: 18px; text-align: center; }
         
         .btn-mopao { background-color: #bb86fc; color: #000; font-weight: bold; font-size: 18px; box-shadow: 0 0 10px #bb86fc; }
         .links-box { background-color: #1a3a3a; padding: 15px; border-radius: 8px; border: 2px solid #4caf50; margin-top: 15px; text-align: left; }
         .logout-btn { background-color: #cf6679; color: white; margin-top: 25px; }
+        
+        .error-msg { color: #cf6679; font-size: 11px; margin-top: 4px; display: none; }
+        .info-yt { background-color: #331111; border: 1px dashed #ff0000; padding: 10px; border-radius: 6px; font-size: 12px; color: #ff9999; margin-top: 10px; text-align: center;}
     </style>
 </head>
 <body>
@@ -95,8 +98,9 @@
         <img src="logo.png" alt="Point Focal Logo" class="app-logo" onerror="this.style.display='none';">
     </div>
 
+    <!-- ÉCRAN 0 : SÉLECTION DES 4 LANGUES -->
     <div class="container" id="ecran-langue">
-        <h1>Point Focal 👁️</h1>
+        <h1>Point Focal</h1>
         <p class="subtitle">Choose your language / Choisissez votre langue</p>
         <div class="lang-grid">
             <button class="lang-btn" onclick="selectionnerLangue('fr')"><span class="flag">🇫🇷</span>Français</button>
@@ -106,144 +110,246 @@
         </div>
     </div>
 
+    <!-- ÉCRAN 1 : AUTHENTIFICATION -->
     <div class="container" id="ecran-auth" style="display: none;">
         <h1 id="auth-title">Connexion</h1>
-        <p class="subtitle">Point Focal V6</p>
-        <div class="form-group" id="group-whatsapp" style="display: none;">
-            <label id="lbl-whatsapp">Numéro WhatsApp</label>
-            <input type="text" id="input-whatsapp" placeholder="+243...">
-        </div>
+        <p class="subtitle" id="auth-subtitle">Connexion au système</p>
         <div class="form-group">
             <label id="lbl-email">Adresse E-mail</label>
             <input type="email" id="input-email" placeholder="exemple@mail.com">
         </div>
         <div class="form-group">
             <label id="lbl-password">Mot de passe</label>
-            <input type="password" id="input-password" placeholder="••••••••">
+            <div class="password-container">
+                <input type="password" id="input-password" placeholder="••••••••">
+                <span class="toggle-password" id="btn-toggle-pass" onclick="basculerAffichageMotDePasse()">VOIR</span>
+            </div>
         </div>
-        <button id="btn-principal" onclick="gererAuthentification()">Se connecter</button>
-        <div class="switch-link" id="btn-switch" onclick="basculerMode()">Pas encore de compte ? S'inscrire</div>
+        <button id="btn-login" onclick="gererAuthentification()">Se connecter</button>
     </div>
 
+    <!-- POP-UP ÉMOTIONNEL -->
     <div class="modal-overlay" id="pop-up-explicatif" style="display: none;">
         <div class="modal-content">
-            <h2 id="popup-title">ALGORITHME YOUTUBE</h2>
-            <p id="popup-text">L'algorithme de notre matrice nécessite votre interaction directe sur la plateforme YouTube officielle pour propulser l'équipe. Préparez-vous à liker et commenter.</p>
-            <button id="btn-popup-continuer" disabled>Chargement des protocoles...</button>
+            <h2 id="popup-title" style="color:#ff0000; margin-top:0;">PROPULSION ALGORITHMIQUE</h2>
+            <p id="popup-text">Le système va ouvrir l'application YouTube. Liker, commenter et s'abonner est requis pour propulser la matrice.</p>
+            <button id="btn-popup-continuer" disabled>Analyse des flux...</button>
         </div>
     </div>
 
+    <!-- ÉCRAN 2 : ZONE PRINCIPALE -->
     <div class="container" id="ecran-video" style="display: none;">
-        <h1 id="video-title">Espace Sync 👁️</h1>
+        <h1 id="main-title">Espace Sync</h1>
         
+        <!-- ÉTAPE A : REDIRECTION EXTÉRIEURE -->
         <div id="zone-propulsion-yt">
-            <button style="background-color: #ff0000; color: white; font-weight: bold;" onclick="ouvrirYouTubeExterne()">🚀 OUVRIR & PROPULSER SUR YOUTUBE</button>
-            <p style="font-size: 12px; color: #aaa; text-align: center; margin-top: 5px;">Regardez la vidéo, abonnez-vous et commentez pour booster le référencement collectif.</p>
+            <button id="btn-yt" style="background-color: #ff0000; color: white; font-weight: bold;" onclick="ouvrirYouTubeExterne()">🚀 OUVRIR & PROPULSER SUR YOUTUBE</button>
         </div>
 
+        <!-- POSTÉRIEUR À LA VIDÉO : LE BOUTON ATTEND LE RETOUR DE L'UTILISARISEUR -->
         <div id="zone-retour-session" style="display: none; margin-top: 15px;">
-            <button style="background-color: #00bcd4; color: black;" onclick="retournerSurVictoryAutomatic()">↩️ JE RETOURNE SUR VICTORY AUTOMATIC</button>
+            <div class="info-yt" id="info-retour">💡 <strong>Mission accomplie ?</strong> Quittez YouTube (touche Retour ou changement d'onglet) puis cliquez ci-dessous :</div>
+            <button id="btn-retour-systeme" style="background-color: #00bcd4; color: black; font-weight: bold;" onclick="retournerSurVictoryAutomatic()">↩️ JE RETOURNE SUR VICTORY AUTOMATIC</button>
         </div>
 
+        <!-- CHRONO ALERTE SUPPRESSION 2 JOURS -->
         <div class="countdown-48h" id="chrono-48h" style="display: none;">
-            ⏳ DÉLAI DE SUPPRESSION COMPTE ACTIF : <span id="timer-48h">48:00:00</span>
-            <br><small style="font-size:11px; font-weight:normal;">Si vos liens ne sont pas générés à temps, suppression immédiate du compte (Notification e-mail automatique).</small>
+            <span id="label-chrono">⏳ LIENS NON APPROUVÉS :</span> <span id="timer-48h">48:00:00</span> <span id="label-chrono-suffix">avant suppression définitive du compte.</span>
         </div>
 
+        <!-- INTERFACE DES CASES DU TUNNEL COMPORTEMENTAL -->
         <div class="blockchain-form" id="form-blockchain" style="display: none;">
-            <h3 id="mode-activation-title">Configuration Initiale (Pas de Code Actif)</h3>
+            <h3 id="form-title">Configuration Initiale (Pas de Code)</h3>
             
+            <!-- IDENTIFICATION DU PARRAIN DE LA BASE -->
             <div class="form-group">
-                <label style="color:#e0e0e0;">Saisissez le Code d'invitation de votre Parrain actuel :</label>
-                <input type="text" id="code-parrain-verif" placeholder="Ex: ABCD1000 ou KM-XXXX1000" oninput="evaluerTypeParcours()">
-                <small id="status-parrain" style="display:block; margin-top:4px; font-weight:boldкой;"></small>
+                <label id="lbl-parrain">Saisissez le Code de votre Parrain :</label>
+                <input type="text" id="code-parrain-verif" placeholder="Ex: ABCD1000 ou KM-ABCD1000" oninput="evaluerTypeParcours()">
+                <small id="status-parrain" style="display:block; margin-top:4px; font-weight:bold;"></small>
             </div>
 
             <hr style="border:1px dashed #333; margin:15px 0;">
 
+            <!-- CASE 1 : SÉCURISÉE PAR REGEX -->
             <div class="form-group">
-                <label style="color:#03dac6; font-weight:bold;">CASE 1 : Collez votre propre Lien Victory Automatic</label>
-                <input type="text" id="case1-lien-propre" placeholder="https://victoryworld.io/register?ref=...">
+                <label id="lbl-case1" style="color:#03dac6; font-weight:bold;">CASE 1 : Votre Lien d'inscription Victory Automatic</label>
+                <input type="text" id="case1-lien-propre" placeholder="https://victoryautomatic.com/user/register/votre_pseudo" oninput="validerCase1()">
+                <div class="error-msg" id="err-case1">L'URL doit obligatoirement débuter par : https://victoryautomatic.com/user/register/</div>
             </div>
 
+            <!-- CASE 2 : ADRESSE CIBLE PORTABLE 42 CARACTÈRES -->
             <div class="form-group">
-                <label style="color:#03dac6; font-weight:bold;">CASE 2 : Saisissez votre Adresse Cible (Réception de don)</label>
-                <input type="text" id="case2-adresse-cible" placeholder="Ex: Adresse de votre portefeuille Blockchain">
+                <label id="lbl-case2" style="color:#03dac6; font-weight:bold;">CASE 2 : Votre Adresse Cible (Réception de don)</label>
+                <input type="text" id="case2-adresse-cible" maxlength="42" placeholder="0x..." oninput="validerCase2()">
+                <div class="error-msg" id="err-case2">L'adresse doit faire exactement 42 caractères et commencer par 0x</div>
             </div>
 
+            <!-- MODE AUTONOME -->
             <div id="bloc-victory-auto" style="display: none; margin-top: 15px;">
-                <button style="background-color: #4caf50; color: white;" id="btn-declencher-auto" onclick="validerObtentionLienAuto()">🔑 J'OBTIENS LE LIEN VICTORY AUTOMATIC</button>
+                <button style="background-color: #03dac6; color: black;" id="btn-declencher-auto" onclick="validerObtentionLienAuto()">🔑 J'OBTIENS LE LIEN VICTORY AUTOMATIC</button>
                 
+                <!-- CASE 3 : TXHASH PORTABLE 66 CARACTÈRES -->
                 <div id="case3-zone-autonome" style="display:none; margin-top:15px;" class="form-group">
-                    <label style="color: #ffb300; font-weight: bold;">CASE 3 : Effectuez le don puis collez le TxHash ici</label>
-                    <input type="text" id="case3-hash" placeholder="Collez le hash de votre don pour vérification automatique" oninput="verifierHashAutomatique()">
+                    <label id="lbl-case3" style="color: #ffb300; font-weight: bold;">CASE 3 : Collez le TxHash de votre Transaction</label>
+                    <input type="text" id="case3-hash" maxlength="66" placeholder="0x..." oninput="verifierHashAutomatique()">
+                    <div class="error-msg" id="err-case3">Le hash doit faire exactement 66 caractères et commencer par 0x</div>
                 </div>
             </div>
 
+            <!-- MODE ÉQUIPE MOPAO -->
             <div id="bloc-koma-mopao" style="display: none; margin-top: 15px;">
                 <button class="btn-mopao" id="btn-allo-mopao" onclick="validerAlloMopao()">📞 ALLÔ MOPAO</button>
             </div>
         </div>
 
+        <!-- GENERATION DES DEUX CODES PHRARES -->
         <div class="links-box" id="zone-liens" style="display: none;">
-            <h4 style="margin:0 0 10px 0; color:#4caf50;">👑 GÉNÉRATION DE VOS CODES TERMINÉE :</h4>
-            <p><strong>Votre Code Victory Automatic (Autonome) :</strong> <span id="code-victory" style="color:#ffff00; font-weight:bold;"></span></p>
-            <p><strong>Votre Code Partage Privé (Koma Mopao) :</strong> <span id="code-km" style="color:#ffff00; font-weight:bold;"></span></p>
-            <p style="color:#4caf50; font-size:12px; margin-top:10px;">✓ Enregistrement sécurisé. Vos codes sont définitifs, la procédure de suppression est désactivée.</p>
+            <h4 id="links-box-title" style="margin:0 0 10px 0; color:#4caf50;">👑 VOS CODES MATRICIELS ACTIVÉS :</h4>
+            <p><strong id="lbl-res-auto">Code Autonome :</strong> <span id="code-victory" style="color:#ffff00; font-weight:bold;"></span></p>
+            <p><strong id="lbl-res-km">Code Partage Équipe :</strong> <span id="code-km" style="color:#ffff00; font-weight:bold;"></span></p>
         </div>
 
-        <button class="logout-btn" onclick="deconnexion()">Se déconnecter</button>
+        <button class="logout-btn" id="btn-logout" onclick="deconnexion()">Se déconnecter</button>
     </div>
 
     <script>
         let langueActive = 'fr';
-        let estEnModeConnexion = true;
         let chrono48hActif = false;
         let intervalleChrono;
-        let modeKM = false;
-
         const baseCodesValides = ["ABCD1000", "KM-ABCD1000"];
+
+        // DICTIONNAIRE MULTILINGUE
+        const traductions = {
+            fr: {
+                authTitle: "Connexion", authSubtitle: "Connexion au système", lblEmail: "Adresse E-mail", lblPass: "Mot de passe", btnLogin: "Se connecter", btnShow: "VOIR", btnHide: "CACHER",
+                popTitle: "PROPULSION ALGORITHMIQUE", popText: "Le système va ouvrir l'application YouTube. Liker, commenter et s'abonner est requis pour propulser la matrice.", popWait: "Analyse des flux...", popBtn: "LANCER LA SÉANCE",
+                mainTitle: "Espace Sync", btnYt: "🚀 OUVRIR & PROPULSER SUR YOUTUBE", infoRetour: "💡 <strong>Mission accomplie ?</strong> Quittez YouTube (touche Retour ou changement d'onglet) puis cliquez ci-dessous :", btnRetour: "↩️ JE RETOURNE SUR VICTORY AUTOMATIC",
+                lblChrono: "⏳ LIENS NON APPROUVÉS :", lblChronoSuff: "avant suppression définitive du compte.", formTitle: "Configuration Initiale (Pas de Code)",
+                lblParrain: "Saisissez le Code de votre Parrain :", statusKM: "✓ Mode Koma Mopao actif.", statusAuto: "✓ Mode Victory Auto actif.", statusRot: "ℹ️ Rotation automatique (Victory Auto).",
+                lblCase1: "CASE 1 : Votre Lien d'inscription Victory Automatic", errCase1: "L'URL doit obligatoirement débuter par : https://victoryautomatic.com/user/register/",
+                lblCase2: "CASE 2 : Votre Adresse Cible (Réception de don)", errCase2: "L'adresse doit faire exactement 42 caractères et commencer par 0x",
+                btnObtenir: "🔑 J'OBTIENS LE LIEN VICTORY AUTOMATIC", lblCase3: "CASE 3 : Collez le TxHash de votre Transaction", errCase3: "Le hash doit faire exactement 66 caractères et commencer par 0x",
+                alertErr: "❌ Erreur : Format de la Case 1 ou Case 2 incorrect.", alertHash: "🔍 Hash Conforme ! Vérification sur le bloc réseau...", alertMopaoText: "📞 ALLÔ MOPAO TRANSMIS ! Le Leader va injecter le Hash (66 caractères) et valider votre bloc de don.", alertChronoText: "❌ ALERTE SÉCURITÉ : Délai dépassé. Compte supprimé.",
+                resTitle: "👑 VOS CODES MATRICIELS ACTIVÉS :", resAuto: "Code Autonome :", resKM: "Code Partage Équipe :", btnLogout: "Se déconnecter"
+            },
+            en: {
+                authTitle: "Login", authSubtitle: "System Login", lblEmail: "Email Address", lblPass: "Password", btnLogin: "Connect", btnShow: "SHOW", btnHide: "HIDE",
+                popTitle: "ALGORITHMIC PROPULSION", popText: "The system will open YouTube. Liking, commenting, and subscribing are required to boost the matrix.", popWait: "Analyzing streams...", popBtn: "LAUNCH SESSION",
+                mainTitle: "Sync Space", btnYt: "🚀 OPEN & PROPULSE ON YOUTUBE", infoRetour: "💡 <strong>Mission accomplished?</strong> Exit YouTube (Back key or switch tabs) then click below:", btnRetour: "↩️ I RETURN TO VICTORY AUTOMATIC",
+                lblChrono: "⏳ UNAPPROVED LINKS:", lblChronoSuff: "before permanent account deletion.", formTitle: "Initial Setup (No Active Code)",
+                lblParrain: "Enter your Sponsor's Code:", statusKM: "✓ Koma Mopao Mode active.", statusAuto: "✓ Victory Auto Mode active.", statusRot: "ℹ️ Automatic rotation (Victory Auto).",
+                lblCase1: "CASE 1: Your Victory Automatic Registration Link", errCase1: "The URL must start exactly with: https://victoryautomatic.com/user/register/",
+                lblCase2: "CASE 2: Your Target Address (Receiving donation)", errCase2: "The address must be exactly 42 characters and start with 0x",
+                btnObtenir: "🔑 I GET THE VICTORY AUTOMATIC LINK", lblCase3: "CASE 3: Paste your Transaction TxHash", errCase3: "The hash must be exactly 66 characters and start with 0x",
+                alertErr: "❌ Error: Case 1 or Case 2 format is incorrect.", alertHash: "🔍 Valid Hash! Checking on the network block...", alertMopaoText: "📞 ALLÔ MOPAO TRANSMITTED! The Leader will inject the Hash (66 characters) and validate your block.", alertChronoText: "❌ SECURITY ALERT: Time limit exceeded. Account deleted.",
+                resTitle: "👑 YOUR MATRIC CODES ACTIVATED:", resAuto: "Autonomous Code:", resKM: "Team Share Code:", btnLogout: "Log Out"
+            },
+            es: {
+                authTitle: "Iniciar Sesión", authSubtitle: "Conexión al sistema", lblEmail: "Correo Electrónico", lblPass: "Contraseña", btnLogin: "Conectarse", btnShow: "VER", btnHide: "OCULTAR",
+                popTitle: "PROPULSIÓN ALGORÍTMICA", popText: "El sistema abrirá YouTube. Es necesario dar me gusta, comentar y suscribirse para impulsar la matriz.", popWait: "Analizando flujos...", popBtn: "INICIAR SESIÓN",
+                mainTitle: "Espacio Sync", btnYt: "🚀 ABRIR Y PROPULSAR EN YOUTUBE", infoRetour: "💡 <strong>¿Misión cumplida?</strong> Sal de YouTube (botón Atrás o cambia de pestaña) y haz clic abajo:", btnRetour: "↩️ REGRESO A VICTORY AUTOMATIC",
+                lblChrono: "⏳ ENLACES NO APROBADOS:", lblChronoSuff: "antes de la eliminación permanente.", formTitle: "Configuración Inicial (Sin Código)",
+                lblParrain: "Ingrese el Código de su Patrocinador:", statusKM: "✓ Modo Koma Mopao activo.", statusAuto: "✓ Modo Victory Auto activo.", statusRot: "ℹ️ Rotación automática (Victory Auto).",
+                lblCase1: "CASO 1: Su enlace de registro de Victory Automatic", errCase1: "La URL debe comenzar exactamente con: https://victoryautomatic.com/user/register/",
+                lblCase2: "CASO 2: Su dirección de destino (Recepción de donación)", errCase2: "La dirección debe tener exactamente 42 caracteres y empezar por 0x",
+                btnObtenir: "🔑 OBTENGO EL ENLACE DE VICTORY AUTOMATIC", lblCase3: "CASO 3: Pegue el TxHash de su transacción", errCase3: "El hash debe tener exactamente 66 caracteres y empezar por 0x",
+                alertErr: "❌ Error: Formato de Caso 1 o Caso 2 incorrecto.", alertHash: "🔍 ¡Hash Válido! Verificando en el bloque de red...", alertMopaoText: "📞 ¡ALLÔ MOPAO TRANSMITIDO! El Líder inyectará el Hash (66 caracteres) y validará su bloco.", alertChronoText: "❌ ALERTA DE SEGURIDAD: Plazo expirado. Cuenta eliminada.",
+                resTitle: "👑 SUS CÓDIGOS MATRICIALES ACTIVADOS:", resAuto: "Código Autónomo:", resKM: "Código Compartido de Equipo:", btnLogout: "Cerrar Sesión"
+            },
+            pt: {
+                authTitle: "Entrar", authSubtitle: "Conexão ao sistema", lblEmail: "Endereço de E-mail", lblPass: "Senha", btnLogin: "Conectar", btnShow: "VER", btnHide: "OCULTAR",
+                popTitle: "PROPULSÃO ALGORÍTMICA", popText: "O sistema abrirá o aplicativo do YouTube. Curtir, comentar e se inscrever é obrigatório para impulsionar a matriz.", popWait: "Analisando fluxos...", popBtn: "INICIAR SESSÃO",
+                mainTitle: "Espaço Sync", btnYt: "🚀 ABRIR E IMPULSIONAR NO YOUTUBE", infoRetour: "💡 <strong>Missão cumprida?</strong> Saia do YouTube (botão Voltar ou mude de aba) e clique abaixo:", btnRetour: "↩️ EU VOLTO PARA O VICTORY AUTOMATIC",
+                lblChrono: "⏳ LINKS NÃO APROVADOS:", lblChronoSuff: "antes da exclusão permanente da conta.", formTitle: "Configuração Inicial (Sem Código)",
+                lblParrain: "Insira o Código do seu Patrocinador:", statusKM: "✓ Modo Koma Mopao ativo.", statusAuto: "✓ Modo Victory Auto ativo.", statusRot: "ℹ️ Rotação automática (Victory Auto).",
+                lblCase1: "CASO 1: Seu Link de inscrição Victory Automatic", errCase1: "O URL deve começar exatamente com: https://victoryautomatic.com/user/register/",
+                lblCase2: "CASO 2: Seu Endereço de Destino (Recebimento de doação)", errCase2: "O endereço deve ter exatamente 42 caracteres e começar com 0x",
+                btnObtenir: "🔑 EU OBTENHO O LINK VICTORY AUTOMATIC", lblCase3: "CASO 3: Cole o TxHash da sua transação", errCase3: "O hash deve ter exatamente 66 caracteres e começar com 0x",
+                alertErr: "❌ Erro: Formato do Caso 1 ou Caso 2 incorreto.", alertHash: "🔍 Hash Válido! Verificando no bloco de rede...", alertMopaoText: "📞 ALLÔ MOPAO TRANSMITIDO! O Líder injetará o Hash (66 caracteres) e validará seu bloco de doação.", alertChronoText: "❌ ALERTA DE SEGURANÇA: Prazo expirado. Conta deletada.",
+                resTitle: "👑 SEUS CÓDIGOS MATRICIAIS ATIVADOS:", resAuto: "Código Autónomo:", resKM: "Código de Equipe:", btnLogout: "Sair"
+            }
+        };
 
         function selectionnerLangue(lang) {
             langueActive = lang;
+            appliquerTraductions();
             document.getElementById('ecran-langue').style.display = 'none';
             document.getElementById('ecran-auth').style.display = 'block';
         }
 
-        function basculerMode() {
-            estEnModeConnexion = !estEnModeConnexion;
-            document.getElementById('group-whatsapp').style.display = estEnModeConnexion ? "none" : "block";
+        function appliquerTraductions() {
+            const t = traductions[langueActive];
+            document.getElementById('auth-title').innerText = t.authTitle;
+            document.getElementById('auth-subtitle').innerText = t.authSubtitle;
+            document.getElementById('lbl-email').innerText = t.lblEmail;
+            document.getElementById('lbl-password').innerText = t.lblPass;
+            document.getElementById('btn-login').innerText = t.btnLogin;
+            
+            // Met à jour l'intitulé du bouton voir/cacher en fonction du type d'input actuel
+            const inputPass = document.getElementById('input-password');
+            document.getElementById('btn-toggle-pass').innerText = (inputPass.type === "password") ? t.btnShow : t.btnHide;
+
+            document.getElementById('popup-title').innerText = t.popTitle;
+            document.getElementById('popup-text').innerText = t.popText;
+            document.getElementById('main-title').innerText = t.mainTitle;
+            document.getElementById('btn-yt').innerText = t.btnYt;
+            document.getElementById('info-retour').innerHTML = t.infoRetour;
+            document.getElementById('btn-retour-systeme').innerText = t.btnRetour;
+            document.getElementById('label-chrono').innerText = t.lblChrono;
+            document.getElementById('label-chrono-suffix').innerText = t.lblChronoSuff;
+            document.getElementById('form-title').innerText = t.formTitle;
+            document.getElementById('lbl-parrain').innerText = t.lblParrain;
+            document.getElementById('lbl-case1').innerText = t.lblCase1;
+            document.getElementById('err-case1').innerText = t.errCase1;
+            document.getElementById('lbl-case2').innerText = t.lblCase2;
+            document.getElementById('err-case2').innerText = t.errCase2;
+            document.getElementById('btn-declencher-auto').innerText = t.btnObtenir;
+            document.getElementById('lbl-case3').innerText = t.lblCase3;
+            document.getElementById('err-case3').innerText = t.errCase3;
+            document.getElementById('links-box-title').innerText = t.resTitle;
+            document.getElementById('lbl-res-auto').innerText = t.resAuto;
+            document.getElementById('lbl-res-km').innerText = t.resKM;
+            document.getElementById('btn-logout').innerText = t.btnLogout;
+        }
+
+        // FONCTION DE BASCULEMENT DE L'AFFICHAGE DU MOT DE PASSE
+        function basculerAffichageMotDePasse() {
+            const inputPass = document.getElementById('input-password');
+            const btnToggle = document.getElementById('btn-toggle-pass');
+            const t = traductions[langueActive];
+
+            if (inputPass.type === "password") {
+                inputPass.type = "text";
+                btnToggle.innerText = t.btnHide;
+            } else {
+                inputPass.type = "password";
+                btnToggle.innerText = t.btnShow;
+            }
         }
 
         function gererAuthentification() {
-            // EXEMPTION ICI : On vérifie si l'utilisateur a déjà propulsé la vidéo par le passé
             if (localStorage.getItem("videoVisionnee") === "true") {
-                // S'il a déjà vu la vidéo, on saute le pop-up et l'étape YouTube
                 document.getElementById('ecran-auth').style.display = "none";
                 document.getElementById('ecran-video').style.display = "block";
                 document.getElementById('zone-propulsion-yt').style.display = "none";
                 document.getElementById('form-blockchain').style.display = "block";
-                alert("ℹ️ Session algorithmique déjà validée précédemment. Accès direct au formulaire de configuration.");
             } else {
-                // Sinon, parcours normal (Pop-up -> Vidéo YouTube obligatoire)
                 ouvrirPopUp();
             }
         }
 
+        function abrirPopUp() { ouvrirPopUp(); }
         function ouvrirPopUp() {
             document.getElementById('pop-up-explicatif').style.display = "flex";
-            let temps = 4;
+            let temps = 3;
             const btn = document.getElementById('btn-popup-continuer');
-            btn.disabled = true;
-            
+            const t = traductions[langueActive];
             const timer = setInterval(() => {
                 temps--;
-                if(temps > 0) { btn.innerText = `Synchronisation algorithmale (${temps}s)...`; }
+                if(temps > 0) { btn.innerText = `${t.popWait} (${temps}s)...`; }
                 else {
                     clearInterval(timer);
-                    btn.disabled = false;
-                    btn.style.backgroundColor = "#ff0000"; btn.style.color = "#fff";
-                    btn.innerText = "ACCÉDER AUX FLUX DE LA VIDÉO";
+                    btn.disabled = false; btn.innerText = t.popBtn;
                     btn.onclick = () => {
                         document.getElementById('pop-up-explicatif').style.display = "none";
                         document.getElementById('ecran-auth').style.display = "none";
@@ -255,16 +361,30 @@
 
         function ouvrirYouTubeExterne() {
             window.open('https://www.youtube.com/watch?v=9uPybhkqYw4', '_blank');
-            document.getElementById('zone-retour-session').style.display = "block";
-            
-            // On enregistre IMMÉDIATEMENT qu'il a effectué l'action pour l'en exempter à l'avenir
             localStorage.setItem("videoVisionnee", "true");
+            document.getElementById('zone-propulsion-yt').style.display = "none";
+            document.getElementById('zone-retour-session').style.display = "block";
         }
 
         function retournerSurVictoryAutomatic() {
-            document.getElementById('zone-propulsion-yt').style.display = "none";
             document.getElementById('zone-retour-session').style.display = "none";
             document.getElementById('form-blockchain').style.display = "block";
+        }
+
+        function validerCase1() {
+            const val = document.getElementById('case1-lien-propre').value.trim();
+            const err = document.getElementById('err-case1');
+            if(val.startsWith("https://victoryautomatic.com/user/register/") && val.length > 43) {
+                err.style.display = "none"; return true;
+            } else { err.style.display = "block"; return false; }
+        }
+
+        function validerCase2() {
+            const val = document.getElementById('case2-adresse-cible').value.trim();
+            const err = document.getElementById('err-case2');
+            if(/^0x[a-fA-F0-9]{40}$/.test(val) && val.length === 42) {
+                err.style.display = "none"; return true;
+            } else { err.style.display = "block"; return false; }
         }
 
         function evaluerTypeParcours() {
@@ -272,80 +392,62 @@
             const statusParrain = document.getElementById('status-parrain');
             const blocAuto = document.getElementById('bloc-victory-auto');
             const blocKM = document.getElementById('bloc-koma-mopao');
+            const t = traductions[langueActive];
 
             let existe = baseCodesValides.includes(codeParrain);
-
             if (existe && codeParrain.startsWith("KM-")) {
-                modeKM = true;
-                statusParrain.style.color = "#bb86fc";
-                statusParrain.innerText = "✓ Mode Équipe (Koma Mopao) détecté.";
-                blocKM.style.display = "block";
-                blocAuto.style.display = "none";
+                statusParrain.style.color = "#bb86fc"; statusParrain.innerText = t.statusKM;
+                blocKM.style.display = "block"; blocAuto.style.display = "none";
             } else {
-                modeKM = false;
                 statusParrain.style.color = "#03dac6";
-                statusParrain.innerText = existe ? "✓ Mode Autonome (Victory Auto) détecté." : "ℹ️ Aucun parrain / Rotation de lien activée (Victory Auto).";
-                blocKM.style.display = "none";
-                blocAuto.style.display = "block";
+                statusParrain.innerText = existe ? t.statusAuto : t.statusRot;
+                blocKM.style.display = "none"; blocAuto.style.display = "block";
             }
         }
 
-        // --- TUNNEL 1 : VICTORY AUTOMATIC AUTONOME ---
         function validerObtentionLienAuto() {
-            const lienPropre = document.getElementById('case1-lien-propre').value.trim();
-            const adresseCible = document.getElementById('case2-adresse-cible').value.trim();
-
-            if(!lienPropre || !adresseCible) {
-                alert("❌ Veuillez d'abord remplir votre propre lien d'affiliation Victory Automatic (Case 1) et votre adresse cible (Case 2).");
-                return;
+            const t = traductions[langueActive];
+            if(!validerCase1() || !validerCase2()) {
+                alert(t.alertErr); return;
             }
-
             if (!chrono48hActif) { lancerChrono48h(); }
-
             document.getElementById('btn-declencher-auto').style.display = "none";
             document.getElementById('case3-zone-autonome').style.display = "block";
         }
 
         function verifierHashAutomatique() {
             const hash = document.getElementById('case3-hash').value.trim();
-            if(hash.length >= 15) {
+            const err = document.getElementById('err-case3');
+            const t = traductions[langueActive];
+            
+            if(/^0x[a-fA-F0-9]{64}$/.test(hash) && hash.length === 66) {
+                err.style.display = "none";
                 document.getElementById('case3-hash').disabled = true;
-                alert("🔍 Analyse automatique du Hash réseau en cours...");
-                setTimeout(() => {
-                    genererLesDeuxCodesSurnaturels();
-                }, 1500);
-            }
+                alert(t.alertHash);
+                setTimeout(() => { genererCodesFinaux(); }, 1500);
+            } else { err.style.display = "block"; }
         }
 
-        // --- TUNNEL 2 : KOMA MOPAO ---
         function validerAlloMopao() {
-            const lienPropre = document.getElementById('case1-lien-propre').value.trim();
-            const adresseCible = document.getElementById('case2-adresse-cible').value.trim();
-
-            if(!lienPropre || !adresseCible) {
-                alert("❌ Remplissez votre lien Victory Automatic (Case 1) et votre adresse cible (Case 2) avant de solliciter le Mopao.");
-                return;
+            const t = traductions[langueActive];
+            if(!validerCase1() || !validerCase2()) {
+                alert(t.alertErr); return;
             }
-
-            alert(`📞 CANAL ALLÔ MOPAO ENCLENCHÉ !\nVos informations de ciblage ont été envoyées au Leader.\n\nLe Mopao va effectuer le don, valider le bloc et injecter le Hash de transaction.`);
-            
-            setTimeout(() => {
-                alert("⚡ INJECTION DU HASH PAR LE MOPAO : Don validé sur le bloc de la blockchain !");
-                genererLesDeuxCodesSurnaturels();
-            }, 3500);
+            alert(t.alertMopaoText);
+            setTimeout(() => { genererCodesFinaux(); }, 3500);
         }
 
         function lancerChrono48h() {
             chrono48hActif = true;
             document.getElementById('chrono-48h').style.display = "block";
             let tempsRestant = 2 * 24 * 60 * 60;
-
+            const t = traductions[langueActive];
             intervalleChrono = setInterval(() => {
                 tempsRestant--;
                 if(tempsRestant <= 0) {
                     clearInterval(intervalleChrono);
-                    alert("❌ ALERTE CRITIQUE : Temps expiré. Votre compte a été supprimé. Une notification a été envoyée par E-mail.");
-                    deconnexion();
+                    alert(t.alertChronoText);
+                    location.reload();
                 } else {
                     let h = Math.floor(tempsRestant / 3600);
                     let m = Math.floor((tempsRestant % 3600) / 60);
@@ -355,26 +457,20 @@
             }, 1000);
         }
 
-        function genererLesDeuxCodesSurnaturels() {
+        function genererCodesFinaux() {
             if(intervalleChrono) clearInterval(intervalleChrono);
             document.getElementById('chrono-48h').style.display = "none";
             document.getElementById('form-blockchain').style.display = "none";
 
-            const chaineAleatoire = Math.random().toString(36).replace(/[^a-z]/g, '').substr(0, 4).toUpperCase();
-            const identifiantUnique = chaineAleatoire + "1000";
+            const lettres = Math.random().toString(36).replace(/[^a-z]/g, '').substr(0, 4).toUpperCase();
+            const codeGenere = lettres + "1000";
 
             document.getElementById('zone-liens').style.display = "block";
-            document.getElementById('code-victory').innerText = identifiantUnique;
-            document.getElementById('code-km').innerText = "KM-" + identifiantUnique;
+            document.getElementById('code-victory').innerText = codeGenere;
+            document.getElementById('code-km').innerText = "KM-" + codeGenere;
         }
 
-        function deconnexion() {
-            if(intervalleChrono) clearInterval(intervalleChrono);
-            // On conserve l'état de la vidéo même après déconnexion/rechargement
-            document.getElementById('ecran-video').style.display = "none";
-            document.getElementById('ecran-auth').style.display = "block";
-            basculerMode();
-        }
+        function deconnexion() { location.reload(); }
     </script>
 </body>
 </html>
