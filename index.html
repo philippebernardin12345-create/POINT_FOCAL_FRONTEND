@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Point Focal - Plateforme MLM</title>
     <style>
-        /* Vos styles existants - gardez les mêmes */
+        /* Styles de l'interface */
         * {
             margin: 0;
             padding: 0;
@@ -155,11 +155,6 @@
             color: white;
         }
 
-        .btn-warning {
-            background: #ffc107;
-            color: #333;
-        }
-
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -261,42 +256,12 @@
             max-width: 350px;
         }
 
-        .notification.error {
-            border-left-color: #dc3545;
-        }
-
-        .notification.warning {
-            border-left-color: #ffc107;
-        }
-
-        .notification.info {
-            border-left-color: #17a2b8;
-        }
+        .notification.error { border-left-color: #dc3545; }
+        .notification.info { border-left-color: #17a2b8; }
 
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .card {
-                padding: 20px;
-            }
-            
-            .timer {
-                font-size: 32px;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         .loader {
@@ -337,22 +302,7 @@
             font-weight: bold;
         }
 
-        .badge-km {
-            background: #ffd700;
-            color: #000;
-        }
-
-        .badge-success {
-            background: #28a745;
-            color: white;
-        }
-
-        .admin-panel {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-        }
+        .badge-km { background: #ffd700; color: #000; }
     </style>
 </head>
 <body>
@@ -364,11 +314,10 @@
     </div>
 
     <script>
-        // ==================== CONFIGURATION API ====================
-        // !!! REMPLACEZ CETTE URL PAR CELLE DE VOTRE BACKEND SUR RENDER !!!
-        const API_BASE_URL = 'https://votre-backend.onrender.com/api';
+        // ==================== CONFIGURATION API REMPLACÉE ====================
+        const API_BASE_URL = 'https://point-focal.onrender.com/api';
         
-        // Configuration axios-like
+        // Configuration requêtes HTTP (Fetch)
         const api = {
             async request(endpoint, options = {}) {
                 const token = localStorage.getItem('token');
@@ -409,17 +358,6 @@
                     method: 'POST',
                     body: JSON.stringify(body)
                 });
-            },
-            
-            put(endpoint, body) {
-                return this.request(endpoint, { 
-                    method: 'PUT',
-                    body: JSON.stringify(body)
-                });
-            },
-            
-            delete(endpoint) {
-                return this.request(endpoint, { method: 'DELETE' });
             }
         };
         
@@ -432,128 +370,22 @@
         // ==================== TRADUCTIONS ====================
         const translations = {
             fr: {
-                appName: 'Point Focal',
-                login: 'Connexion',
-                register: 'Inscription',
-                email: 'Email',
-                whatsapp: 'WhatsApp',
-                password: 'Mot de passe',
-                confirmPassword: 'Confirmer le mot de passe',
-                inviteCode: 'Code d\'invitation (ex: ABCD1000 ou ABCD1000KM)',
-                forgotPassword: 'Mot de passe oublié ?',
-                submit: 'Valider',
-                logout: 'Déconnexion',
-                dashboard: 'Tableau de bord',
-                watchVideo: 'Je regarde la vidéo YouTube',
-                getVictoryLink: 'J\'obtiens mon lien Victory Automatic',
-                victoryLink: 'Lien Victory Automatic',
-                targetAddress: 'Adresse cible (0x + 40 caractères)',
-                transactionHash: 'Hash transaction (0x + 64 caractères)',
-                joinOpportunity: 'Rejoindre',
-                community: 'Communauté',
-                faq: 'FAQ',
-                callMopao: '📞 Allô Mopao',
-                myLinks: 'Mes Liens',
-                publicLink: '🔗 Lien Public',
-                kmLink: '🔒 Lien KM',
-                opportunities: 'Opportunités MLM',
-                yourFilleuls: 'Vos filleuls',
-                paymentStatus: 'Statut paiement',
-                validated: 'Validé',
-                pending: 'En attente'
+                appName: 'Point Focal', login: 'Connexion', register: 'Inscription', email: 'Email',
+                whatsapp: 'WhatsApp', password: 'Mot de passe', confirmPassword: 'Confirmer le mot de passe',
+                inviteCode: 'Code d\'invitation (ex: ABCD1000 ou ABCD1000KM)', forgotPassword: 'Mot de passe oublié ?',
+                submit: 'Valider', logout: 'Déconnexion', dashboard: 'Tableau de bord', watchVideo: 'Je regarde la vidéo YouTube',
+                getVictoryLink: 'J\'obtiens mon lien Victory Automatic', victoryLink: 'Lien Victory Automatic',
+                targetAddress: 'Adresse cible (0x + 40 caractères)', transactionHash: 'Hash transaction (0x + 64 caractères)',
+                myLinks: 'Mes Liens', yourFilleuls: 'Vos filleuls'
             },
             en: {
-                appName: 'Point Focal',
-                login: 'Login',
-                register: 'Register',
-                email: 'Email',
-                whatsapp: 'WhatsApp',
-                password: 'Password',
-                confirmPassword: 'Confirm password',
-                inviteCode: 'Invitation code (ex: ABCD1000 or ABCD1000KM)',
-                forgotPassword: 'Forgot password?',
-                submit: 'Submit',
-                logout: 'Logout',
-                dashboard: 'Dashboard',
-                watchVideo: 'Watch YouTube video',
-                getVictoryLink: 'Get my Victory Automatic link',
-                victoryLink: 'Victory Automatic Link',
-                targetAddress: 'Target address (0x + 40 characters)',
-                transactionHash: 'Transaction hash (0x + 64 characters)',
-                joinOpportunity: 'Join',
-                community: 'Community',
-                faq: 'FAQ',
-                callMopao: '📞 Call Mopao',
-                myLinks: 'My Links',
-                publicLink: '🔗 Public Link',
-                kmLink: '🔒 KM Link',
-                opportunities: 'MLM Opportunities',
-                yourFilleuls: 'Your referrals',
-                paymentStatus: 'Payment status',
-                validated: 'Validated',
-                pending: 'Pending'
-            },
-            es: {
-                appName: 'Point Focal',
-                login: 'Iniciar sesión',
-                register: 'Registrarse',
-                email: 'Correo electrónico',
-                whatsapp: 'WhatsApp',
-                password: 'Contraseña',
-                confirmPassword: 'Confirmar contraseña',
-                inviteCode: 'Código de invitación (ej: ABCD1000 o ABCD1000KM)',
-                forgotPassword: '¿Olvidó su contraseña?',
-                submit: 'Enviar',
-                logout: 'Cerrar sesión',
-                dashboard: 'Panel',
-                watchVideo: 'Ver video de YouTube',
-                getVictoryLink: 'Obtener mi enlace Victory Automatic',
-                victoryLink: 'Enlace Victory Automatic',
-                targetAddress: 'Dirección objetivo (0x + 40 caracteres)',
-                transactionHash: 'Hash de transacción (0x + 64 caracteres)',
-                joinOpportunity: 'Unirse',
-                community: 'Comunidad',
-                faq: 'FAQ',
-                callMopao: '📞 Llamar a Mopao',
-                myLinks: 'Mis Enlaces',
-                publicLink: '🔗 Enlace Público',
-                kmLink: '🔒 Enlace KM',
-                opportunities: 'Oportunidades MLM',
-                yourFilleuls: 'Sus referidos',
-                paymentStatus: 'Estado de pago',
-                validated: 'Validado',
-                pending: 'Pendiente'
-            },
-            pt: {
-                appName: 'Point Focal',
-                login: 'Entrar',
-                register: 'Registrar',
-                email: 'Email',
-                whatsapp: 'WhatsApp',
-                password: 'Senha',
-                confirmPassword: 'Confirmar senha',
-                inviteCode: 'Código de convite (ex: ABCD1000 ou ABCD1000KM)',
-                forgotPassword: 'Esqueceu a senha?',
-                submit: 'Enviar',
-                logout: 'Sair',
-                dashboard: 'Painel',
-                watchVideo: 'Assistir vídeo do YouTube',
-                getVictoryLink: 'Obter meu link Victory Automatic',
-                victoryLink: 'Link Victory Automatic',
-                targetAddress: 'Endereço alvo (0x + 40 caracteres)',
-                transactionHash: 'Hash da transação (0x + 64 caracteres)',
-                joinOpportunity: 'Participar',
-                community: 'Comunidade',
-                faq: 'FAQ',
-                callMopao: '📞 Ligar para Mopao',
-                myLinks: 'Meus Links',
-                publicLink: '🔗 Link Público',
-                kmLink: '🔒 Link KM',
-                opportunities: 'Oportunidades MLM',
-                yourFilleuls: 'Seus afiliados',
-                paymentStatus: 'Status do pagamento',
-                validated: 'Validado',
-                pending: 'Pendente'
+                appName: 'Point Focal', login: 'Login', register: 'Register', email: 'Email',
+                whatsapp: 'WhatsApp', password: 'Password', confirmPassword: 'Confirm password',
+                inviteCode: 'Invitation code', forgotPassword: 'Forgot password?',
+                submit: 'Submit', logout: 'Logout', dashboard: 'Dashboard', watchVideo: 'Watch YouTube video',
+                getVictoryLink: 'Get my Victory Automatic link', victoryLink: 'Victory Automatic Link',
+                targetAddress: 'Target address', transactionHash: 'Transaction hash',
+                myLinks: 'My Links', yourFilleuls: 'Your referrals'
             }
         };
         
@@ -561,65 +393,12 @@
         let currentLang = 'fr';
         let currentUser = null;
         let currentStep = 'login';
-        let youtubeTimer = null;
-        let videoTimer = null;
-        let victoryTimer = null;
-        let videoStartTime = null;
-        let victoryStartTime = null;
+        let popupCount = 10;
+        let videoCount = 200;
+        let victoryCount = 172800; // 48h en secondes
+        let intervalId = null;
         
-        // ==================== FONCTIONS API APPELÉES ====================
-        
-        async function apiLogin(email, password) {
-            const response = await api.post('/auth/login', { email, password });
-            if (response.token) {
-                localStorage.setItem('token', response.token);
-                localStorage.setItem('user', JSON.stringify(response.user));
-                return response.user;
-            }
-            throw new Error('Login failed');
-        }
-        
-        async function apiRegister(userData) {
-            const response = await api.post('/auth/register', userData);
-            if (response.token) {
-                localStorage.setItem('token', response.token);
-                localStorage.setItem('user', JSON.stringify(response.user));
-                return response.user;
-            }
-            throw new Error('Registration failed');
-        }
-        
-        async function apiVerifyPayment(victoryLink, targetAddress, transactionHash) {
-            return await api.post('/payment/verify', {
-                victoryLink,
-                targetAddress,
-                transactionHash,
-                userId: currentUser?.id
-            });
-        }
-        
-        async function apiGetUserLinks() {
-            return await api.get('/user/links');
-        }
-        
-        async function apiJoinOpportunity(opportunityId, opportunityLink) {
-            return await api.post('/user/join-opportunity', {
-                opportunityId,
-                opportunityLink,
-                sponsorId: currentUser?.sponsorId
-            });
-        }
-        
-        async function apiGetDashboard() {
-            return await api.get('/user/dashboard');
-        }
-        
-        async function apiSendNotification(type, data) {
-            return await api.post('/notifications/send', { type, data });
-        }
-        
-        // ==================== FONCTIONS DE RENDU ====================
-        
+        // ==================== FONCTIONS DE SOU MISSION ET TRAITEMENTS ====================
         function showNotification(message, type = 'success') {
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
@@ -627,60 +406,135 @@
             document.body.appendChild(notification);
             setTimeout(() => notification.remove(), 5000);
         }
-        
-        async function render() {
-            const app = document.getElementById('app');
-            
-            // Vérifier si l'utilisateur est déjà connecté via token
-            const token = localStorage.getItem('token');
-            const savedUser = localStorage.getItem('user');
-            
-            if (token && savedUser && !currentUser) {
-                try {
-                    currentUser = JSON.parse(savedUser);
-                    currentStep = 'dashboard';
-                } catch (e) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            try {
+                const response = await api.post('/auth/login', { email, password });
+                if (response.token) {
+                    localStorage.setItem('token', response.token);
+                    localStorage.setItem('user', JSON.stringify(response.user));
+                    currentUser = response.user;
+                    currentStep = 'youtubePopup';
+                    render();
                 }
-            }
-            
-            if (!currentUser) {
-                if (currentStep === 'register') {
-                    app.innerHTML = renderRegister();
-                } else {
-                    app.innerHTML = renderLogin();
-                }
-                attachLangEvents();
-                attachAuthEvents();
-            } else if (currentStep === 'youtubePopup') {
-                app.innerHTML = renderYoutubePopup();
-                startYoutubeTimer();
-            } else if (currentStep === 'video') {
-                app.innerHTML = renderVideoStep();
-                startVideoTimer();
-            } else if (currentStep === 'victory') {
-                app.innerHTML = renderVictoryStep();
-                startVictoryTimer();
-            } else if (currentStep === 'payment') {
-                app.innerHTML = renderPaymentForm();
-                attachPaymentEvents();
-            } else {
-                await renderDashboard();
+            } catch (err) {
+                showNotification(err.message, 'error');
             }
         }
-        
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const email = document.getElementById('regEmail').value;
+            const whatsapp = document.getElementById('regWhatsapp').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const inviteCode = document.getElementById('regInviteCode').value;
+
+            if (password !== confirmPassword) {
+                return showNotification('Les mots de passe ne correspondent pas.', 'error');
+            }
+
+            try {
+                const response = await api.post('/auth/register', { email, whatsapp, password, inviteCode });
+                if (response.token) {
+                    localStorage.setItem('token', response.token);
+                    localStorage.setItem('user', JSON.stringify(response.user));
+                    currentUser = response.user;
+                    currentStep = 'youtubePopup';
+                    render();
+                }
+            } catch (err) {
+                showNotification(err.message, 'error');
+            }
+        }
+
+        async function handlePaymentSubmit(e) {
+            e.preventDefault();
+            const victoryLink = document.getElementById('victoryLink').value;
+            const targetAddress = document.getElementById('targetAddress').value;
+            const transactionHash = document.getElementById('transactionHash').value;
+
+            try {
+                await api.post('/payment/verify', { victoryLink, targetAddress, transactionHash, userId: currentUser?.id });
+                showNotification('Données de transaction envoyées. Validation en cours !', 'info');
+                currentStep = 'dashboard';
+                render();
+            } catch (err) {
+                showNotification(err.message, 'error');
+            }
+        }
+
+        // ==================== COMPTEURS / TIMERS ====================
+        function startYoutubeTimer() {
+            clearInterval(intervalId);
+            popupCount = 10;
+            intervalId = setInterval(() => {
+                popupCount--;
+                const el = document.getElementById('popupTimer');
+                if (el) el.innerText = popupCount;
+                if (popupCount <= 0) {
+                    clearInterval(intervalId);
+                    const btn = document.getElementById('popupNextBtn');
+                    if (btn) {
+                        btn.removeAttribute('disabled');
+                        btn.onclick = () => { currentStep = 'video'; render(); };
+                    }
+                }
+            }, 1000);
+        }
+
+        function startVideoTimer() {
+            clearInterval(intervalId);
+            videoCount = 200;
+            intervalId = setInterval(() => {
+                videoCount--;
+                const timerEl = document.getElementById('videoTimer');
+                const progressEl = document.getElementById('videoProgress');
+                if (timerEl) timerEl.innerText = videoCount;
+                if (progressEl) progressEl.style.width = `${((200 - videoCount) / 200) * 100}%`;
+
+                if (videoCount <= 0) {
+                    clearInterval(intervalId);
+                    const btn = document.getElementById('nextAfterVideoBtn');
+                    if (btn) {
+                        btn.removeAttribute('disabled');
+                        btn.onclick = () => { currentStep = 'victory'; render(); };
+                    }
+                }
+            }, 1000);
+        }
+
+        function startVictoryTimer() {
+            const isKM = currentUser?.inviteCode?.endsWith('KM');
+            if (isKM) return;
+
+            clearInterval(intervalId);
+            intervalId = setInterval(() => {
+                victoryCount--;
+                const timerEl = document.getElementById('victoryTimer');
+                if (timerEl) {
+                    const hrs = Math.floor(victoryCount / 3600).toString().padStart(2, '0');
+                    const mins = Math.floor((victoryCount % 3600) / 60).toString().padStart(2, '0');
+                    const secs = (victoryCount % 60).toString().padStart(2, '0');
+                    timerEl.innerText = `${hrs}:${mins}:${secs}`;
+                }
+                if (victoryCount <= 0) {
+                    clearInterval(intervalId);
+                    showNotification('Délai de configuration de 48h expiré.', 'error');
+                    window.logout();
+                }
+            }, 1000);
+        }
+
+        // ==================== RENDU DES VUES GENERIQUES ====================
         function renderLogin() {
             const t = translations[currentLang];
             return `
                 <div class="header">
                     <div class="logo">${t.appName}</div>
-                    <div class="lang-selector">
-                        <button class="lang-btn ${currentLang === 'fr' ? 'active' : ''}" data-lang="fr">FR</button>
-                        <button class="lang-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en">EN</button>
-                        <button class="lang-btn ${currentLang === 'es' ? 'active' : ''}" data-lang="es">ES</button>
-                        <button class="lang-btn ${currentLang === 'pt' ? 'active' : ''}" data-lang="pt">PT</button>
-                    </div>
                 </div>
                 <div class="card">
                     <h2 class="card-title">${t.login}</h2>
@@ -698,23 +552,15 @@
                         </div>
                         <button type="submit" class="btn btn-primary">${t.login}</button>
                         <button type="button" class="btn btn-secondary" onclick="window.changeStep('register')">${t.register}</button>
-                        <button type="button" class="btn btn-secondary" onclick="window.forgotPassword()">${t.forgotPassword}</button>
                     </form>
-                </div>
-            `;
+                </div>`;
         }
-        
+
         function renderRegister() {
             const t = translations[currentLang];
             return `
                 <div class="header">
                     <div class="logo">${t.appName}</div>
-                    <div class="lang-selector">
-                        <button class="lang-btn ${currentLang === 'fr' ? 'active' : ''}" data-lang="fr">FR</button>
-                        <button class="lang-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en">EN</button>
-                        <button class="lang-btn ${currentLang === 'es' ? 'active' : ''}" data-lang="es">ES</button>
-                        <button class="lang-btn ${currentLang === 'pt' ? 'active' : ''}" data-lang="pt">PT</button>
-                    </div>
                 </div>
                 <div class="card">
                     <h2 class="card-title">${t.register}</h2>
@@ -725,7 +571,7 @@
                         </div>
                         <div class="form-group">
                             <label>${t.whatsapp}</label>
-                            <input type="tel" id="regWhatsapp" required placeholder="+1234567890">
+                            <input type="tel" id="regWhatsapp" required placeholder="+243...">
                         </div>
                         <div class="form-group">
                             <label>${t.password}</label>
@@ -738,208 +584,168 @@
                             <label>${t.confirmPassword}</label>
                             <div class="password-wrapper">
                                 <input type="password" id="regConfirmPassword" required>
-                                <span class="toggle-password" onclick="window.togglePassword('regConfirmPassword')">👁️</span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label>${t.inviteCode}</label>
-                            <input type="text" id="regInviteCode" required placeholder="ABCD1000 or ABCD1000KM">
-                            <small style="color: #666;">Format: 4 lettres MAJ + 4 chiffres. Ajoutez KM pour être filleul Mopao</small>
+                            <input type="text" id="regInviteCode" required placeholder="ABCD1000">
                         </div>
                         <button type="submit" class="btn btn-primary">${t.submit}</button>
                         <button type="button" class="btn btn-secondary" onclick="window.changeStep('login')">${t.login}</button>
                     </form>
-                </div>
-            `;
+                </div>`;
         }
-        
+
         function renderYoutubePopup() {
             return `
                 <div class="popup-overlay">
                     <div class="popup-content black-bg">
                         <div class="red-title">⚠️ IMPORTANT ⚠️</div>
                         <div class="yellow-text">
-                            <p>👍 Les likes, commentaires pertinents et partages augmentent la portée de la vidéo !</p>
-                            <p>📈 Plus la vidéo devient virale, plus YouTube la recommande !</p>
-                            <p>🌍 Plus de nouveaux adhérents découvrent Point Focal !</p>
-                            <p>💪 Plus la communauté grandit, plus nous sommes forts !</p>
+                            <p>👍 Les likes et partages augmentent l'impact de l'équipe !</p>
+                            <p>📈 Rejoignez la dynamique collective Point Focal.</p>
                         </div>
                         <div class="timer" id="popupTimer">10</div>
-                        <button id="popupNextBtn" class="btn btn-primary" disabled>J'ai compris - Continuer</button>
+                        <button id="popupNextBtn" class="btn btn-primary" disabled>Continuer</button>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
-        
+
         function renderVideoStep() {
             const t = translations[currentLang];
             return `
                 <div class="card">
                     <h2 class="card-title">🎬 ${t.watchVideo}</h2>
-                    <p style="text-align: center; margin-bottom: 20px;">Regardez attentivement la vidéo de présentation</p>
                     <div class="timer" id="videoTimer">200</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="videoProgress" style="width: 0%"></div>
-                    </div>
+                    <div class="progress-bar"><div class="progress-fill" id="videoProgress" style="width: 0%"></div></div>
                     <div style="display: flex; gap: 10px; justify-content: center;">
-                        <button id="watchVideoBtn" class="btn btn-primary" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')">📺 ${t.watchVideo}</button>
-                        <button id="nextAfterVideoBtn" class="btn btn-success" disabled>✅ ${t.getVictoryLink}</button>
+                        <button class="btn btn-primary" onclick="window.open('https://www.youtube.com', '_blank')">📺 Lancer la vidéo</button>
+                        <button id="nextAfterVideoBtn" class="btn btn-success" disabled>Suivant</button>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
-        
+
         function renderVictoryStep() {
-            const t = translations[currentLang];
-            const isKM = currentUser?.inviteCode?.endsWith('KM') || false;
-            
+            const isKM = currentUser?.inviteCode?.endsWith('KM');
             return `
                 <div class="card">
-                    <h2 class="card-title">🔗 Victory Automatic</h2>
-                    ${isKM ? '<div class="badge badge-km" style="margin-bottom: 15px;">👑 Mode KM - Pas de timer 48h</div>' : `
-                        <div class="timer" id="victoryTimer">48:00:00</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="victoryProgress" style="width: 0%"></div>
-                        </div>
-                        <p>⏰ Vous disposez de 48h pour finaliser votre paiement et générer vos liens</p>
-                    `}
-                    <button id="nextToPaymentBtn" class="btn btn-primary">💰 Procéder au paiement 2.03 USDT</button>
-                </div>
-            `;
+                    <h2 class="card-title">🔗 Configuration Étape Victory</h2>
+                    ${isKM ? '<div class="badge badge-km">👑 Mode Mopao KM Actif - Pas de limite de temps</div>' : `
+                    <div class="timer" id="victoryTimer">48:00:00</div>`}
+                    <p style="margin: 15px 0;">Procédez à l'enregistrement de votre transaction.</p>
+                    <button id="nextToPaymentBtn" class="btn btn-primary">💰 Étape Paiement (2.03 USDT)</button>
+                </div>`;
         }
-        
+
         function renderPaymentForm() {
             const t = translations[currentLang];
-            const isKM = currentUser?.inviteCode?.endsWith('KM') || false;
-            
-            // Déterminer le lien Victory à afficher
-            let victoryLinkHint = OPPORTUNITIES.find(o => o.active)?.link || OPPORTUNITIES[0].link;
-            
+            const isKM = currentUser?.inviteCode?.endsWith('KM');
+            let hintLink = OPPORTUNITIES[0].link;
+
             return `
                 <div class="card">
-                    <h2 class="card-title">💳 Validation Paiement - 2.03 USDT (BSC)</h2>
-                    <p style="margin-bottom: 20px; padding: 10px; background: #e8f4f8; border-radius: 8px;">
-                        💡 Envoyez exactement 2.03 USDT sur le réseau BSC (BEP20) à l'adresse ci-dessous, puis remplissez les 3 champs
-                    </p>
-                    <div class="form-group">
-                        <label>1️⃣ ${t.victoryLink}</label>
-                        <input type="text" id="victoryLink" placeholder="https://victoryautomatic.com/user/register/..." value="${victoryLinkHint}">
-                    </div>
-                    <div class="form-group">
-                        <label>2️⃣ ${t.targetAddress}</label>
-                        <input type="text" id="targetAddress" placeholder="0x... (42 caractères)">
-                        <small>Adresse qui a reçu les 2.03 USDT</small>
-                    </div>
-                    <div class="form-group">
-                        <label>3️⃣ ${t.transactionHash}</label>
-                        <input type="text" id="transactionHash" placeholder="0x... (66 caractères)">
-                        <small>Hash de la transaction BSC</small>
-                    </div>
-                    <div id="validationStatus" style="margin-top: 20px;"></div>
-                    ${isKM ? `
-                        <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px;">
-                            <strong>👑 Mode KM Actif:</strong> Après avoir collé votre lien Victory et votre adresse cible, cliquez sur "Allô Mopao" pour que votre Mopao valide votre transaction.
+                    <h2 class="card-title">💳 Formulaire de paiement - 2.03 USDT (BSC)</h2>
+                    <form id="paymentForm">
+                        <div class="form-group">
+                            <label>${t.victoryLink}</label>
+                            <input type="text" id="victoryLink" value="${hintLink}" required>
                         </div>
-                        <button id="callMopaoBtn" class="btn btn-success" style="margin-top: 15px;">📞 Allô Mopao - Prévenir mon Mopao</button>
-                    ` : ''}
-                </div>
-            `;
+                        <div class="form-group">
+                            <label>${t.targetAddress}</label>
+                            <input type="text" id="targetAddress" placeholder="0x..." required>
+                        </div>
+                        <div class="form-group">
+                            <label>${t.transactionHash}</label>
+                            <input type="text" id="transactionHash" placeholder="0x..." required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Soumettre pour validation</button>
+                    </form>
+                    ${isKM ? `<button id="callMopaoBtn" class="btn btn-primary" style="margin-top:15px;">📞 Contacter Mopao via WhatsApp</button>` : ''}
+                </div>`;
         }
-        
+
         async function renderDashboard() {
             const t = translations[currentLang];
-            const app = document.getElementById('app');
-            const isKM = currentUser?.inviteCode?.endsWith('KM') || false;
-            
-            // Récupérer les données du dashboard depuis l'API
-            let dashboardData = { links: {}, filleuls: [], opportunities: [] };
+            const isKM = currentUser?.inviteCode?.endsWith('KM');
+            let stats = { links: { public: 'Génération en attente', km: 'Indisponible' }, filleuls: [] };
+
             try {
-                dashboardData = await apiGetDashboard();
-            } catch (error) {
-                console.error('Erreur chargement dashboard:', error);
-            }
-            
-            const activeOpportunities = OPPORTUNITIES.filter(o => o.active);
-            const myFilleuls = dashboardData.filleuls || [];
-            
-            app.innerHTML = `
+                stats = await api.get('/user/dashboard');
+            } catch(e) { console.log("Affichage des structures par défaut"); }
+
+            document.getElementById('app').innerHTML = `
                 <div class="header">
-                    <div class="logo">${t.appName}</div>
-                    <div>
-                        <span>👤 ${currentUser?.email}</span>
-                        ${isKM ? '<span class="badge badge-km" style="margin-left: 10px;">👑 KM</span>' : ''}
-                        <button class="btn btn-secondary" onclick="window.logout()" style="margin-left: 10px;">${t.logout}</button>
-                    </div>
-                    <div class="lang-selector">
-                        <button class="lang-btn ${currentLang === 'fr' ? 'active' : ''}" data-lang="fr">FR</button>
-                        <button class="lang-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en">EN</button>
-                        <button class="lang-btn ${currentLang === 'es' ? 'active' : ''}" data-lang="es">ES</button>
-                        <button class="lang-btn ${currentLang === 'pt' ? 'active' : ''}" data-lang="pt">PT</button>
-                    </div>
+                    <div class="logo">${t.appName} - Espace Membre</div>
+                    <button class="btn btn-danger" onclick="window.logout()">${t.logout}</button>
                 </div>
-                
                 <div class="dashboard-stats">
                     <div class="stat-card">
-                        <div class="stat-value">${dashboardData.paymentValidated ? '✅' : '⏳'}</div>
-                        <div>${t.paymentStatus}</div>
+                        <h3>Mes Liens de Réseau</h3>
+                        <p style="margin-top:10px;">Public : <b>${stats.links?.public || 'En validation'}</b></p>
+                        ${isKM ? `<p>Lien KM : <b>${stats.links?.km || 'Axe Mopao actif'}</b></p>` : ''}
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value">${myFilleuls.length}</div>
-                        <div>${t.yourFilleuls}</div>
+                        <h3>${t.yourFilleuls}</h3>
+                        <div class="stat-value">${stats.filleuls ? stats.filleuls.length : 0}</div>
                     </div>
                 </div>
-                
                 <div class="card">
-                    <h2 class="card-title">${t.myLinks}</h2>
-                    ${dashboardData.links?.public ? `
-                        <div class="form-group">
-                            <label>${t.publicLink}</label>
-                            <input type="text" value="${dashboardData.links.public}" readonly onclick="this.select()" style="background: #f0f0f0;">
-                            <button class="btn btn-secondary" style="margin-top: 5px;" onclick="navigator.clipboard.writeText('${dashboardData.links.public}')">📋 Copier</button>
-                        </div>
-                        <div class="form-group">
-                            <label>${t.kmLink}</label>
-                            <input type="text" value="${dashboardData.links.km}" readonly onclick="this.select()" style="background: #f0f0f0;">
-                            <button class="btn btn-secondary" style="margin-top: 5px;" onclick="navigator.clipboard.writeText('${dashboardData.links.km}')">📋 Copier</button>
-                            <small>⚠️ Ce lien est à partager UNIQUEMENT en privé pour vos filleuls KM</small>
-                        </div>
-                    ` : '<p>⏳ Complétez votre paiement pour générer vos liens de parrainage</p>'}
-                </div>
-                
-                <div class="card">
-                    <h2 class="card-title">🌐 ${t.opportunities}</h2>
-                    <div id="opportunitiesList">
-                        ${activeOpportunities.map(opp => `
-                            <div class="opportunity-item">
-                                <div>
-                                    <strong>${opp.name}</strong><br>
-                                    <small style="color: #666;">${opp.link}</small>
-                                </div>
-                                <button class="btn btn-primary join-opp-btn" data-opp-id="${opp.id}" data-opp-link="${opp.link}">
-                                    ${t.joinOpportunity}
-                                </button>
-                            </div>
-                        `).join('')}
+                    <h3 class="card-title">Liens d'inscription cibles</h3>
+                    <div class="opportunity-item">
+                        <span>Lien d'adhésion direct :</span>
+                        <a href="${OPPORTUNITIES[0].link}" target="_blank" class="btn btn-primary">Ouvrir le lien</a>
                     </div>
-                </div>
-                
-                ${myFilleuls.length > 0 ? `
-                    <div class="card">
-                        <h2 class="card-title">👥 ${t.yourFilleuls}</h2>
-                        ${myFilleuls.map(f => `
-                            <div class="opportunity-item">
-                                <div>
-                                    ${f.email} 
-                                    ${f.isKM ? '<span class="badge badge-km">KM</span>' : ''}
-                                    ${f.paymentValidated ? '<span class="badge badge-success">✓ Validé</span>' : '<span class="badge" style="background:#ffc107;">⏳ En attente</span>'}
-                                </div>
-                                <div><small>Inscrit le ${new Date(f.createdAt).toLocaleDateString()}</small></div>
-                            </div>
-                        `).join('')}
-                    </div>
-                ` : ''}
-                
-                <div class="card">
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button id="communityBtn" class="btn btn-primary">👥 ${t.community}</button>
-                        <button id="faqBtn" class="btn btn-secondary">❓ ${t
+                </div>`;
+        }
+
+        // ==================== ROUTAGE GLO BAL ET INITIALISATION ====================
+        async function render() {
+            const app = document.getElementById('app');
+            const token = localStorage.getItem('token');
+            if (token && !currentUser) {
+                currentUser = JSON.parse(localStorage.getItem('user'));
+                currentStep = 'dashboard';
+            }
+
+            if (!currentUser) {
+                app.innerHTML = currentStep === 'register' ? renderRegister() : renderLogin();
+                document.getElementById('loginForm')?.addEventListener('submit', handleLogin);
+                document.getElementById('registerForm')?.addEventListener('submit', handleRegister);
+            } else if (currentStep === 'youtubePopup') {
+                app.innerHTML = renderYoutubePopup();
+                startYoutubeTimer();
+            } else if (currentStep === 'video') {
+                app.innerHTML = renderVideoStep();
+                startVideoTimer();
+            } else if (currentStep === 'victory') {
+                app.innerHTML = renderVictoryStep();
+                startVictoryTimer();
+                const nextBtn = document.getElementById('nextToPaymentBtn');
+                if (nextBtn) nextBtn.onclick = () => { currentStep = 'payment'; render(); };
+            } else if (currentStep === 'payment') {
+                app.innerHTML = renderPaymentForm();
+                document.getElementById('paymentForm')?.addEventListener('submit', handlePaymentSubmit);
+                const mopaoBtn = document.getElementById('callMopaoBtn');
+                if (mopaoBtn) mopaoBtn.onclick = () => window.open('https://wa.me/243...', '_blank');
+            } else {
+                await renderDashboard();
+            }
+        }
+
+        window.togglePassword = function(id) {
+            const el = document.getElementById(id);
+            if (el) el.type = el.type === 'password' ? 'text' : 'password';
+        };
+        window.changeStep = function(step) { currentStep = step; render(); };
+        window.logout = function() {
+            localStorage.clear();
+            currentUser = null;
+            currentStep = 'login';
+            clearInterval(intervalId);
+            render();
+        };
+
+        window.onload = render;
+    </script>
+</body>
+</html>
