@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Point Focal - Validation Automatique Blockchain</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .payment-container {
+            background-color: #1e1e1e;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.8);
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+            border: 2px solid #00cc44;
+        }
+        h2 {
+            color: #00cc44;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 22px;
+        }
+        .info-box {
+            background-color: rgba(0, 204, 68, 0.1);
+            color: #d4edda;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            line-height: 1.5;
+            text-align: left;
+            margin-bottom: 25px;
+            border-left: 4px solid #00cc44;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #cccccc;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #333;
+            background-color: #0d0d0d;
+            color: #00ff55;
+            font-family: 'Courier New', Courier, monospace;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        input:focus {
+            border-color: #00cc44;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 204, 68, 0.2);
+        }
+        .status-box {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 15px;
+            display: none;
+        }
+        .status-pending {
+            background-color: rgba(255, 204, 0, 0.1);
+            color: #ffcc00;
+            border: 1px solid #ffcc00;
+        }
+        .status-error {
+            background-color: rgba(255, 51, 51, 0.1);
+            color: #ff3333;
+            border: 1px solid #ff3333;
+        }
+        .status-success {
+            background-color: rgba(0, 204, 68, 0.1);
+            color: #00cc44;
+            border: 1px solid #00cc44;
+        }
+        /* Animation de chargement */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #ffcc00;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="payment-container">
+    <h2>Étape 5 : Déclencheur de Validation Automatique</h2>
+    
+    <div class="info-box">
+        <strong>⚡ AUCUN BOUTON DE SOUUMISSION :</strong><br>
+        Remplissez simplement les 3 champs ci-dessous dans l'ordre exact. Dès que les formats blockchain et le lien Victory sont détectés comme valides, le système interroge le réseau BSC de manière 100 % automatisée.
+    </div>
+
+    <div class="form-group">
+        <label for="victoryLink">1. Collez le Lien Victory que vous avez utilisé *</label>
+        <input type="url" id="victoryLink" placeholder="https://victoryautomatic.com/user/register/...">
+    </div>
+
+    <div class="form-group">
+        <label for="adresseCible">2. Votre Adresse de Réception/Cible USDT (BEP20) *</label>
+        <input type="text" id="adresseCible" placeholder="0x... (Adresse de votre portefeuille)">
+    </div>
+
+    <div class="form-group">
+        <label for="txHash">3. Le Hash (TX ID) de votre transaction de 2.03 USDT *</label>
+        <input type="text" id="txHash" placeholder="0x... (Hash complet de la transaction)">
+    </div>
+
+    <div id="statusBox" class="status-box"></div>
+</div>
+
+<script>
+    // Expressions régulières pour la validation stricte des formats exigés
+    const regexAdresse = /^0x[a-fA-F0-9]{40}$/; // Format 0x + 40 caractères hexadécimaux
+    const regexHash = /^0x[a-fA-F0-9]{66}$/;    // Format 0x + 66 caractères hexadécimaux
+
+    async function verifierFormulaireAutomatique() {
+        const victoryLink = document.getElementById('victoryLink').value.trim();
+        const adresseCible = document.getElementById('adresseCible').value.trim();
+        const txHash = document.getElementById('txHash').value.trim();
+        const statusBox = document.getElementById('statusBox');
+
+        // ÉTAPE A : S'assurer que les 3 champs possèdent du texte
+        if (!victoryLink || !adresseCible || !txHash) {
+            statusBox.style.display = 'none';
+            return;
+        }
+
+        // ÉTAPE B : Vérification des formats avant de surcharger l'API Backend
+        const isLinkValid = victoryLink.includes('victory');
+        const isAdresseValid = regexAdresse.test(adresseCible);
+        const isHashValid = regexHash.test(txHash);
+
+        // Si l'un des formats n'est pas encore parfait, on attend que l'utilisateur finisse d'écrire
+        if (!isLinkValid || !isAdresseValid || !isHashValid) {
+            statusBox.className = "status-box status-error";
+            statusBox.innerHTML = "Format ou ordre des champs incorrect. En attente d'une saisie blockchain valide...";
+            statusBox.style.display = 'block';
+            return;
+        }
+
+        // ÉTAPE C : Lancement du traitement de l'API
+        statusBox.className = "status-box status-pending";
+        statusBox.innerHTML = "<div class='spinner'></div> Connexion Web3 en cours. Analyse des 12 confirmations blockchain et du montant (2.03 USDT)...";
+        statusBox.style.display = 'block';
+
+        try {
+            const response = await fetch('/api/payment/verify', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({ victoryLink, adresseCible, txHash })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // Succès absolu : Paiement détecté, validé et enregistré
+                statusBox.className = "status-box status-success";
+                statusBox.innerHTML = "🎉 PAIEMENT VALIDÉ ! Redirection vers votre tableau de bord...";
+                
+                // Redirection après 2 secondes vers l'espace membre finalisé
+                setTimeout(() => {
+                    window.location.href = "/dashboard.html";
+                }, 2000);
+            } else {
+                // Erreur renvoyée par le serveur de sécurité (Ex: Pas assez de confirmations, mauvais montant...)
+                statusBox.className = "status-box status-error";
+                statusBox.innerHTML = `❌ Erreur : ${data.error || "Validation impossible."}`;
+            }
+
+        } catch (error) {
+            statusBox.className = "status-box status-error";
+            statusBox.innerHTML = "❌ Erreur réseau. Impossible d'atteindre le serveur de validation.";
+        }
+    }
+
+    // Mise en place des écouteurs en temps réel (input) sur les trois champs
+    document.getElementById('victoryLink').addEventListener('input', verifierFormulaireAutomatique);
+    document.getElementById('adresseCible').addEventListener('input', verifierFormulaireAutomatique);
+    document.getElementById('txHash').addEventListener('input', verifierFormulaireAutomatique);
+</script>
+
+</body>
+</html>
