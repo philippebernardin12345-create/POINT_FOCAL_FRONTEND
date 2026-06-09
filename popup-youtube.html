@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Point Focal - Étape Obligatoire YouTube</title>
+    <style>
+        /* Fond Noir Absolu */
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Arial Black', Gadget, sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Cadre Blanc Impératif */
+        .popup-box {
+            background-color: #111111;
+            border: 5px solid #ffffff;
+            padding: 40px;
+            max-width: 550px;
+            width: 90%;
+            text-align: center;
+            border-radius: 12px;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Titre Rouge */
+        h1 {
+            color: #ff0000;
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+        }
+
+        /* Texte Jaune Émotionnel */
+        .message-emotionnel {
+            color: #ffff00;
+            font-size: 18px;
+            line-height: 1.6;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Bouton d'action au format désactivé (Gris) par défaut */
+        .btn-action {
+            background-color: #555555;
+            color: #ffffff;
+            border: none;
+            padding: 15px 35px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 6px;
+            cursor: not-allowed;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        /* Style du bouton lorsqu'il devient actif (Vert) */
+        .btn-action.active {
+            background-color: #00cc44;
+            color: #000000;
+            cursor: pointer;
+            box-shadow: 0 0 15px #00cc44;
+        }
+
+        .btn-action.active:hover {
+            background-color: #00ff55;
+        }
+
+        .timer-text {
+            display: block;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #aaaaaa;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<div class="popup-box">
+    <h1>⚠️ ATTENTION : ACTION REQUISE ⚠️</h1>
+    
+    <div class="message-emotionnel">
+        "Votre avenir financier est sur le point de basculer. Ne laissez pas passer cette opportunité unique. Prenez ces 10 secondes pour vous concentrer sur votre réussite collective, car le Point Focal ne pardonne aucun retard !"
+    </div>
+
+    <button id="btnYoutube" class="btn-action" disabled onclick="validerEtapeYoutube()">
+        Veuillez patienter (<span id="countdown">10</span>s)
+    </button>
+</div>
+
+<script>
+    let secondesRestantes = 10;
+    const btnYoutube = document.getElementById('btnYoutube');
+    const countdownDisplay = document.getElementById('countdown');
+
+    // Déclenchement automatique du compte à rebours de 10 secondes dès l'affichage
+    const chrono = setInterval(() => {
+        secondesRestantes--;
+        countdownDisplay.innerText = secondesRestantes;
+
+        if (secondesRestantes <= 0) {
+            clearInterval(chrono);
+            
+            // Le bouton passe au VERT et devient cliquable
+            btnYoutube.className = "btn-action active";
+            btnYoutube.removeAttribute("disabled");
+            btnYoutube.innerText = "ACCÉDER À LA VIDÉO OFFICIELLE";
+        }
+    }, 1000);
+
+    // Fonction de redirection vers l'étape de la vidéo de 200 secondes
+    function validerEtapeYoutube() {
+        // Redirection directe vers la page vidéo du parcours
+        window.location.href = "/video.html";
+    }
+</script>
+
+</body>
+</html>
