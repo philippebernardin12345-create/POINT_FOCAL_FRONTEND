@@ -71,14 +71,13 @@
         button { background-color: #ffcc00; color: #000; font-weight: bold; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; }
         button:hover { background-color: #e6b800; }
         
-        /* Panneau Mopao */
         .mopao-panel {
             background-color: #1e1e1e;
             padding: 25px;
             border-radius: 8px;
             margin-top: 20px;
             border: 2px solid #ff3333;
-            display: none; /* Masqué par défaut */
+            display: none;
         }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #333; }
@@ -93,6 +92,9 @@
 <div class="dashboard-layout" id="mainDashboard">
     <div class="header-bar">
         <div>
+            <div style="margin-bottom: 5px;">
+                <img src="logo.jpg" alt="Logo Point Focal" style="max-width: 100px; height: auto; border-radius: 4px;">
+            </div>
             <h1>Tableau de Bord Point Focal</h1>
             <small id="userEmail" style="color: #888;"></small>
         </div>
@@ -133,45 +135,36 @@
                     <th>Statut Paiement</th>
                 </tr>
             </thead>
-            <tbody id="mopaoTableBody">
-                </tbody>
+            <tbody id="mopaoTableBody"></tbody>
         </table>
     </div>
 </div>
 
 <script>
-    // Récupération des données utilisateur de la session active
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const token = localStorage.getItem('token');
 
     window.addEventListener('DOMContentLoaded', async () => {
         if (!token) {
-            window.location.href = "/login.html";
+            window.location.href = "login.html";
             return;
         }
 
         document.getElementById('userEmail').innerText = user.email;
         document.getElementById('myLinkDisplay').innerText = `https://victoryautomatic.com/user/register/${user.code}`;
 
-        // 1. VÉRIFICATION DU TIMER ET DE L'IMMUNITÉ KM (Règle 7)
         if (user.is_km_user) {
             const timerBox = document.getElementById('timerDisplay');
             timerBox.className = "timer-container timer-km";
             timerBox.innerText = "Accès KM Permanent (Immunisé)";
-            
-            // Si c'est un profil KM, on active et charge le panneau exclusif Mopao
             chargerPanneauMopao();
         } else {
-            // Pour un membre standard, on va simuler ou appeler la date du funnel
             gererChrono48h();
         }
     });
 
-    // Gestion du compte à rebours 48h
     function gererChrono48h() {
         const timerBox = document.getElementById('timerDisplay');
-        // Dans une version de production, cette date provient de la table user_funnel_steps (victory_link_clicked_at)
-        // Ici nous récupérons le moment de création par défaut si absent
         const dateActivation = new Date(); 
         const dateExpiration = new Date(dateActivation.getTime() + (48 * 60 * 60 * 1000));
 
@@ -182,7 +175,7 @@
             if (distance <= 0) {
                 clearInterval(interval);
                 timerBox.className = "timer-container timer-expired";
-                timerBox.innerText = "COMPTE EXPIRÉ (48H DEPASSEES)";
+                timerBox.innerText = "COMPTE EXPIRÉ (48H DÉPASSÉES)";
                 document.getElementById('mainDashboard').style.opacity = "0.2";
                 alert("Règle des 48h appliquée : Votre accès est suspendu.");
                 return;
@@ -196,20 +189,20 @@
         }, 1000);
     }
 
-    // Gestion du Follow Me Multi-Opportunités (Règle 14)
     document.getElementById('opportunityForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const userPersonalLink = document.getElementById('oppLink').value.trim();
         const oppStatus = document.getElementById('oppStatus');
 
         try {
-            const response = await fetch('/api/mlm/join', {
+            // URL de votre API Render connectée ici
+            const response = await fetch('https://point-focal.onrender.com/api/mlm/join', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ opportunityId: 1, userPersonalLink }) // Opportunité ID 1 par défaut
+                body: JSON.stringify({ opportunityId: 1, userPersonalLink })
             });
 
             const data = await response.json();
@@ -222,17 +215,17 @@
             }
         } catch (err) {
             oppStatus.style.color = "#ff3333";
-            oppStatus.innerText = "Erreur de connexion.";
+            oppStatus.innerText = "Erreur de connexion avec Render.";
         }
     });
 
-    // Chargement FIFO du panneau exclusif Mopao (Règle 12)
     async function chargerPanneauMopao() {
         document.getElementById('mopaoPanel').style.display = 'block';
         const tbody = document.getElementById('mopaoTableBody');
 
         try {
-            const response = await fetch('/api/victory/dashboard', {
+            // URL de votre API Render connectée ici
+            const response = await fetch('https://point-focal.onrender.com/api/victory/dashboard', {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -260,7 +253,7 @@
                 }
             }
         } catch (err) {
-            tbody.innerHTML = "<tr><td colspan='4' style='text-align:center; color:#ff3333;'>Erreur lors du chargement de la file FIFO Mopao.</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='4' style='text-align:center; color:#ff3333;'>Erreur lors du chargement de la file FIFO Mopao depuis Render.</td></tr>";
         }
     }
 
