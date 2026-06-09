@@ -99,6 +99,7 @@
             width: 100%;
             display: block;
             text-decoration: none;
+            box-sizing: border-box;
         }
         .btn-next-step.ready {
             background-color: #00cc44;
@@ -120,6 +121,10 @@
 <body>
 
 <div class="victory-container">
+    <div style="text-align: center; margin-bottom: 10px;">
+        <img src="logo.jpg" alt="Logo Point Focal" style="max-width: 120px; height: auto; border-radius: 4px;">
+    </div>
+
     <div id="kmBadge" class="badge-km" style="display: none;">Membre Koma Mopao (KM)</div>
     <h2>Étape 4 : Votre Lien d'Inscription Victory</h2>
     
@@ -134,7 +139,7 @@
 
     <button class="btn-copy" onclick="copierLienVictory()">📋 Copier le lien de parrainage</button>
 
-    <a href="/payment.html" id="btnNextStep" class="btn-next-step">Passer à l'étape de validation du paiement</a>
+    <a href="payment.html" id="btnNextStep" class="btn-next-step">Passer à l'étape de validation du paiement</a>
 
     <div id="timerWarning" class="alert-timer" style="display: none;">
         ⏳ RÈGLE DES 48H ACTIVÉE : Vous avez exactement 48 heures pour finaliser votre paiement.
@@ -144,9 +149,7 @@
 <script>
     let lienGenere = "";
 
-    // Au chargement de la page, on interroge l'API pour générer/récupérer le bon lien
     window.addEventListener('DOMContentLoaded', async () => {
-        // Récupération des infos de l'utilisateur stockées lors de la connexion
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         const isKm = user.is_km_user || false;
 
@@ -157,8 +160,8 @@
         }
 
         try {
-            // Appel au module Backend victory.js
-            const response = await fetch('/api/victory/generate', {
+            // URL de votre API Render connectée ici pour attribuer le lien
+            const response = await fetch('https://point-focal.onrender.com/api/victory/generate', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -173,7 +176,6 @@
                 lienGenere = data.url;
                 document.getElementById('victoryLinkDisplay').innerText = lienGenere;
                 
-                // On débloque le bouton de passage à l'étape suivante
                 const btnNext = document.getElementById('btnNextStep');
                 btnNext.className = "btn-next-step ready";
             } else {
@@ -181,12 +183,11 @@
                 document.getElementById('victoryLinkDisplay').style.color = "#ff3333";
             }
         } catch (err) {
-            document.getElementById('victoryLinkDisplay').innerText = "Erreur de connexion réseau.";
+            document.getElementById('victoryLinkDisplay').innerText = "Erreur de connexion avec le serveur sur Render.";
             document.getElementById('victoryLinkDisplay').style.color = "#ff3333";
         }
     });
 
-    // Fonction pratique pour copier le lien dans le presse-papier
     function copierLienVictory() {
         if (!lienGenere || lienGenere.includes("en cours") || lienGenere.includes("Erreur")) {
             alert("Aucun lien valide à copier.");
