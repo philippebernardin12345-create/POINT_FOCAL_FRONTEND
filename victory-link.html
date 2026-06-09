@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Point Focal - Votre Lien Victory</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .victory-container {
+            background-color: #1e1e1e;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.8);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            border: 2px solid #ffcc00;
+        }
+        h2 {
+            color: #ffcc00;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 24px;
+        }
+        .instructions {
+            color: #dddddd;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            text-align: left;
+            background: #252525;
+            padding: 15px;
+            border-left: 4px solid #ffcc00;
+            border-radius: 4px;
+        }
+        .badge-km {
+            background-color: #ff3333;
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+            display: inline-block;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .link-box {
+            background-color: #0d0d0d;
+            border: 1px dashed #555;
+            padding: 15px;
+            font-size: 18px;
+            color: #00ff55;
+            font-family: 'Courier New', Courier, monospace;
+            word-break: break-all;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .btn-copy {
+            background-color: #ffcc00;
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .btn-copy:hover {
+            background-color: #e6b800;
+        }
+        .btn-next-step {
+            background-color: #222;
+            color: #888;
+            border: 1px solid #444;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            width: 100%;
+            display: block;
+            text-decoration: none;
+        }
+        .btn-next-step.ready {
+            background-color: #00cc44;
+            color: #000;
+            border: none;
+            box-shadow: 0 0 15px rgba(0, 204, 68, 0.3);
+        }
+        .btn-next-step.ready:hover {
+            background-color: #00ff55;
+        }
+        .alert-timer {
+            color: #ff3333;
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="victory-container">
+    <div id="kmBadge" class="badge-km" style="display: none;">Membre Koma Mopao (KM)</div>
+    <h2>Étape 4 : Votre Lien d'Inscription Victory</h2>
+    
+    <div class="instructions">
+        <strong>⚠️ Procédure obligatoire :</strong><br>
+        1. Cliquez sur le bouton jaune pour copier le lien Victory officiel.<br>
+        2. Ouvrez un nouvel onglet, inscrivez-vous et effectuez votre paiement sur la plateforme Victory.<br>
+        3. Revenez immédiatement ici pour valider vos informations de paiement.
+    </div>
+
+    <div id="victoryLinkDisplay" class="link-box">Génération du lien en cours...</div>
+
+    <button class="btn-copy" onclick="copierLienVictory()">📋 Copier le lien de parrainage</button>
+
+    <a href="/payment.html" id="btnNextStep" class="btn-next-step">Passer à l'étape de validation du paiement</a>
+
+    <div id="timerWarning" class="alert-timer" style="display: none;">
+        ⏳ RÈGLE DES 48H ACTIVÉE : Vous avez exactement 48 heures pour finaliser votre paiement.
+    </div>
+</div>
+
+<script>
+    let lienGenere = "";
+
+    // Au chargement de la page, on interroge l'API pour générer/récupérer le bon lien
+    window.addEventListener('DOMContentLoaded', async () => {
+        // Récupération des infos de l'utilisateur stockées lors de la connexion
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const isKm = user.is_km_user || false;
+
+        if (isKm) {
+            document.getElementById('kmBadge').style.display = 'inline-block';
+        } else {
+            document.getElementById('timerWarning').style.display = 'block';
+        }
+
+        try {
+            // Appel au module Backend victory.js
+            const response = await fetch('/api/victory/generate', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}` 
+                },
+                body: JSON.stringify({ mode: isKm ? 'KM' : 'NORMAL' })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.ok) {
+                lienGenere = data.url;
+                document.getElementById('victoryLinkDisplay').innerText = lienGenere;
+                
+                // On débloque le bouton de passage à l'étape suivante
+                const btnNext = document.getElementById('btnNextStep');
+                btnNext.className = "btn-next-step ready";
+            } else {
+                document.getElementById('victoryLinkDisplay').innerText = "Erreur : Impossible d'attribuer un sponsor.";
+                document.getElementById('victoryLinkDisplay').style.color = "#ff3333";
+            }
+        } catch (err) {
+            document.getElementById('victoryLinkDisplay').innerText = "Erreur de connexion réseau.";
+            document.getElementById('victoryLinkDisplay').style.color = "#ff3333";
+        }
+    });
+
+    // Fonction pratique pour copier le lien dans le presse-papier
+    function copierLienVictory() {
+        if (!lienGenere || lienGenere.includes("en cours") || lienGenere.includes("Erreur")) {
+            alert("Aucun lien valide à copier.");
+            return;
+        }
+        navigator.clipboard.writeText(lienGenere);
+        alert("Lien Victory copié avec succès ! Vous pouvez aller faire votre inscription.");
+    }
+</script>
+
+</body>
+</html>
