@@ -22,15 +22,25 @@
     <div id="register-root"></div>
 
     <script type="text/babel">
-        import React, { useState } from 'https://esm.sh/react@18.2.0';
+        import React, { useState, useEffect } from 'https://esm.sh/react@18.2.0';
         import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client';
 
         function RegisterForm() {
-            const [formData, setFormData] = useState({ email: '', whatsapp: '', txHash: '', wallet: '' });
+            // ÉTAPE 1 : Ajout de inviteCode dans l'objet formData
+            const [formData, setFormData] = useState({ email: '', whatsapp: '', txHash: '', wallet: '', inviteCode: '' });
             const [status, setStatus] = useState({ message: '', type: '' });
             const [loading, setLoading] = useState(false);
 
             const API_URL = "https://point-focal-backend.onrender.com/api";
+
+            // ÉTAPE 2 : Lecture de l'URL au chargement pour insérer automatiquement le code
+            useEffect(() => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const refCode = urlParams.get('ref'); // Détecte la fin de l'URL ?ref=CODE
+                if (refCode) {
+                    setFormData(prev => ({ ...prev, inviteCode: refCode }));
+                }
+            }, []);
 
             const handleChange = (e) => {
                 setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,7 +48,8 @@
 
             const handleSubmit = async (e) => {
                 e.preventDefault();
-                if (!formData.email || !formData.txHash || !formData.wallet) {
+                // Vérification que le code d'invitation est bien présent lui aussi
+                if (!formData.email || !formData.txHash || !formData.wallet || !formData.inviteCode) {
                     return setStatus({ message: "❌ Veuillez remplir les champs obligatoires.", type: "error" });
                 }
 
@@ -56,7 +67,6 @@
 
                     if (response.ok) {
                         setStatus({ message: "✅ Paiement 2.03 USDT Validé ! Votre compte est actif.", type: "success" });
-                        // Redirection vers le tableau de bord une fois validé
                         setTimeout(() => {
                             window.location.href = "index.html";
                         }, 2000);
@@ -96,6 +106,12 @@
                         <div className="input-group">
                             <label>Hachage de la Transaction (TxHash) *</label>
                             <input type="text" name="txHash" value={formData.txHash} onChange={handleChange} placeholder="Collez le hash à 66 caractères" required />
+                        </div>
+
+                        {/* ÉTAPE 3 : Affichage du champ Code d'invitation requis */}
+                        <div className="input-group">
+                            <label>Code d'invitation (Requis) *</label>
+                            <input type="text" name="inviteCode" value={formData.inviteCode} onChange={handleChange} placeholder="Code d'invitation automatique ou manuel" required />
                         </div>
 
                         <button type="submit" disabled={loading}>
