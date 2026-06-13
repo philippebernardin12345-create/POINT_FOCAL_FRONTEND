@@ -1,73 +1,6 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription — Point Focal V6</title>
-    <style>
-        body { margin: 0; padding: 20px; font-family: sans-serif; background-color: #f4f6f9; color: #333; }
-        .container { max-width: 500px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #1e3a8a; }
-        h2 { color: #1e3a8a; text-align: center; margin-top: 0; font-size: 1.5rem; }
-        .sub-title { text-align: center; font-size: 0.9rem; color: #64748b; margin-bottom: 25px; }
-        .input-group { margin-bottom: 18px; }
-        label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 0.85rem; color: #1e293b; }
-        input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
-        input:focus { border-color: #1e3a8a; outline: none; background-color: #fafafa; }
-        .hint { font-size: 0.75rem; color: #64748b; margin-top: 4px; }
-        button { width: 100%; padding: 14px; background-color: #1e3a8a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; margin-top: 15px; }
-        button:disabled { background-color: #94a3b8; cursor: not-allowed; }
-        #error-box { padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; text-align: center; font-size: 0.9rem; background-color: #f8d7da; color: #721c24; display: none; }
-        #success-box { padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; text-align: center; font-size: 0.9rem; background-color: #d4edda; color: #155724; display: none; }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <h2>Créer un compte Point Focal</h2>
-        <p class="sub-title">Étape 1 : Enregistrement de vos identifiants sécurisés</p>
-
-        <form id="signupForm">
-            <!-- EMAIL UNIQUE -->
-            <div class="input-group">
-                <label>Adresse E-mail *</label>
-                <input type="email" id="email" placeholder="exemple@mail.com" required />
-            </div>
-
-            <!-- WHATSAPP OBLIGATOIRE -->
-            <div class="input-group">
-                <label>Numéro WhatsApp *</label>
-                <input type="tel" id="whatsapp" placeholder="+243..." required />
-                <div class="hint">Format international obligatoire avec l'indicatif du pays</div>
-            </div>
-
-            <!-- MOT DE PASSE -->
-            <div class="input-group">
-                <label>Mot de passe *</label>
-                <input type="password" id="password" placeholder="Minimum 6 caractères" required />
-            </div>
-
-            <!-- CONFIRMATION MOT DE PASSE OBLIGATOIRE -->
-            <div class="input-group">
-                <label>Confirmation du mot de passe *</label>
-                <input type="password" id="passwordConfirm" placeholder="Répétez le mot de passe" required />
-            </div>
-
-            <!-- CODE D'INVITATION OBLIGATOIRE (4 LETTRES + 4 CHIFFRES) -->
-            <div class="input-group">
-                <label>Code d'invitation *</label>
-                <input type="text" id="inviteCode" maxlength="8" placeholder="Ex: ABCD1234" style="text-transform: uppercase; font-family: monospace;" required />
-                <div class="hint">Format strict requis : 4 lettres suivies de 4 chiffres</div>
-            </div>
-
-            <button type="submit" id="btnSubmit">Créer mon compte</button>
-        </form>
-
-        <div id="error-box"></div>
-        <div id="success-box"></div>
-    </div>
-
-    <script>
-        const API_URL = "https://point-focal-backend.onrender.com/api";
+<script>
+        // On cible la route d'authentification sectorisée de ton architecture src/routes/auth.js
+        const API_URL = "https://point-focal-backend.onrender.com/api/auth";
         const form = document.getElementById('signupForm');
         const btn = document.getElementById('btnSubmit');
         const errorBox = document.getElementById('error-box');
@@ -84,27 +17,25 @@
             const passwordConfirm = document.getElementById('passwordConfirm').value;
             const inviteCode = document.getElementById('inviteCode').value.trim().toUpperCase();
 
-            // RÈGLE INVIOLABLE : Confirmation du mot de passe obligatoire
             if (password !== passwordConfirm) {
                 showError("❌ Les deux mots de passe ne correspondent pas.");
                 return;
             }
 
-            // RÈGLE INVIOLABLE : Validation du format du code d'invitation (4 lettres + 4 chiffres)
             const inviteRegex = /^[A-Z]{4}[0-9]{4}$/;
             if (!inviteRegex.test(inviteCode)) {
-                showError("❌ Code d'invitation invalide. Il doit contenir exactement 4 lettres suivies de 4 chiffres (Ex: ABCD1234).");
+                showError("❌ Code d'invitation invalide (Format requis : 4 lettres + 4 chiffres).");
                 return;
             }
 
-            // Préparation des données pour le serveur
             const payload = { email, whatsapp, password, inviteCode };
 
             btn.disabled = true;
             btn.innerText = "⏳ Inscription en cours...";
 
             try {
-                const response = await fetch(`${API_URL}/auth/register`, {
+                // Appel direct à la route d'inscription du contrôleur auth.js
+                const response = await fetch(`${API_URL}/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -114,18 +45,18 @@
 
                 if (response.ok) {
                     successBox.style.display = "block";
-                    successBox.innerText = "✅ Inscription réussie ! Un e-mail de confirmation vous a été envoyé. Veuillez confirmer votre e-mail pour débloquer le popup éducatif.";
+                    successBox.innerText = "✅ Compte enregistré ! Veuillez valider votre e-mail pour activer le Popup YouTube Éducatif.";
                     form.reset();
-                    
-                    // Une fois inscrit, le cahier des charges impose la confirmation email avant l'étape suivante.
-                    // On pourra rediriger vers une page d'attente ou de connexion.
+                    btn.disabled = false;
+                    btn.innerText = "Créer mon compte";
                 } else {
-                    showError(`❌ Rejet : ${data.error || "Erreur lors de l'inscription"}`);
+                    showError(`❌ Rejet du serveur : ${data.error || data.message || "Données non conformes"}`);
                     btn.disabled = false;
                     btn.innerText = "Créer mon compte";
                 }
             } catch (err) {
-                showError("⚠️ Le serveur de sécurité met du temps à répondre. Veuillez réessayer dans 20 secondes.");
+                // Si ça plante, on affiche l'erreur technique pour savoir si c'est un problème de CORS ou d'URL
+                showError(`⚠️ Liaison impossible. Vérifiez que le backend Render est actif ou réessayez dans 10 secondes.`);
                 btn.disabled = false;
                 btn.innerText = "Créer mon compte";
             }
@@ -136,5 +67,3 @@
             errorBox.innerText = msg;
         }
     </script>
-</body>
-</html>
