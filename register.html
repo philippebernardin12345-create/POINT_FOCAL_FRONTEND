@@ -3,116 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vérification d'Ancrage Système — Point Focal V6</title>
+    <title>Inscription — Point Focal V6</title>
     <style>
         body { margin: 0; padding: 20px; font-family: sans-serif; background-color: #f4f6f9; color: #333; }
-        .container { max-width: 550px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #1e3a8a; }
-        h2 { color: #1e3a8a; text-align: center; margin-top: 0; font-size: 1.4rem; }
-        .notice { font-size: 0.85rem; color: #555; background-color: #f8fafc; padding: 12px; border-radius: 6px; border-left: 3px solid #3b82f6; margin-bottom: 25px; line-height: 1.4; }
-        .input-group { margin-bottom: 20px; }
+        .container { max-width: 500px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #1e3a8a; }
+        h2 { color: #1e3a8a; text-align: center; margin-top: 0; font-size: 1.5rem; }
+        .sub-title { text-align: center; font-size: 0.9rem; color: #64748b; margin-bottom: 25px; }
+        .input-group { margin-bottom: 18px; }
         label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 0.85rem; color: #1e293b; }
-        input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.95rem; font-family: monospace; background-color: #fff; }
+        input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
         input:focus { border-color: #1e3a8a; outline: none; background-color: #fafafa; }
-        input::placeholder { font-family: sans-serif; color: #94a3b8; }
-        .lock-notice { font-size: 0.8rem; color: #64748b; margin-top: 4px; font-style: italic; }
-        #status-box { padding: 15px; border-radius: 6px; margin-top: 20px; font-weight: bold; text-align: center; font-size: 0.95rem; display: none; line-height: 1.4; }
+        .hint { font-size: 0.75rem; color: #64748b; margin-top: 4px; }
+        button { width: 100%; padding: 14px; background-color: #1e3a8a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; margin-top: 15px; }
+        button:disabled { background-color: #94a3b8; cursor: not-allowed; }
+        #error-box { padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; text-align: center; font-size: 0.9rem; background-color: #f8d7da; color: #721c24; display: none; }
+        #success-box { padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; text-align: center; font-size: 0.9rem; background-color: #d4edda; color: #155724; display: none; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h2>Vérification d'Ancrage Système</h2>
-        
-        <div class="notice">
-            <strong>Règle Métier Inviolable :</strong> Point Focal ne manipule aucun fonds. 
-            Ce formulaire sert exclusivement à soumettre les identifiants de votre liaison décentralisée pour validation par le robot de scan.
-        </div>
+        <h2>Créer un compte Point Focal</h2>
+        <p class="sub-title">Étape 1 : Enregistrement de vos identifiants sécurisés</p>
 
-        <form id="anchorForm" autocomplete="off">
-            
-            <!-- ENTRÉE UNIQUE D'IDENTIFICATION POUR LE COMPTE -->
+        <form id="signupForm">
+            <!-- EMAIL UNIQUE -->
             <div class="input-group">
-                <label>Adresse E-mail de votre compte Point Focal *</label>
-                <input type="email" id="email" style="font-family: sans-serif;" placeholder="votre-email@exemple.com" required />
+                <label>Adresse E-mail *</label>
+                <input type="email" id="email" placeholder="exemple@mail.com" required />
             </div>
 
-            <hr style="border: 0; border-top: 1px dashed #e2e8f0; margin: 25px 0;" />
-
-            <!-- SÉQUENCE OBLIGATOIRE DES 3 CASES (CAHIER DES CHARGES RÈGLE 6) -->
-            
-            <!-- CHAMP 1 : LIEN VICTORY -->
+            <!-- WHATSAPP OBLIGATOIRE -->
             <div class="input-group">
-                <label>1. Lien Victory Automatic Reçu *</label>
-                <input type="url" id="victoryLink" placeholder="https://..." required />
-                <div class="lock-notice">Doit être un lien officiel (Parrain réel ou Rotation FIFO)</div>
+                <label>Numéro WhatsApp *</label>
+                <input type="tel" id="whatsapp" placeholder="+243..." required />
+                <div class="hint">Format international obligatoire avec l'indicatif du pays</div>
             </div>
 
-            <!-- CHAMP 2 : ADRESSE CIBLE (Bloquée au format 0x + 40 car.) -->
+            <!-- MOT DE PASSE -->
             <div class="input-group">
-                <label>2. Adresse Cible Blockchain *</label>
-                <input type="text" id="targetAddress" maxlength="42" placeholder="0x..." required />
-                <div class="lock-notice">Format strict obligatoire : commence par 0x (42 caractères)</div>
+                <label>Mot de passe *</label>
+                <input type="password" id="password" placeholder="Minimum 6 caractères" required />
             </div>
 
-            <!-- CHAMP 3 : HASH (Déclencheur automatique au 66ème caractère) -->
+            <!-- CONFIRMATION MOT DE PASSE OBLIGATOIRE -->
             <div class="input-group">
-                <label>3. Hachage de la Transaction (TxHash) *</label>
-                <input type="text" id="txHash" maxlength="66" placeholder="0x..." required />
-                <div class="lock-notice">Format strict obligatoire : commence par 0x (66 caractères)</div>
+                <label>Confirmation du mot de passe *</label>
+                <input type="password" id="passwordConfirm" placeholder="Répétez le mot de passe" required />
             </div>
 
+            <!-- CODE D'INVITATION OBLIGATOIRE (4 LETTRES + 4 CHIFFRES) -->
+            <div class="input-group">
+                <label>Code d'invitation *</label>
+                <input type="text" id="inviteCode" maxlength="8" placeholder="Ex: ABCD1234" style="text-transform: uppercase; font-family: monospace;" required />
+                <div class="hint">Format strict requis : 4 lettres suivies de 4 chiffres</div>
+            </div>
+
+            <button type="submit" id="btnSubmit">Créer mon compte</button>
         </form>
 
-        <!-- ZONE DE NOTIFICATION EN TEMPS RÉEL (REJET OU VALIDATION BLOCKCHAIN) -->
-        <div id="status-box"></div>
+        <div id="error-box"></div>
+        <div id="success-box"></div>
     </div>
 
     <script>
         const API_URL = "https://point-focal-backend.onrender.com/api";
-        
-        const emailInput = document.getElementById('email');
-        const victoryInput = document.getElementById('victoryLink');
-        const addressInput = document.getElementById('targetAddress');
-        const hashInput = document.getElementById('txHash');
-        const statusBox = document.getElementById('status-box');
+        const form = document.getElementById('signupForm');
+        const btn = document.getElementById('btnSubmit');
+        const errorBox = document.getElementById('error-box');
+        const successBox = document.getElementById('success-box');
 
-        // Écouteur global pour détecter le remplissage automatique complet des 3 champs
-        // Conforme à la Règle 8 : Aucun bouton supplémentaire. Déclenchement automatique.
-        const checkAndTriggerScan = () => {
-            const email = emailInput.value.trim();
-            const victory = victoryInput.value.trim();
-            const address = addressInput.value.trim();
-            const hash = hashInput.value.trim();
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorBox.style.display = "none";
+            successBox.style.display = "none";
 
-            // Vérification stricte des formats attendus avant d'appeler le robot backend
-            if (
-                email !== "" && 
-                victory !== "" && 
-                address.startsWith("0x") && address.length === 42 &&
-                hash.startsWith("0x") && hash.length === 66
-            ) {
-                executeSystemValidation({ email, victoryLink: victory, targetAddress: address, txHash: hash });
+            const email = document.getElementById('email').value.trim();
+            const whatsapp = document.getElementById('whatsapp').value.trim();
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('passwordConfirm').value;
+            const inviteCode = document.getElementById('inviteCode').value.trim().toUpperCase();
+
+            // RÈGLE INVIOLABLE : Confirmation du mot de passe obligatoire
+            if (password !== passwordConfirm) {
+                showError("❌ Les deux mots de passe ne correspondent pas.");
+                return;
             }
-        };
 
-        // Écouteurs sur chaque entrée pour analyser les données au fur et à mesure de la saisie
-        emailInput.addEventListener('input', checkAndTriggerScan);
-        victoryInput.addEventListener('input', checkAndTriggerScan);
-        addressInput.addEventListener('input', checkAndTriggerScan);
-        hashInput.addEventListener('input', checkAndTriggerScan);
+            // RÈGLE INVIOLABLE : Validation du format du code d'invitation (4 lettres + 4 chiffres)
+            const inviteRegex = /^[A-Z]{4}[0-9]{4}$/;
+            if (!inviteRegex.test(inviteCode)) {
+                showError("❌ Code d'invitation invalide. Il doit contenir exactement 4 lettres suivies de 4 chiffres (Ex: ABCD1234).");
+                return;
+            }
 
-        // Moteur de requêtage automatique vers le Robot d'Arbitrage Backend
-        async function executeSystemValidation(payload) {
-            // Verrouillage visuel des champs pendant le scan anti-rejeu et blockchain
-            emailInput.disabled = true;
-            victoryInput.disabled = true;
-            addressInput.disabled = true;
-            hashInput.disabled = true;
+            // Préparation des données pour le serveur
+            const payload = { email, whatsapp, password, inviteCode };
 
-            statusBox.style.display = "block";
-            statusBox.style.backgroundColor = "#1e3a8a";
-            statusBox.style.color = "#ffffff";
-            statusBox.innerHTML = `⏳ <strong>DÉCLENCHEMENT AUTOMATIQUE ACTIVÉ</strong><br>Analyse de la conformité du lien et scan de la Binance Smart Chain... (Attente de 12 confirmations)`;
+            btn.disabled = true;
+            btn.innerText = "⏳ Inscription en cours...";
 
             try {
                 const response = await fetch(`${API_URL}/auth/register`, {
@@ -124,36 +113,27 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Règle 10 : Validation OK -> Génération immédiate des liens et redirection
-                    statusBox.style.backgroundColor = "#10b981";
-                    statusBox.style.color = "#ffffff";
-                    statusBox.innerHTML = `✅ <strong>ANCRAGE VALIDÉ PAR LE SYSTÈME</strong><br>Intégrité validée (2.03 USDT BEP20 détectés). Génération immédiate de vos liens Point Focal Public & KM en cours...`;
+                    successBox.style.display = "block";
+                    successBox.innerText = "✅ Inscription réussie ! Un e-mail de confirmation vous a été envoyé. Veuillez confirmer votre e-mail pour débloquer le popup éducatif.";
+                    form.reset();
                     
-                    setTimeout(() => {
-                        window.location.href = "index.html";
-                    }, 2500);
+                    // Une fois inscrit, le cahier des charges impose la confirmation email avant l'étape suivante.
+                    // On pourra rediriger vers une page d'attente ou de connexion.
                 } else {
-                    // Règle 9 : Si une seule validation échoue -> Rejet immédiat avec motif
-                    statusBox.style.backgroundColor = "#ef4444";
-                    statusBox.style.color = "#ffffff";
-                    statusBox.innerHTML = `❌ <strong>ÉCHEC DE VALIDATION SYSTÈME</strong><br>${data.error || 'Lien invalide ou transaction non conforme (Montant exact requis : 2.03 USDT)'}`;
-                    
-                    unlockForm();
+                    showError(`❌ Rejet : ${data.error || "Erreur lors de l'inscription"}`);
+                    btn.disabled = false;
+                    btn.innerText = "Créer mon compte";
                 }
             } catch (err) {
-                statusBox.style.backgroundColor = "#f59e0b";
-                statusBox.style.color = "#ffffff";
-                statusBox.innerHTML = `⚠️ <strong>ERREUR DE SYNCHRONISATION</strong><br>Le serveur d'arbitrage sécurisé met du temps à répondre. Les modifications se déploient en arrière-plan.`;
-                
-                unlockForm();
+                showError("⚠️ Le serveur de sécurité met du temps à répondre. Veuillez réessayer dans 20 secondes.");
+                btn.disabled = false;
+                btn.innerText = "Créer mon compte";
             }
-        }
+        });
 
-        function unlockForm() {
-            emailInput.disabled = false;
-            victoryInput.disabled = false;
-            addressInput.disabled = false;
-            hashInput.disabled = false;
+        function showError(msg) {
+            errorBox.style.display = "block";
+            errorBox.innerText = msg;
         }
     </script>
 </body>
