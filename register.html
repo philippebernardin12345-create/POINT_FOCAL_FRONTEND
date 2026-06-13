@@ -4,135 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription Point Focal V6</title>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         body { margin: 0; padding: 20px; font-family: sans-serif; background-color: #f4f6f9; color: #333; }
-        .container { max-width: 600px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .container { max-width: 500px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         h2 { color: #1e3a8a; text-align: center; margin-top: 0; }
         .input-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
-        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #1e3a8a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
+        button { width: 100%; padding: 14px; background-color: #1e3a8a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; margin-top: 10px; }
         button:disabled { background-color: #aaa; }
-        .status-box { padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; text-align: center; }
+        #status-box { padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; text-align: center; display: none; }
     </style>
 </head>
 <body>
 
-    <div id="register-root"></div>
+    <div class="container">
+        <h2>Formulaire d'Inscription</h2>
+        <p style={{ fontSize: '0.85rem', color: '#666', textAlign: 'center', marginBottom: '25px' }}>
+            Validation robotisée de la transaction de 2.03 USDT.
+        </p>
 
-    <script type="text/babel">
-        import React, { useState, useEffect } from 'https://esm.sh/react@18.2.0';
-        import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client';
+        <form id="registerForm">
+            <div class="input-group">
+                <label>Adresse E-mail *</label>
+                <input type="email" id="email" placeholder="exemple@mail.com" required />
+            </div>
 
-        function RegisterForm() {
-            // ÉTAPE 1 : Ajout de inviteCode dans l'objet formData
-            const [formData, setFormData] = useState({ email: '', whatsapp: '', txHash: '', wallet: '', inviteCode: '' });
-            const [status, setStatus] = useState({ message: '', type: '' });
-            const [loading, setLoading] = useState(false);
+            <div class="input-group">
+                <label>Numéro WhatsApp (Optionnel)</label>
+                <input type="text" id="whatsapp" placeholder="+243..." />
+            </div>
 
-            const API_URL = "https://point-focal-backend.onrender.com/api";
+            <div class="input-group">
+                <label>Votre Portefeuille (BSC BEP-20) *</label>
+                <input type="text" id="wallet" placeholder="0x..." required />
+            </div>
 
-            // ÉTAPE 2 : Lecture de l'URL au chargement pour insérer automatiquement le code
-            useEffect(() => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const refCode = urlParams.get('ref'); // Détecte la fin de l'URL ?ref=CODE
-                if (refCode) {
-                    setFormData(prev => ({ ...prev, inviteCode: refCode }));
-                }
-            }, []);
+            <div class="input-group">
+                <label>Hachage de la Transaction (TxHash) *</label>
+                <input type="text" id="txHash" placeholder="Collez le hash à 66 caractères" required />
+            </div>
 
-            const handleChange = (e) => {
-                setFormData({ ...formData, [e.target.name]: e.target.value });
+            <button type="submit" id="btnSubmit">Valider mon Inscription</button>
+        </form>
+
+        <div id="status-box"></div>
+    </div>
+
+    <script>
+        const API_URL = "https://point-focal-backend.onrender.com/api";
+        const form = document.getElementById('registerForm');
+        const btn = document.getElementById('btnSubmit');
+        const statusBox = document.getElementById('status-box');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const payload = {
+                email: document.getElementById('email').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                wallet: document.getElementById('wallet').value,
+                txHash: document.getElementById('txHash').value
             };
 
-            const handleSubmit = async (e) => {
-                e.preventDefault();
-                // Vérification que le code d'invitation est bien présent lui aussi
-                if (!formData.email || !formData.txHash || !formData.wallet || !formData.inviteCode) {
-                    return setStatus({ message: "❌ Veuillez remplir les champs obligatoires.", type: "error" });
+            // Verrouillage visuel du bouton
+            btn.disabled = true;
+            btn.innerText = "⏳ Vérification sur la Blockchain...";
+            statusBox.style.display = "block";
+            statusBox.style.backgroundColor = "#e2e3e5";
+            statusBox.style.color = "#383d41";
+            statusBox.innerText = "Connexion au robot de scan BSC...";
+
+            try {
+                const response = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusBox.style.backgroundColor = "#d4edda";
+                    statusBox.style.color = "#155724";
+                    statusBox.innerText = "✅ Paiement 2.03 USDT Validé ! Redirection...";
+                    setTimeout(() => {
+                        window.location.href = "index.html";
+                    }, 2000);
+                } else {
+                    statusBox.style.backgroundColor = "#f8d7da";
+                    statusBox.style.color = "#721c24";
+                    statusBox.innerText = `❌ Rejet : ${data.error || 'Vérification échouée'}`;
+                    btn.disabled = false;
+                    btn.innerText = "Valider mon Inscription";
                 }
-
-                setLoading(true);
-                setStatus({ message: "⏳ Vérification du paiement sur la Binance Smart Chain...", type: "info" });
-
-                try {
-                    const response = await fetch(`${API_URL}/auth/register`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(formData)
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        setStatus({ message: "✅ Paiement 2.03 USDT Validé ! Votre compte est actif.", type: "success" });
-                        setTimeout(() => {
-                            window.location.href = "index.html";
-                        }, 2000);
-                    } else {
-                        setStatus({ message: `❌ Rejet : ${data.error || 'Vérification échouée'}`, type: "error" });
-                    }
-                } catch (err) {
-                    setStatus({ message: "❌ Erreur de connexion avec le serveur Render.", type: "error" });
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            return (
-                <div className="container">
-                    <h2>Formulaire d'Inscription Officiel</h2>
-                    <p style={{ fontSize: '0.85rem', color: '#666', textAlign: 'center', marginBottom: '25px' }}>
-                        Étape obligatoire : Validation robotisée de la transaction de 2.03 USDT.
-                    </p>
-
-                    <form onSubmit={handleSubmit}>
-                        <div className="input-group">
-                            <label>Adresse E-mail *</label>
-                            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="exemple@mail.com" required />
-                        </div>
-
-                        <div className="input-group">
-                            <label>Numéro WhatsApp (Optionnel)</label>
-                            <input type="text" name="whatsapp" value={formData.whatsapp} onChange={handleChange} placeholder="+243..." />
-                        </div>
-
-                        <div className="input-group">
-                            <label>Adresse de votre Portefeuille (BSC BEP-20) *</label>
-                            <input type="text" name="wallet" value={formData.wallet} onChange={handleChange} placeholder="0x..." required />
-                        </div>
-
-                        <div className="input-group">
-                            <label>Hachage de la Transaction (TxHash) *</label>
-                            <input type="text" name="txHash" value={formData.txHash} onChange={handleChange} placeholder="Collez le hash à 66 caractères" required />
-                        </div>
-
-                        {/* ÉTAPE 3 : Affichage du champ Code d'invitation requis */}
-                        <div className="input-group">
-                            <label>Code d'invitation (Requis) *</label>
-                            <input type="text" name="inviteCode" value={formData.inviteCode} onChange={handleChange} placeholder="Code d'invitation automatique ou manuel" required />
-                        </div>
-
-                        <button type="submit" disabled={loading}>
-                            {loading ? "Vérification en cours..." : "Valider mon Inscription"}
-                        </button>
-                    </form>
-
-                    {status.message && (
-                        <div className="status-box" style={{
-                            backgroundColor: status.type === 'success' ? '#d4edda' : status.type === 'error' ? '#f8d7da' : '#e2e3e5',
-                            color: status.type === 'success' ? '#155724' : status.type === 'error' ? '#721c24' : '#383d41'
-                        }}>
-                            {status.message}
-                        </div>
-                    )}
-                </div>
-            );
-        }
-
-        const root = ReactDOM.createRoot(document.getElementById('register-root'));
-        root.render(React.createElement(RegisterForm));
+            } catch (err) {
+                statusBox.style.backgroundColor = "#fff3cd";
+                statusBox.style.color = "#856404";
+                statusBox.innerText = "⚠️ Le serveur Render se réveille... Réessayez dans 20 secondes.";
+                btn.disabled = false;
+                btn.innerText = "Recommencer";
+            }
+        });
     </script>
 </body>
 </html>
