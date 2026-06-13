@@ -3,76 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validation d'Ancrage - Point Focal V6</title>
+    <title>Vérification d'Ancrage Système — Point Focal V6</title>
     <style>
         body { margin: 0; padding: 20px; font-family: sans-serif; background-color: #f4f6f9; color: #333; }
-        .container { max-width: 500px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h2 { color: #1e3a8a; text-align: center; margin-top: 0; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
-        input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
-        button { width: 100%; padding: 14px; background-color: #1e3a8a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; margin-top: 10px; }
-        button:disabled { background-color: #aaa; }
-        #status-box { padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; text-align: center; display: none; }
+        .container { max-width: 550px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #1e3a8a; }
+        h2 { color: #1e3a8a; text-align: center; margin-top: 0; font-size: 1.4rem; }
+        .notice { font-size: 0.85rem; color: #555; background-color: #f8fafc; padding: 12px; border-radius: 6px; border-left: 3px solid #3b82f6; margin-bottom: 25px; line-height: 1.4; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 0.85rem; color: #1e293b; }
+        input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.95rem; font-family: monospace; background-color: #fff; }
+        input:focus { border-color: #1e3a8a; outline: none; background-color: #fafafa; }
+        input::placeholder { font-family: sans-serif; color: #94a3b8; }
+        .lock-notice { font-size: 0.8rem; color: #64748b; margin-top: 4px; font-style: italic; }
+        #status-box { padding: 15px; border-radius: 6px; margin-top: 20px; font-weight: bold; text-align: center; font-size: 0.95rem; display: none; line-height: 1.4; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h2>Vérification d'Ancrage Système</h2>
-        <p style="font-size: 0.85rem; color: #666; text-align: center; margin-bottom: 25px;">
-            Soumettez les identifiants de votre transaction publique (BSC BEP-20) pour que le robot vérifie la conformité de votre liaison.
-        </p>
+        
+        <div class="notice">
+            <strong>Règle Métier Inviolable :</strong> Point Focal ne manipule aucun fonds. 
+            Ce formulaire sert exclusivement à soumettre les identifiants de votre liaison décentralisée pour validation par le robot de scan.
+        </div>
 
-        <form id="registerForm">
+        <form id="anchorForm" autocomplete="off">
+            
+            <!-- ENTRÉE UNIQUE D'IDENTIFICATION POUR LE COMPTE -->
             <div class="input-group">
-                <label>Adresse E-mail du compte *</label>
-                <input type="email" id="email" placeholder="exemple@mail.com" required />
+                <label>Adresse E-mail de votre compte Point Focal *</label>
+                <input type="email" id="email" style="font-family: sans-serif;" placeholder="votre-email@exemple.com" required />
             </div>
 
+            <hr style="border: 0; border-top: 1px dashed #e2e8f0; margin: 25px 0;" />
+
+            <!-- SÉQUENCE OBLIGATOIRE DES 3 CASES (CAHIER DES CHARGES RÈGLE 6) -->
+            
+            <!-- CHAMP 1 : LIEN VICTORY -->
             <div class="input-group">
-                <label>Numéro WhatsApp (Optionnel)</label>
-                <input type="text" id="whatsapp" placeholder="+243..." />
+                <label>1. Lien Victory Automatic Reçu *</label>
+                <input type="url" id="victoryLink" placeholder="https://..." required />
+                <div class="lock-notice">Doit être un lien officiel (Parrain réel ou Rotation FIFO)</div>
             </div>
 
+            <!-- CHAMP 2 : ADRESSE CIBLE (Bloquée au format 0x + 40 car.) -->
             <div class="input-group">
-                <label>Votre Portefeuille d'Envoi (BSC) *</label>
-                <input type="text" id="wallet" placeholder="0x..." required />
+                <label>2. Adresse Cible Blockchain *</label>
+                <input type="text" id="targetAddress" maxlength="42" placeholder="0x..." required />
+                <div class="lock-notice">Format strict obligatoire : commence par 0x (42 caractères)</div>
             </div>
 
+            <!-- CHAMP 3 : HASH (Déclencheur automatique au 66ème caractère) -->
             <div class="input-group">
-                <label>Hachage de la Transaction à vérifier (TxHash) *</label>
-                <input type="text" id="txHash" placeholder="Collez le hash à 66 caractères" required />
+                <label>3. Hachage de la Transaction (TxHash) *</label>
+                <input type="text" id="txHash" maxlength="66" placeholder="0x..." required />
+                <div class="lock-notice">Format strict obligatoire : commence par 0x (66 caractères)</div>
             </div>
 
-            <button type="submit" id="btnSubmit">Lancer la vérification automatique</button>
         </form>
 
+        <!-- ZONE DE NOTIFICATION EN TEMPS RÉEL (REJET OU VALIDATION BLOCKCHAIN) -->
         <div id="status-box"></div>
     </div>
 
     <script>
         const API_URL = "https://point-focal-backend.onrender.com/api";
-        const form = document.getElementById('registerForm');
-        const btn = document.getElementById('btnSubmit');
+        
+        const emailInput = document.getElementById('email');
+        const victoryInput = document.getElementById('victoryLink');
+        const addressInput = document.getElementById('targetAddress');
+        const hashInput = document.getElementById('txHash');
         const statusBox = document.getElementById('status-box');
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const payload = {
-                email: document.getElementById('email').value,
-                whatsapp: document.getElementById('whatsapp').value,
-                wallet: document.getElementById('wallet').value,
-                txHash: document.getElementById('txHash').value
-            };
+        // Écouteur global pour détecter le remplissage automatique complet des 3 champs
+        // Conforme à la Règle 8 : Aucun bouton supplémentaire. Déclenchement automatique.
+        const checkAndTriggerScan = () => {
+            const email = emailInput.value.trim();
+            const victory = victoryInput.value.trim();
+            const address = addressInput.value.trim();
+            const hash = hashInput.value.trim();
 
-            btn.disabled = true;
-            btn.innerText = "⏳ Scan de la Blockchain en cours...";
+            // Vérification stricte des formats attendus avant d'appeler le robot backend
+            if (
+                email !== "" && 
+                victory !== "" && 
+                address.startsWith("0x") && address.length === 42 &&
+                hash.startsWith("0x") && hash.length === 66
+            ) {
+                executeSystemValidation({ email, victoryLink: victory, targetAddress: address, txHash: hash });
+            }
+        };
+
+        // Écouteurs sur chaque entrée pour analyser les données au fur et à mesure de la saisie
+        emailInput.addEventListener('input', checkAndTriggerScan);
+        victoryInput.addEventListener('input', checkAndTriggerScan);
+        addressInput.addEventListener('input', checkAndTriggerScan);
+        hashInput.addEventListener('input', checkAndTriggerScan);
+
+        // Moteur de requêtage automatique vers le Robot d'Arbitrage Backend
+        async function executeSystemValidation(payload) {
+            // Verrouillage visuel des champs pendant le scan anti-rejeu et blockchain
+            emailInput.disabled = true;
+            victoryInput.disabled = true;
+            addressInput.disabled = true;
+            hashInput.disabled = true;
+
             statusBox.style.display = "block";
-            statusBox.style.backgroundColor = "#e2e3e5";
-            statusBox.style.color = "#383d41";
-            statusBox.innerText = "Interrogation des nœuds du réseau BSC...";
+            statusBox.style.backgroundColor = "#1e3a8a";
+            statusBox.style.color = "#ffffff";
+            statusBox.innerHTML = `⏳ <strong>DÉCLENCHEMENT AUTOMATIQUE ACTIVÉ</strong><br>Analyse de la conformité du lien et scan de la Binance Smart Chain... (Attente de 12 confirmations)`;
 
             try {
                 const response = await fetch(`${API_URL}/auth/register`, {
@@ -84,27 +124,37 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    statusBox.style.backgroundColor = "#d4edda";
-                    statusBox.style.color = "#155724";
-                    statusBox.innerText = "✅ Transaction validée par le nœud ! Liaison active.";
+                    // Règle 10 : Validation OK -> Génération immédiate des liens et redirection
+                    statusBox.style.backgroundColor = "#10b981";
+                    statusBox.style.color = "#ffffff";
+                    statusBox.innerHTML = `✅ <strong>ANCRAGE VALIDÉ PAR LE SYSTÈME</strong><br>Intégrité validée (2.03 USDT BEP20 détectés). Génération immédiate de vos liens Point Focal Public & KM en cours...`;
+                    
                     setTimeout(() => {
                         window.location.href = "index.html";
-                    }, 2000);
+                    }, 2500);
                 } else {
-                    statusBox.style.backgroundColor = "#f8d7da";
-                    statusBox.style.color = "#721c24";
-                    statusBox.innerText = `❌ Rejet : ${data.error || 'Aucune transaction correspondante trouvée'}`;
-                    btn.disabled = false;
-                    btn.innerText = "Lancer la vérification automatique";
+                    // Règle 9 : Si une seule validation échoue -> Rejet immédiat avec motif
+                    statusBox.style.backgroundColor = "#ef4444";
+                    statusBox.style.color = "#ffffff";
+                    statusBox.innerHTML = `❌ <strong>ÉCHEC DE VALIDATION SYSTÈME</strong><br>${data.error || 'Lien invalide ou transaction non conforme (Montant exact requis : 2.03 USDT)'}`;
+                    
+                    unlockForm();
                 }
             } catch (err) {
-                statusBox.style.backgroundColor = "#fff3cd";
-                statusBox.style.color = "#856404";
-                statusBox.innerText = "⚠️ Échec de synchronisation. Réessayez dans quelques secondes.";
-                btn.disabled = false;
-                btn.innerText = "Recommencer";
+                statusBox.style.backgroundColor = "#f59e0b";
+                statusBox.style.color = "#ffffff";
+                statusBox.innerHTML = `⚠️ <strong>ERREUR DE SYNCHRONISATION</strong><br>Le serveur d'arbitrage sécurisé met du temps à répondre. Les modifications se déploient en arrière-plan.`;
+                
+                unlockForm();
             }
-        });
+        }
+
+        function unlockForm() {
+            emailInput.disabled = false;
+            victoryInput.disabled = false;
+            addressInput.disabled = false;
+            hashInput.disabled = false;
+        }
     </script>
 </body>
 </html>
