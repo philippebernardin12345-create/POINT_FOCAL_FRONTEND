@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription Point Focal V6</title>
+    <title>Validation d'Ancrage - Point Focal V6</title>
     <style>
         body { margin: 0; padding: 20px; font-family: sans-serif; background-color: #f4f6f9; color: #333; }
         .container { max-width: 500px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
@@ -19,14 +19,14 @@
 <body>
 
     <div class="container">
-        <h2>Formulaire d'Inscription</h2>
-        <p style={{ fontSize: '0.85rem', color: '#666', textAlign: 'center', marginBottom: '25px' }}>
-            Validation robotisée de la transaction de 2.03 USDT.
+        <h2>Vérification d'Ancrage Système</h2>
+        <p style="font-size: 0.85rem; color: #666; text-align: center; margin-bottom: 25px;">
+            Soumettez les identifiants de votre transaction publique (BSC BEP-20) pour que le robot vérifie la conformité de votre liaison.
         </p>
 
         <form id="registerForm">
             <div class="input-group">
-                <label>Adresse E-mail *</label>
+                <label>Adresse E-mail du compte *</label>
                 <input type="email" id="email" placeholder="exemple@mail.com" required />
             </div>
 
@@ -36,16 +36,16 @@
             </div>
 
             <div class="input-group">
-                <label>Votre Portefeuille (BSC BEP-20) *</label>
+                <label>Votre Portefeuille d'Envoi (BSC) *</label>
                 <input type="text" id="wallet" placeholder="0x..." required />
             </div>
 
             <div class="input-group">
-                <label>Hachage de la Transaction (TxHash) *</label>
+                <label>Hachage de la Transaction à vérifier (TxHash) *</label>
                 <input type="text" id="txHash" placeholder="Collez le hash à 66 caractères" required />
             </div>
 
-            <button type="submit" id="btnSubmit">Valider mon Inscription</button>
+            <button type="submit" id="btnSubmit">Lancer la vérification automatique</button>
         </form>
 
         <div id="status-box"></div>
@@ -67,13 +67,12 @@
                 txHash: document.getElementById('txHash').value
             };
 
-            // Verrouillage visuel du bouton
             btn.disabled = true;
-            btn.innerText = "⏳ Vérification sur la Blockchain...";
+            btn.innerText = "⏳ Scan de la Blockchain en cours...";
             statusBox.style.display = "block";
             statusBox.style.backgroundColor = "#e2e3e5";
             statusBox.style.color = "#383d41";
-            statusBox.innerText = "Connexion au robot de scan BSC...";
+            statusBox.innerText = "Interrogation des nœuds du réseau BSC...";
 
             try {
                 const response = await fetch(`${API_URL}/auth/register`, {
@@ -87,21 +86,21 @@
                 if (response.ok) {
                     statusBox.style.backgroundColor = "#d4edda";
                     statusBox.style.color = "#155724";
-                    statusBox.innerText = "✅ Paiement 2.03 USDT Validé ! Redirection...";
+                    statusBox.innerText = "✅ Transaction validée par le nœud ! Liaison active.";
                     setTimeout(() => {
                         window.location.href = "index.html";
                     }, 2000);
                 } else {
                     statusBox.style.backgroundColor = "#f8d7da";
                     statusBox.style.color = "#721c24";
-                    statusBox.innerText = `❌ Rejet : ${data.error || 'Vérification échouée'}`;
+                    statusBox.innerText = `❌ Rejet : ${data.error || 'Aucune transaction correspondante trouvée'}`;
                     btn.disabled = false;
-                    btn.innerText = "Valider mon Inscription";
+                    btn.innerText = "Lancer la vérification automatique";
                 }
             } catch (err) {
                 statusBox.style.backgroundColor = "#fff3cd";
                 statusBox.style.color = "#856404";
-                statusBox.innerText = "⚠️ Le serveur Render se réveille... Réessayez dans 20 secondes.";
+                statusBox.innerText = "⚠️ Échec de synchronisation. Réessayez dans quelques secondes.";
                 btn.disabled = false;
                 btn.innerText = "Recommencer";
             }
