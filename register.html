@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POINT FOCAL - Inscription</title>
+    <title>POINT FOCAL - Inscription & Connexion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <style>
         body {
             background-color: #121212;
@@ -17,7 +18,7 @@
             justify-content: center;
             min-height: 100vh;
         }
-        .register-container {
+        .auth-container {
             background-color: #1e1e1e;
             padding: 30px;
             border-radius: 12px;
@@ -25,16 +26,21 @@
             max-width: 400px;
             width: 100%;
             text-align: center;
+            box-sizing: border-box;
         }
         h2 {
             color: #ffcc00;
             margin-bottom: 20px;
             text-transform: uppercase;
         }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+            position: relative;
+        }
         input {
             width: 100%;
             padding: 12px;
-            margin-bottom: 15px;
             border-radius: 6px;
             border: 1px solid #333;
             background-color: #0d0d0d;
@@ -45,6 +51,20 @@
         input:focus {
             border-color: #ffcc00;
             outline: none;
+        }
+        /* Style spécifique pour le champ WhatsApp avec indicatif */
+        .iti { width: 100%; }
+        .iti__country-list { background-color: #1e1e1e; color: #fff; }
+        
+        /* Option afficher le mot de passe */
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 38%;
+            cursor: pointer;
+            font-size: 14px;
+            color: #ffcc00;
+            user-select: none;
         }
         button {
             width: 100%;
@@ -58,9 +78,29 @@
             cursor: pointer;
             text-transform: uppercase;
             transition: background 0.3s;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #e6b800;
+        }
+        .switch-link {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #aaaaaa;
+        }
+        .switch-link span {
+            color: #ffcc00;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .forgot-password {
+            display: block;
+            text-align: right;
+            font-size: 13px;
+            color: #ffcc00;
+            margin-top: 5px;
+            cursor: pointer;
+            text-decoration: underline;
         }
         .box {
             margin-top: 15px;
@@ -69,100 +109,229 @@
             font-weight: bold;
             display: none;
         }
-        #error-box {
-            background-color: rgba(255, 51, 51, 0.1);
-            color: #ff3333;
-        }
-        #success-box {
-            background-color: rgba(0, 204, 68, 0.1);
-            color: #00cc44;
-        }
+        #error-box { background-color: rgba(255, 51, 51, 0.1); color: #ff3333; }
+        #success-box { background-color: rgba(0, 204, 68, 0.1); color: #00cc44; }
+        
+        /* État connecté */
+        #logoutSection { display: none; }
     </style>
 </head>
 <body>
 
-<div class="register-container">
-    <h2>POINT FOCAL</h2>
-    <form id="signupForm">
-        <input id="email" type="email" placeholder="Adresse E-mail" required>
-        <input id="whatsapp" type="text" placeholder="Numéro WhatsApp" required>
-        <input id="password" type="password" placeholder="Mot de passe" required>
-        <input id="confirmPassword" type="password" placeholder="Confirmation du mot de passe" required>
+<div class="auth-container" id="authSection">
+    <h2 id="formTitle">Inscription Point Focal</h2>
+    
+    <form id="authForm">
+        <div class="form-group">
+            <input id="email" type="email" placeholder="Adresse E-mail" required>
+        </div>
+        
+        <div class="form-group" id="whatsappGroup">
+            <input id="whatsapp" type="tel" required>
+        </div>
+        
+        <div class="form-group">
+            <input id="password" type="password" placeholder="Mot de passe" required>
+            <span class="toggle-password" onclick="togglePasswordVisibility('password')">👁️</span>
+            <span class="forgot-password" id="forgotPwdLink" onclick="showForgotPasswordForm()">Mot de passe oublié ?</span>
+        </div>
+        
+        <div class="form-group" id="confirmPasswordGroup">
+            <input id="confirmPassword" type="password" placeholder="Confirmation du mot de passe">
+            <span class="toggle-password" onclick="togglePasswordVisibility('confirmPassword')">👁️</span>
+        </div>
+        
         <button id="btnSubmit" type="submit">S'inscrire</button>
     </form>
+    
+    <div id="switchAuth" class="switch-link">
+        Déjà un compte ? <span onclick="toggleAuthMode('login')">Connectez-vous ici</span>
+    </div>
     
     <div id="error-box" class="box"></div>
     <div id="success-box" class="box"></div>
 </div>
 
+<div class="auth-container" id="logoutSection">
+    <h2>Votre Session</h2>
+    <p>Vous êtes actuellement connecté à Point Focal.</p>
+    <button onclick="executerDeconnexion()" style="background-color: #ff3333; color: white;">Se Déconnecter</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <script>
     const API_URL = "https://point-focal-backend.onrender.com/api/auth";
-    const form = document.getElementById("signupForm");
-    const errorBox = document.getElementById("error-box");
-    const successBox = document.getElementById("success-box");
+    let currentMode = "signup"; // Peut être: signup, login, forgot
 
-    // LOGIQUE MÉTIER : Récupérer automatiquement le parrain réel depuis l'URL (?ref=nom_du_parrain)
+    // Initialisation du sélecteur de pays WhatsApp
+    const phoneInput = document.querySelector("#whatsapp");
+    const iti = window.intlTelInput(phoneInput, {
+        initialCountry: "cd", // Code par défaut (ex: cd pour RDC, fr pour France)
+        preferredCountries: ["cd", "fr", "be", "ca", "cg", "ci"],
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+    // Capture du parrain dans l'URL
     const urlParams = new URLSearchParams(window.location.search);
     const parrainReel = urlParams.get('ref');
+    if (parrainReel) localStorage.setItem('parrain_point_focal', parrainReel);
 
-    // Sauvegarder localement le parrain s'il existe dans l'URL pour sécuriser les étapes suivantes
-    if (parrainReel) {
-        localStorage.setItem('parrain_point_focal', parrainReel);
+    // Vérification de l'état de connexion au chargement
+    window.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('token')) {
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('logoutSection').style.display = 'block';
+        }
+    });
+
+    // Afficher / Masquer le mot de passe
+    function togglePasswordVisibility(fieldId) {
+        const field = document.getElementById(fieldId);
+        field.type = field.type === "password" ? "text" : "password";
     }
 
-    form.addEventListener("submit", async (e) => {
+    // Basculer entre Inscription, Connexion et Mot de passe oublié
+    function toggleAuthMode(mode) {
+        currentMode = mode;
+        const errorBox = document.getElementById("error-box");
+        const successBox = document.getElementById("success-box");
+        errorBox.style.display = "none";
+        successBox.style.display = "none";
+
+        if (mode === 'login') {
+            document.getElementById("formTitle").innerText = "Connexion Point Focal";
+            document.getElementById("whatsappGroup").style.display = "none";
+            document.getElementById("confirmPasswordGroup").style.display = "none";
+            document.getElementById("forgotPwdLink").style.display = "block";
+            document.getElementById("btnSubmit").innerText = "Se Connecter";
+            document.getElementById("switchAuth").innerHTML = `Pas encore de compte ? <span onclick="toggleAuthMode('signup')">Inscrivez-vous ici</span>`;
+        } else if (mode === 'signup') {
+            document.getElementById("formTitle").innerText = "Inscription Point Focal";
+            document.getElementById("whatsappGroup").style.display = "block";
+            document.getElementById("confirmPasswordGroup").style.display = "block";
+            document.getElementById("forgotPwdLink").style.display = "block";
+            document.getElementById("btnSubmit").innerText = "S'inscrire";
+            document.getElementById("switchAuth").innerHTML = `Déjà un compte ? <span onclick="toggleAuthMode('login')">Connectez-vous ici</span>`;
+        }
+    }
+
+    function showForgotPasswordForm() {
+        currentMode = "forgot";
+        document.getElementById("formTitle").innerText = "Récupération";
+        document.getElementById("whatsappGroup").style.display = "none";
+        document.getElementById("confirmPasswordGroup").style.display = "none";
+        document.getElementById("forgotPwdLink").style.display = "none";
+        document.getElementById("password").parentNode.style.display = "none"; // Masque le champ mdp
+        document.getElementById("btnSubmit").innerText = "Envoyer le lien de réinitialisation";
+        document.getElementById("switchAuth").innerHTML = `<span onclick="location.reload()">Retour</span>`;
+    }
+
+    // Gestion de la soumission du formulaire unique
+    document.getElementById("authForm").addEventListener("submit", async (e) => {
         e.preventDefault();
+        const errorBox = document.getElementById("error-box");
+        const successBox = document.getElementById("success-box");
         errorBox.style.display = "none";
         successBox.style.display = "none";
 
         const email = document.getElementById("email").value;
-        const whatsapp = document.getElementById("whatsapp").value;
-        const password = document.getElementById("password").value;
-        const confirmPassword = document.getElementById("confirmPassword").value;
 
-        if (password !== confirmPassword) {
-            errorBox.innerText = "Les mots de passe ne correspondent pas.";
-            errorBox.style.display = "block";
+        // ÉTAPE MODALITÉ : MOT DE PASSE OUBLIÉ
+        if (currentMode === "forgot") {
+            try {
+                const response = await fetch(`${API_URL}/forgot-password`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email })
+                });
+                if (response.ok) {
+                    successBox.innerText = "E-mail de récupération envoyé ! Vérifiez votre boîte de réception.";
+                    successBox.style.display = "block";
+                } else {
+                    throw new Error();
+                }
+            } catch {
+                errorBox.innerText = "Erreur lors de la demande. Vérifiez l'adresse.";
+                errorBox.style.display = "block";
+            }
             return;
         }
 
-        // Préparation des données d'inscription contenant le parrain (ou null si aucun parrain)
-        const payload = {
-            email: email,
-            whatsapp: whatsapp,
-            password: password,
-            sponsor: localStorage.getItem('parrain_point_focal') || null 
-        };
+        const password = document.getElementById("password").value;
 
-        try {
-            const response = await fetch(`${API_URL}/signup`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
+        // ÉTAPE MODALITÉ : INSCRIPTION
+        if (currentMode === "signup") {
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            if (password !== confirmPassword) {
+                errorBox.innerText = "Les mots de passe ne correspondent pas.";
+                errorBox.style.display = "block";
+                return;
+            }
+            if (!iti.isValidNumber()) {
+                errorBox.innerText = "Numéro WhatsApp invalide pour le pays sélectionné.";
+                errorBox.style.display = "block";
+                return;
+            }
 
-            const data = await response.json();
+            const payload = {
+                email: email,
+                whatsapp: iti.getNumber(), // Récupère le numéro complet au format international (ex: +243...)
+                password: password,
+                sponsor: localStorage.getItem('parrain_point_focal') || null 
+            };
 
-            if (response.ok) {
-                successBox.innerText = "Inscription réussie ! Redirection en cours...";
-                successBox.style.display = "block";
-                
-                // Stockage des jetons et infos utilisateurs renvoyés par votre backend
-                if(data.token) localStorage.setItem('token', data.token);
-                if(data.user) localStorage.setItem('user', JSON.stringify(data.user));
-
-                setTimeout(() => {
-                    window.location.href = "video.html";
-                }, 2000);
-            } else {
-                errorBox.innerText = data.message || "Une erreur est survenue lors de l'inscription.";
+            try {
+                const response = await fetch(`${API_URL}/signup`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    successBox.innerText = "Inscription réussie ! Connexion automatique...";
+                    successBox.style.display = "block";
+                    if(data.token) localStorage.setItem('token', data.token);
+                    setTimeout(() => window.location.href = "video.html", 1500);
+                } else {
+                    errorBox.innerText = data.message || "Erreur d'inscription.";
+                    errorBox.style.display = "block";
+                }
+            } catch {
+                errorBox.innerText = "Erreur réseau.";
                 errorBox.style.display = "block";
             }
-        } catch (err) {
-            errorBox.innerText = "Erreur de connexion avec le serveur d'authentification.";
-            errorBox.style.display = "block";
+        } 
+        
+        // ÉTAPE MODALITÉ : CONNEXION
+        else if (currentMode === "login") {
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    successBox.innerText = "Ravi de vous revoir ! Redirection...";
+                    successBox.style.display = "block";
+                    if(data.token) localStorage.setItem('token', data.token);
+                    if(data.user) localStorage.setItem('user', JSON.stringify(data.user));
+                    setTimeout(() => window.location.href = "video.html", 1500);
+                } else {
+                    errorBox.innerText = data.message || "Identifiants incorrects.";
+                    errorBox.style.display = "block";
+                }
+            } catch {
+                errorBox.innerText = "Erreur de connexion au serveur.";
+                errorBox.style.display = "block";
+            }
         }
     });
+
+    function executerDeconnexion() {
+        localStorage.clear();
+        location.reload();
+    }
 </script>
 </body>
 </html>
