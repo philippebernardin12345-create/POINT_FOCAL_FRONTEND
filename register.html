@@ -5,108 +5,164 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POINT FOCAL - Inscription</title>
     <style>
-        body { font-family: Arial; padding: 20px; }
-        form { display: flex; flex-direction: column; gap: 10px; max-width: 350px; }
-        input, select, button { padding: 10px; font-size: 16px; }
-        #error-box { color: red; margin-top: 10px; }
-        #success-box { color: green; margin-top: 10px; }
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .register-container {
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        h2 {
+            color: #ffcc00;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #333;
+            background-color: #0d0d0d;
+            color: #fff;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            border-color: #ffcc00;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            background-color: #ffcc00;
+            color: #000;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #e6b800;
+        }
+        .box {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: none;
+        }
+        #error-box {
+            background-color: rgba(255, 51, 51, 0.1);
+            color: #ff3333;
+        }
+        #success-box {
+            background-color: rgba(0, 204, 68, 0.1);
+            color: #00cc44;
+        }
     </style>
 </head>
-
 <body>
 
-<h2>POINT FOCAL - Inscription</h2>
-
-<form id="signupForm">
-
-    <input id="email" type="email" placeholder="E-mail" required>
-
-    <!-- Sélection pays + indicatif -->
-    <select id="countryCode" required>
-        <option value="+243">🇨🇩 RDC (+243)</option>
-        <option value="+237">🇨🇲 Cameroun (+237)</option>
-        <option value="+225">🇨🇮 Côte d'Ivoire (+225)</option>
-        <option value="+33">🇫🇷 France (+33)</option>
-        <option value="+221">🇸🇳 Sénégal (+221)</option>
-    </select>
-
-    <input id="whatsapp" type="tel" placeholder="Numéro WhatsApp" required>
-
-    <input id="password" type="password" placeholder="Mot de passe" required>
-
-    <input id="confirmPassword" type="password" placeholder="Confirmer mot de passe" required>
-
-    <!-- Code d'invitation (auto ou manuel selon backend) -->
-    <input id="inviteCode" type="text" placeholder="Code d'invitation (optionnel)">
-
-    <button id="btnSubmit" type="submit">S'inscrire</button>
-
-</form>
-
-<div id="error-box"></div>
-<div id="success-box"></div>
+<div class="register-container">
+    <h2>POINT FOCAL</h2>
+    <form id="signupForm">
+        <input id="email" type="email" placeholder="Adresse E-mail" required>
+        <input id="whatsapp" type="text" placeholder="Numéro WhatsApp" required>
+        <input id="password" type="password" placeholder="Mot de passe" required>
+        <input id="confirmPassword" type="password" placeholder="Confirmation du mot de passe" required>
+        <button id="btnSubmit" type="submit">S'inscrire</button>
+    </form>
+    
+    <div id="error-box" class="box"></div>
+    <div id="success-box" class="box"></div>
+</div>
 
 <script>
-const API_URL = "https://point-focal-backend.onrender.com/api/auth/register";
-
-const form = document.getElementById("signupForm");
-
-form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
+    const API_URL = "https://point-focal-backend.onrender.com/api/auth";
+    const form = document.getElementById("signupForm");
     const errorBox = document.getElementById("error-box");
     const successBox = document.getElementById("success-box");
 
-    errorBox.innerText = "";
-    successBox.innerText = "";
+    // LOGIQUE MÉTIER : Récupérer automatiquement le parrain réel depuis l'URL (?ref=nom_du_parrain)
+    const urlParams = new URLSearchParams(window.location.search);
+    const parrainReel = urlParams.get('ref');
 
-    const email = document.getElementById("email").value;
-    const countryCode = document.getElementById("countryCode").value;
-    const whatsapp = document.getElementById("whatsapp").value;
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
-    const inviteCode = document.getElementById("inviteCode").value;
-
-    // Validation locale
-    if (password !== confirmPassword) {
-        errorBox.innerText = "Les mots de passe ne correspondent pas.";
-        return;
+    // Sauvegarder localement le parrain s'il existe dans l'URL pour sécuriser les étapes suivantes
+    if (parrainReel) {
+        localStorage.setItem('parrain_point_focal', parrainReel);
     }
 
-    const fullWhatsApp = countryCode + whatsapp;
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        errorBox.style.display = "none";
+        successBox.style.display = "none";
 
-    const payload = {
-        email,
-        whatsapp: fullWhatsApp,
-        password,
-        inviteCode: inviteCode || null
-    };
+        const email = document.getElementById("email").value;
+        const whatsapp = document.getElementById("whatsapp").value;
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
 
-    try {
-        const res = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            errorBox.innerText = data.message || "Erreur lors de l'inscription";
+        if (password !== confirmPassword) {
+            errorBox.innerText = "Les mots de passe ne correspondent pas.";
+            errorBox.style.display = "block";
             return;
         }
 
-        successBox.innerText = "Inscription réussie ✔️ Vérifiez votre e-mail ou SMS.";
+        // Préparation des données d'inscription contenant le parrain (ou null si aucun parrain)
+        const payload = {
+            email: email,
+            whatsapp: whatsapp,
+            password: password,
+            sponsor: localStorage.getItem('parrain_point_focal') || null 
+        };
 
-        form.reset();
+        try {
+            const response = await fetch(`${API_URL}/signup`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
 
-    } catch (err) {
-        errorBox.innerText = "Erreur serveur. Réessayez plus tard.";
-    }
-});
+            const data = await response.json();
+
+            if (response.ok) {
+                successBox.innerText = "Inscription réussie ! Redirection en cours...";
+                successBox.style.display = "block";
+                
+                // Stockage des jetons et infos utilisateurs renvoyés par votre backend
+                if(data.token) localStorage.setItem('token', data.token);
+                if(data.user) localStorage.setItem('user', JSON.stringify(data.user));
+
+                setTimeout(() => {
+                    window.location.href = "video.html";
+                }, 2000);
+            } else {
+                errorBox.innerText = data.message || "Une erreur est survenue lors de l'inscription.";
+                errorBox.style.display = "block";
+            }
+        } catch (err) {
+            errorBox.innerText = "Erreur de connexion avec le serveur d'authentification.";
+            errorBox.style.display = "block";
+        }
+    });
 </script>
-
 </body>
 </html>
