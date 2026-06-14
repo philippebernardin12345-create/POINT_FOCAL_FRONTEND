@@ -6,7 +6,10 @@
     <title>Point Focal V6 - Système Matrice & FIFO</title>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        body { margin: 0; background-color: #f4f6f9; }
+        body {
+            margin: 0;
+            background-color: #f4f6f9;
+        }
     </style>
 </head>
 <body>
@@ -17,8 +20,13 @@
         import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client';
         import App from './App.jsx';
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(React.createElement(App));
+        const root = ReactDOM.createRoot(
+            document.getElementById('root')
+        );
+
+        root.render(
+            React.createElement(App)
+        );
     </script>
 </body>
 </html>
