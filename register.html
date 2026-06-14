@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>POINT FOCAL - Inscription</title>
+</head>
+<body>
+    <h2>POINT FOCAL</h2>
+    <form id="signupForm">
+        <input id="email" type="email" placeholder="E-mail" required>
+        <input id="whatsapp" placeholder="WhatsApp" required>
+        <input id="password" type="password" placeholder="Mot de passe" required>
+        <input id="confirmPassword" type="password" placeholder="Confirmation" required>
+        <button id="btnSubmit" type="submit">S'inscrire</button>
+    </form>
+    <div id="error-box"></div>
+    <div id="success-box"></div>
+
+<script>
+    const API_URL = "https://point-focal-backend.onrender.com/api/auth";
+    const form = document.getElementById("signupForm");
+    
+    form.addEventListener("submit", e => {
+        e.preventDefault();
+        document.getElementById("success-box").innerText = "Formulaire chargé. Adapter l'appel API.";
+    });
+</script>
+</body>
+</html>
