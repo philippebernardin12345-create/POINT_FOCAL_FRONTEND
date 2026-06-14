@@ -2,29 +2,111 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POINT FOCAL - Inscription</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        form { display: flex; flex-direction: column; gap: 10px; max-width: 350px; }
+        input, select, button { padding: 10px; font-size: 16px; }
+        #error-box { color: red; margin-top: 10px; }
+        #success-box { color: green; margin-top: 10px; }
+    </style>
 </head>
+
 <body>
-    <h2>POINT FOCAL</h2>
-    <form id="signupForm">
-        <input id="email" type="email" placeholder="E-mail" required>
-        <input id="whatsapp" placeholder="WhatsApp" required>
-        <input id="password" type="password" placeholder="Mot de passe" required>
-        <input id="confirmPassword" type="password" placeholder="Confirmation" required>
-        <button id="btnSubmit" type="submit">S'inscrire</button>
-    </form>
-    <div id="error-box"></div>
-    <div id="success-box"></div>
+
+<h2>POINT FOCAL - Inscription</h2>
+
+<form id="signupForm">
+
+    <input id="email" type="email" placeholder="E-mail" required>
+
+    <!-- Sélection pays + indicatif -->
+    <select id="countryCode" required>
+        <option value="+243">🇨🇩 RDC (+243)</option>
+        <option value="+237">🇨🇲 Cameroun (+237)</option>
+        <option value="+225">🇨🇮 Côte d'Ivoire (+225)</option>
+        <option value="+33">🇫🇷 France (+33)</option>
+        <option value="+221">🇸🇳 Sénégal (+221)</option>
+    </select>
+
+    <input id="whatsapp" type="tel" placeholder="Numéro WhatsApp" required>
+
+    <input id="password" type="password" placeholder="Mot de passe" required>
+
+    <input id="confirmPassword" type="password" placeholder="Confirmer mot de passe" required>
+
+    <!-- Code d'invitation (auto ou manuel selon backend) -->
+    <input id="inviteCode" type="text" placeholder="Code d'invitation (optionnel)">
+
+    <button id="btnSubmit" type="submit">S'inscrire</button>
+
+</form>
+
+<div id="error-box"></div>
+<div id="success-box"></div>
 
 <script>
-    const API_URL = "https://point-focal-backend.onrender.com/api/auth";
-    const form = document.getElementById("signupForm");
-    
-    form.addEventListener("submit", e => {
-        e.preventDefault();
-        document.getElementById("success-box").innerText = "Formulaire chargé. Adapter l'appel API.";
-    });
+const API_URL = "https://point-focal-backend.onrender.com/api/auth/register";
+
+const form = document.getElementById("signupForm");
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const errorBox = document.getElementById("error-box");
+    const successBox = document.getElementById("success-box");
+
+    errorBox.innerText = "";
+    successBox.innerText = "";
+
+    const email = document.getElementById("email").value;
+    const countryCode = document.getElementById("countryCode").value;
+    const whatsapp = document.getElementById("whatsapp").value;
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const inviteCode = document.getElementById("inviteCode").value;
+
+    // Validation locale
+    if (password !== confirmPassword) {
+        errorBox.innerText = "Les mots de passe ne correspondent pas.";
+        return;
+    }
+
+    const fullWhatsApp = countryCode + whatsapp;
+
+    const payload = {
+        email,
+        whatsapp: fullWhatsApp,
+        password,
+        inviteCode: inviteCode || null
+    };
+
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            errorBox.innerText = data.message || "Erreur lors de l'inscription";
+            return;
+        }
+
+        successBox.innerText = "Inscription réussie ✔️ Vérifiez votre e-mail ou SMS.";
+
+        form.reset();
+
+    } catch (err) {
+        errorBox.innerText = "Erreur serveur. Réessayez plus tard.";
+    }
+});
 </script>
+
 </body>
 </html>
