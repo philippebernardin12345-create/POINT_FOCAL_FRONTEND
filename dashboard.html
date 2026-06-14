@@ -12,256 +12,103 @@
             margin: 0;
             padding: 20px;
         }
+
         .dashboard-layout {
             max-width: 1000px;
             margin: 0 auto;
         }
-        .header-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #1e1e1e;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #ffcc00;
-        }
-        h1 { margin: 0; font-size: 24px; color: #ffcc00; text-transform: uppercase; }
-        .timer-container {
-            font-weight: bold;
-            font-size: 16px;
-            padding: 8px 15px;
-            border-radius: 4px;
-        }
-        .timer-active { background-color: rgba(255, 204, 0, 0.1); color: #ffcc00; border: 1px solid #ffcc00; }
-        .timer-km { background-color: rgba(0, 204, 68, 0.1); color: #00cc44; border: 1px solid #00cc44; }
-        .timer-expired { background-color: rgba(255, 51, 51, 0.1); color: #ff3333; border: 1px solid #ff3333; }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        @media(max-width: 768px) { .grid { grid-template-columns: 1fr; } }
-        
+
         .card {
-            background-color: #1e1e1e;
-            padding: 25px;
+            background: #1e1e1e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.3);
+        }
+
+        h1, h2 {
+            color: #00bfff;
+        }
+
+        .stat {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        button {
+            background: #00bfff;
+            color: white;
+            border: none;
+            padding: 12px 18px;
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            cursor: pointer;
+            font-size: 1rem;
         }
-        h3 { margin-top: 0; color: #ffcc00; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        
-        .link-share {
-            background-color: #0d0d0d;
-            padding: 12px;
-            border-radius: 4px;
-            color: #00ff55;
-            font-family: monospace;
-            font-weight: bold;
-            word-break: break-all;
-            margin-top: 10px;
-            border: 1px dashed #444;
+
+        button:hover {
+            opacity: 0.9;
         }
-        
-        .form-group { margin-bottom: 15px; text-align: left; }
-        label { display: block; margin-bottom: 5px; color: #ccc; font-size: 14px; }
-        input { width: 100%; padding: 10px; background-color: #0d0d0d; border: 1px solid #333; color: #fff; border-radius: 4px; box-sizing: border-box; }
-        button { background-color: #ffcc00; color: #000; font-weight: bold; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; }
-        button:hover { background-color: #e6b800; }
-        
-        .mopao-panel {
-            background-color: #1e1e1e;
-            padding: 25px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border: 2px solid #ff3333;
-            display: none;
-        }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #333; }
-        th { background-color: #0d0d0d; color: #ffcc00; }
-        .badge-status { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
-        .status-validated { background-color: #00cc44; color: #000; }
-        .status-pending { background-color: #ffcc00; color: #000; }
     </style>
 </head>
 <body>
 
-<div class="dashboard-layout" id="mainDashboard">
-    <div class="header-bar">
-        <div>
-            <div style="margin-bottom: 5px;">
-                <img src="logo.jpg" alt="Logo Point Focal" style="max-width: 100px; height: auto; border-radius: 4px;">
-            </div>
-            <h1>Tableau de Bord Point Focal</h1>
-            <small id="userEmail" style="color: #888;"></small>
-        </div>
-        <div id="timerDisplay" class="timer-container">Calcul du statut...</div>
-    </div>
+<div class="dashboard-layout">
 
-    <div class="grid">
-        <div class="card">
-            <h3>Mon Lien d'Invitation</h3>
-            <p>Utilisez ce lien officiel pour inviter vos futurs filleuls dans votre matrice collective.</p>
-            <div id="myLinkDisplay" class="link-share">Chargement de votre lien...</div>
-            <button onclick="copierLienInvitation()">📋 Copier mon lien</button>
-        </div>
+    <h1>📊 Tableau de bord Point Focal</h1>
 
-        <div class="card">
-            <h3>Rejoindre l'Opportunité MLM Active</h3>
-            <p>Collez votre lien d'inscription pour l'opportunité en cours afin que vos filleuls s'inscrivent sous vous automatiquement.</p>
-            <form id="opportunityForm">
-                <div class="form-group">
-                    <label for="oppLink">Votre lien de l'opportunité externe *</label>
-                    <input type="url" id="oppLink" required placeholder="https://opportunite-mlm.com/register?ref=...">
-                </div>
-                <button type="submit">Enregistrer mon lien permanent</button>
-            </form>
-            <div id="oppStatus" style="margin-top: 10px; color: #00ff55; font-weight: bold; text-align: center;"></div>
+    <div class="card">
+        <h2>👤 Informations du compte</h2>
+        <div class="stat">
+            Identifiant : <span id="userId">Chargement...</span>
+        </div>
+        <div class="stat">
+            Statut : <span id="status">Actif</span>
         </div>
     </div>
 
-    <div id="mopaoPanel" class="mopao-panel">
-        <h3 style="color: #ff3333;">👑 Panneau de Suivi Mopao Mopao (FIFO)</h3>
-        <p>Visualisation exclusive et chronologique de vos filleuls Koma Mopao rattachés à votre ID fixe.</p>
-        <table>
-            <thead>
-                <tr>
-                    <th>Date d'arrivée</th>
-                    <th>Email du Filleul</th>
-                    <th>WhatsApp</th>
-                    <th>Statut Paiement</th>
-                </tr>
-            </thead>
-            <tbody id="mopaoTableBody"></tbody>
-        </table>
+    <div class="card">
+        <h2>🔗 Mes liens</h2>
+
+        <p>
+            <strong>Lien public :</strong>
+        </p>
+        <p id="publicLink">
+            Aucun lien disponible.
+        </p>
+
+        <p>
+            <strong>Lien KM :</strong>
+        </p>
+        <p id="kmLink">
+            Aucun lien disponible.
+        </p>
     </div>
+
+    <div class="card">
+        <h2>⚙️ Actions rapides</h2>
+
+        <button onclick="logout()">
+            Déconnexion
+        </button>
+    </div>
+
 </div>
 
 <script>
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const token = localStorage.getItem('token');
-
-    window.addEventListener('DOMContentLoaded', async () => {
-        if (!token) {
-            window.location.href = "login.html";
-            return;
-        }
-
-        document.getElementById('userEmail').innerText = user.email;
-        document.getElementById('myLinkDisplay').innerText = `https://victoryautomatic.com/user/register/${user.code}`;
-
-        if (user.is_km_user) {
-            const timerBox = document.getElementById('timerDisplay');
-            timerBox.className = "timer-container timer-km";
-            timerBox.innerText = "Accès KM Permanent (Immunisé)";
-            chargerPanneauMopao();
-        } else {
-            gererChrono48h();
-        }
-    });
-
-    function gererChrono48h() {
-        const timerBox = document.getElementById('timerDisplay');
-        const dateActivation = new Date(); 
-        const dateExpiration = new Date(dateActivation.getTime() + (48 * 60 * 60 * 1000));
-
-        const interval = setInterval(() => {
-            const maintenant = new Date();
-            const distance = dateExpiration - maintenant;
-
-            if (distance <= 0) {
-                clearInterval(interval);
-                timerBox.className = "timer-container timer-expired";
-                timerBox.innerText = "COMPTE EXPIRÉ (48H DÉPASSÉES)";
-                document.getElementById('mainDashboard').style.opacity = "0.2";
-                alert("Règle des 48h appliquée : Votre accès est suspendu.");
-                return;
-            }
-
-            const heures = Math.floor(distance / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            
-            timerBox.className = "timer-container timer-active";
-            timerBox.innerText = `⏳ Expiration dans : ${heures}h ${minutes}m`;
-        }, 1000);
+    function logout() {
+        localStorage.clear();
+        alert("Déconnexion effectuée.");
+        window.location.href = "index.html";
     }
 
-    document.getElementById('opportunityForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const userPersonalLink = document.getElementById('oppLink').value.trim();
-        const oppStatus = document.getElementById('oppStatus');
+    document.getElementById("userId").textContent =
+        localStorage.getItem("userId") || "Utilisateur";
 
-        try {
-            // URL de votre API Render connectée ici
-            const response = await fetch('https://point-focal.onrender.com/api/mlm/join', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ opportunityId: 1, userPersonalLink })
-            });
+    document.getElementById("publicLink").textContent =
+        localStorage.getItem("publicLink") || "Aucun lien enregistré.";
 
-            const data = await response.json();
-            if (response.ok && data.ok) {
-                oppStatus.style.color = "#00ff55";
-                oppStatus.innerText = "Lien lié de manière immuable avec succès !";
-            } else {
-                oppStatus.style.color = "#ff3333";
-                oppStatus.innerText = data.error || "Erreur de liaison.";
-            }
-        } catch (err) {
-            oppStatus.style.color = "#ff3333";
-            oppStatus.innerText = "Erreur de connexion avec Render.";
-        }
-    });
-
-    async function chargerPanneauMopao() {
-        document.getElementById('mopaoPanel').style.display = 'block';
-        const tbody = document.getElementById('mopaoTableBody');
-
-        try {
-            // URL de votre API Render connectée ici
-            const response = await fetch('https://point-focal.onrender.com/api/victory/dashboard', {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            const data = await response.json();
-            tbody.innerHTML = "";
-
-            if (response.ok && data.filleuls) {
-                data.filleuls.forEach(filleul => {
-                    const date = new Date(filleul.created_at).toLocaleDateString('fr-FR');
-                    const statusClass = filleul.payment_status === 'VALIDATED' ? 'status-validated' : 'status-pending';
-                    const statusText = filleul.payment_status === 'VALIDATED' ? 'VALIDÉ' : 'EN ATTENTE';
-
-                    const row = `<tr>
-                        <td>${date}</td>
-                        <td>${filleul.email}</td>
-                        <td>${filleul.whatsapp || 'Non renseigné'}</td>
-                        <td><span class="badge-status ${statusClass}">${statusText}</span></td>
-                    </tr>`;
-                    tbody.innerHTML += row;
-                });
-
-                if(data.totalFilleuls === 0) {
-                    tbody.innerHTML = "<tr><td colspan='4' style='text-align:center; color:#888;'>Aucun filleul KM rattaché pour le moment.</td></tr>";
-                }
-            }
-        } catch (err) {
-            tbody.innerHTML = "<tr><td colspan='4' style='text-align:center; color:#ff3333;'>Erreur lors du chargement de la file FIFO Mopao depuis Render.</td></tr>";
-        }
-    }
-
-    function copierLienInvitation() {
-        const link = document.getElementById('myLinkDisplay').innerText;
-        navigator.clipboard.writeText(link);
-        alert("Votre lien d'invitation Point Focal a été copié !");
-    }
+    document.getElementById("kmLink").textContent =
+        localStorage.getItem("kmLink") || "Aucun lien enregistré.";
 </script>
 
 </body>
