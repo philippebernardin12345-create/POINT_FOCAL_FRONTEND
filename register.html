@@ -33,7 +33,6 @@
 </head>
 <body>
 
-<!-- BLOC AUTHENTIFICATION PRINCIPAL -->
 <div class="auth-container" id="authSection">
     <div class="lang-selector">
         <button class="lang-btn" id="btn-fr" onclick="changerLangue('fr')">FR</button>
@@ -45,7 +44,6 @@
     <h2 id="formTitle">Inscription</h2>
     
     <form id="authForm">
-        <!-- CHAMP OBLIGATOIRE MLM : CODE D'INVITATION -->
         <div class="form-group" id="sponsorGroup">
             <input id="sponsorCode" type="text" required autocomplete="off">
         </div>
@@ -67,7 +65,6 @@
     <div id="success-box" class="box"></div>
 </div>
 
-<!-- NOUVEAU BLOC FLOW : ATTENTE DE CLIC SUR LE LIEN DE VERIFICATION -->
 <div class="auth-container" id="verifyEmailSection">
     <span class="email-icon">📩</span>
     <h2 id="verifyTitle">Vérifiez votre boîte mail</h2>
@@ -75,7 +72,6 @@
     <button onclick="window.location.href='login.html'" id="btnGoToLogin">Aller à la page de connexion</button>
 </div>
 
-<!-- BLOC LOGOUT (SESSION DEJA ACTIVE) -->
 <div class="auth-container" id="logoutSection">
     <h2 id="txt-logout-title"></h2>
     <p id="txt-logout-desc"></p>
@@ -91,8 +87,8 @@
     const lexique = {
         fr: { signupTitle: "Inscription Point Focal", loginTitle: "Connexion Point Focal", forgotTitle: "Récupération", invitationCodePh: "Code d'invitation (Obligatoire)", emailPh: "Adresse E-mail", passwordPh: "Mot de passe", confirmPasswordPh: "Confirmation du mot de passe", forgotLink: "Mot de passe oublié ?", btnSignup: "S'inscrire", btnLogin: "Se connecter", btnForgot: "Envoyer le lien", switchLogin: "Déjà un compte ? <span>Connectez-vous</span>", switchSignup: "Pas de compte ? <span>Inscrivez-vous</span>", back: "<span>Retour</span>", errorMdp: "Les mots de passe ne correspondent pas.", errorTel: "Numéro WhatsApp invalide.", logoutTitle: "Votre Session", logoutDesc: "Vous êtes déjà connecté.", btnLogout: "Se Déconnecter", successReset: "E-mail de récupération envoyé !", verifyTitle: "Vérifiez vos e-mails", verifyDesc: "Un lien de confirmation vous a été envoyé. Veuillez cliquer dessus pour activer votre compte.", btnGoLogin: "Se connecter" },
         en: { signupTitle: "Point Focal Registration", loginTitle: "Point Focal Login", forgotTitle: "Recovery", invitationCodePh: "Invitation Code (Required)", emailPh: "Email Address", passwordPh: "Password", confirmPasswordPh: "Confirm Password", forgotLink: "Forgot password?", btnSignup: "Register", btnLogin: "Login", btnForgot: "Send link", switchLogin: "Already have an account? <span>Login</span>", switchSignup: "No account? <span>Register</span>", back: "<span>Back</span>", errorMdp: "Passwords do not match.", errorTel: "Invalid WhatsApp number.", logoutTitle: "Your Session", logoutDesc: "You are currently logged in.", btnLogout: "Logout", successReset: "Recovery email sent!", verifyTitle: "Check your email", verifyDesc: "A confirmation link has been sent to you. Please click on it to activate your account.", btnGoLogin: "Go to Login" },
-        es: { signupTitle: "Registro Point Focal", loginTitle: "Iniciar Sesión Point Focal", forgotTitle: "Recuperación", invitationCodePh: "Código de invitación (Obligatorio)", emailPh: "Correo Electrónico", passwordPh: "Contraseña", confirmPasswordPh: "Confirmar Contraseña", forgotLink: "¿Contraseña olvidada?", btnSignup: "Registrarse", btnLogin: "Iniciar Sesión", btnForgot: "Enviar enlace", switchLogin: "¿Ya tienes cuenta? <span>Inicia sesión</span>", switchSignup: "¿No tienes cuenta? <span>Regístrate</span>", back: "<span>Volver</span>", errorMdp: "Las contraseñas no coinciden.", errorTel: "Número de WhatsApp inválido.", logoutTitle: "Su Sesión", logoutDesc: "Ya has iniciado sesión.", btnLogout: "Cerrar Sesión", successReset: "¡Correo de recuperación enviado!", verifyTitle: "Revise su correo", verifyDesc: "Se ha enviado un enlace de confirmación. Por favor, haga clic en él para activar su cuenta.", btnGoLogin: "Iniciar sesión" },
-        pt: { signupTitle: "Cadastro Point Focal", loginTitle: "Login Point Focal", forgotTitle: "Recuperação", invitationCodePh: "Código de Convite (Obrigatório)", emailPh: "Endereço de E-mail", passwordPh: "Senha", confirmPasswordPh: "Confirmar Senha", forgotLink: "Esqueceu a senha?", btnSignup: "Cadastrar", btnLogin: "Entrar", btnForgot: "Enviar link", switchLogin: "Já tem uma conta? <span>Entrar</span>", switchSignup: "Não tem conta? <span>Cadastrar</span>", back: "<span>Voltar</span>", errorMdp: "As senhas não coincidem.", errorTel: "Número de WhatsApp inválido.", logoutTitle: "Sua Sessão", logoutDesc: "Você já está connecté.", btnLogout: "Sair", successReset: "E-mail de recuperação enviado!", verifyTitle: "Verifique seu e-mail", verifyDesc: "Um link de confirmação foi enviado. Por favor, clique nele para ativar sua conta.", btnGoLogin: "Ir para o Login" }
+        es: { signupTitle: "Registro Point Focal", loginTitle: "Iniciar Sesión Point Focal", forgotTitle: "Recuperación", invitationCodePh: "Código de invitación (Obligatorio)", emailPh: "Correo Electrónico", passwordPh: "Contraseña", confirmPasswordPh: "Confirmar Contraseña", forgotLink: "¿Contraseña olvidada?", btnSignup: "Registrarse", btnLogin: "Iniciar Sesión", btnForgot: "Enviar enlace", switchLogin: "¿Ya tienes cuenta? <span>Inicia sesión</span>", switchSignup: "¿No tienes cuenta? <span>Regístrate</span>", back: "<span>Volver</span>", errorMdp: "Las contraseñas no coinciden.", errorTel: "Número de WhatsApp inválido.", logoutTitle: "Su Sesión", logoutDesc: "Ya has iniciado sesión.", btnLogout: "Cerrar Sesión", successReset: "¡Correo de récupération enviado!", verifyTitle: "Revise su correo", verifyDesc: "Se ha enviado un enlace de confirmación. Por favor, haga clic en él para activar su cuenta.", btnGoLogin: "Iniciar sesión" },
+        pt: { signupTitle: "Cadastro Point Focal", loginTitle: "Login Point Focal", forgotTitle: "Recuperação", invitationCodePh: "Código de Convite (Obrigatório)", emailPh: "Endereço de E-mail", passwordPh: "Senha", confirmPasswordPh: "Confirmar Senha", forgotLink: "Esqueceu a senha?", btnSignup: "Cadastrar", btnLogin: "Entrar", btnForgot: "Enviar link", switchLogin: "Já tem uma conta? <span>Entrar</span>", switchSignup: "Não tem conta? <span>Cadastrar</span>", back: "<span>Voltar</span>", errorMdp: "As senhas não coincidem.", errorTel: "Número de WhatsApp inválido.", logoutTitle: "Sua Sessão", logoutDesc: "Você já está connecté.", btnLogout: "Sair", successReset: "E-mail de recuperação envoyé!", verifyTitle: "Verifique seu e-mail", verifyDesc: "Um link de confirmação foi enviado. Por favor, clique nele para ativar sua conta.", btnGoLogin: "Ir para o Login" }
     };
 
     const phoneInput = document.querySelector("#whatsapp");
@@ -132,7 +128,6 @@
         document.getElementById("txt-logout-desc").innerText = t.logoutDesc;
         document.getElementById("btn-logout").innerText = t.btnLogout;
 
-        // Écran Lien de vérification
         document.getElementById("verifyTitle").innerText = t.verifyTitle;
         document.getElementById("verifyDesc").innerText = t.verifyDesc;
         document.getElementById("btnGoToLogin").innerText = t.btnGoLogin;
@@ -183,14 +178,12 @@
         const lang = localStorage.getItem("point_focal_lang") || "fr";
         changerLangue(lang);
         
-        // PROTECTION GUARD ROUTE FRONTEND
         if (localStorage.getItem('token')) { 
             document.getElementById('authSection').style.display = 'none'; 
             document.getElementById('logoutSection').style.display = 'block'; 
             return;
         }
 
-        // CAPTURE ET BLOCAGE DU CODE PARRAIN DANS L'URL
         const urlParams = new URLSearchParams(window.location.search);
         let refCode = urlParams.get('ref');
         
@@ -198,7 +191,7 @@
             localStorage.setItem('parrain_point_focal', refCode);
             const sponsorInput = document.getElementById("sponsorCode");
             sponsorInput.value = refCode;
-            sponsorInput.readOnly = true; // Empêche la rupture de l'arbre MLM
+            sponsorInput.readOnly = true;
         } else {
             const savedRef = localStorage.getItem('parrain_point_focal');
             if (savedRef) {
@@ -220,7 +213,7 @@
             try {
                 const res = await fetch(`${API_URL}/forgot-password`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
                 if (res.ok) { succ.innerText = lexique[langueActive].successReset; succ.style.display = "block"; } else throw new Error();
-            } catch { err.innerText = "Error"; err.style.display = "block"; }
+            } catch (errCapture) { err.innerText = "Erreur Système Récupération : " + errCapture.message; err.style.display = "block"; }
             return;
         }
 
@@ -235,22 +228,20 @@
                 const res = await fetch(`${API_URL}/signup`, { 
                     method: "POST", 
                     headers: { "Content-Type": "application/json" }, 
-                    body: JSON.stringify({ 
-                        email, 
-                        whatsapp: iti.getNumber(), 
-                        password, 
-                        sponsor: sponsor || null 
-                    }) 
+                    body: JSON.stringify({ email, whatsapp: iti.getNumber(), password, sponsor: sponsor || null }) 
                 });
                 const d = await res.json();
                 if (res.ok) { 
-                    // BASCULE SUR L'ÉCRAN D'ATTENTE DU CLIC SUR LE LIEN
                     document.getElementById("authSection").style.display = "none";
                     document.getElementById("verifyEmailSection").style.display = "block";
                 } else { 
                     err.innerText = d.message || "Erreur lors de l'inscription"; err.style.display = "block"; 
                 }
-            } catch { err.innerText = "Network Error"; err.style.display = "block"; }
+            } catch (errCapture) { 
+                // MODIFICATION ICI : On affiche l'erreur brute renvoyée par le téléphone
+                err.innerText = "Erreur Système Inscription : " + errCapture.message; 
+                err.style.display = "block"; 
+            }
 
         } else if (currentMode === "login") {
             try {
@@ -263,7 +254,10 @@
                 } else { 
                     err.innerText = d.message || "Identifiants invalides"; err.style.display = "block"; 
                 }
-            } catch { err.innerText = "Server Error"; err.style.display = "block"; }
+            } catch (errCapture) { 
+                err.innerText = "Erreur Système Connexion : " + errCapture.message; 
+                err.style.display = "block"; 
+            }
         }
     });
 
