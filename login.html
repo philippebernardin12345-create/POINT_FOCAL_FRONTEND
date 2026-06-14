@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion — Point Focal V6</title>
+    <style>
+        body { margin: 0; padding: 20px; font-family: sans-serif; background-color: #f4f6f9; color: #333; }
+        .container { max-width: 500px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #1e3a8a; }
+        h2 { color: #1e3a8a; text-align: center; margin-top: 0; font-size: 1.5rem; }
+        .sub-title { text-align: center; font-size: 0.9rem; color: #64748b; margin-bottom: 25px; }
+        .input-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 0.85rem; color: #1e293b; }
+        input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
+        input:focus { border-color: #1e3a8a; outline: none; background-color: #fafafa; }
+        button { width: 100%; padding: 14px; background-color: #1e3a8a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; margin-top: 15px; }
+        button:disabled { background-color: #94a3b8; cursor: not-allowed; }
+        #error-box { padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; text-align: center; font-size: 0.9rem; background-color: #f8d7da; color: #721c24; display: none; }
+        #success-box { padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; text-align: center; font-size: 0.9rem; background-color: #d4edda; color: #155724; display: none; }
+        .footer-link { text-align: center; margin-top: 20px; font-size: 0.85rem; }
+        .footer-link a { color: #1e3a8a; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Se connecter à Point Focal</h2>
+        <p class="sub-title">Accédez à votre espace d'ancrage sécurisé</p>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <label>Adresse E-mail *</label>
+                <input type="email" id="email" placeholder="exemple@mail.com" required />
+            </div>
+
+            <div class="input-group">
+                <label>Mot de passe *</label>
+                <input type="password" id="password" placeholder="Votre mot de passe" required />
+            </div>
+
+            <button type="submit" id="btnSubmit">Me connecter</button>
+        </form>
+
+        <div id="error-box"></div>
+        <div id="success-box"></div>
+
+        <div class="footer-link">
+            Pas encore de compte ? <a href="register.html">Inscrivez-vous ici</a>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://point-focal-backend.onrender.com/api/auth";
+        const form = document.getElementById('loginForm');
+        const btn = document.getElementById('btnSubmit');
+        const errorBox = document.getElementById('error-box');
+        const successBox = document.getElementById('success-box');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorBox.style.display = "none";
+            successBox.style.display = "none";
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            btn.disabled = true;
+            btn.innerText = "⏳ Vérification de sécurité...";
+
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Sauvegarde du jeton de sécurité JWT et du profil
+                    localStorage.setItem('token', data.token);
+                    
+                    successBox.style.display = "block";
+                    successBox.innerText = "✅ Connexion réussie ! Analyse de votre statut...";
+
+                    // 🧠 CONCRÈTEMENT : APPLICATION DES RÈGLES D'AIGUILLAGE DU CAHIER DES CHARGES
+                    // On lit le niveau d'avancement de l'utilisateur renvoyé par la base de données
+                    const currentStep = data.user.current_step || 'STEP_POPUP';
+                    const hasVictoryLink = data.user.has_victory_link || false;
+
+                    setTimeout(() => {
+                        // Si l'utilisateur est un ancien qui a déjà son lien ou validé la vidéo : BYPASS COMPLET
+                        if (hasVictoryLink || currentStep === 'STEP_DASHBOARD' || currentStep === 'active') {
+                            window.location.href = "dashboard.html"; // Accès direct au Dashboard
+                        } 
+                        // S'il s'est arrêté à la validation d'ancrage (les 3 cases)
+                        else if (currentStep === 'STEP_ANCHOR_FORM') {
+                            window.location.href = "anchor.html"; // Nom de la page à 3 cases
+                        } 
+                        // Si c'est un nouveau ou s'il a fui le chrono
+                        else {
+                            window.location.href = "popup.html"; // Retour au Popup YouTube obligatoire (10s)
+                        }
+                    }, 1500);
+
+                } else {
+                    showError(`❌ Accès refusé : ${data.error || data.message || "Identifiants incorrects"}`);
+                    btn.disabled = false;
+                    btn.innerText = "Me connecter";
+                }
+            } catch (err) {
+                showError("⚠️ Le serveur de sécurité met du temps à répondre. Si le problème persiste après 30 secondes, vérifiez l'état du backend.");
+                btn.disabled = false;
+                btn.innerText = "Me connecter";
+            }
+        });
+
+        function showError(msg) {
+            errorBox.style.display = "block";
+            errorBox.innerText = msg;
+        }
+    </script>
+</body>
+</html>
