@@ -3,200 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Point Focal - Votre Lien Victory</title>
+    <title>Point Focal</title>
     <style>
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        .victory-container {
-            background-color: #1e1e1e;
-            padding: 35px;
-            border-radius: 12px;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.8);
-            max-width: 600px;
-            width: 100%;
-            text-align: center;
-            border: 2px solid #ffcc00;
-        }
-        h2 {
-            color: #ffcc00;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            font-size: 24px;
-        }
-        .instructions {
-            color: #dddddd;
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            text-align: left;
-            background: #252525;
-            padding: 15px;
-            border-left: 4px solid #ffcc00;
-            border-radius: 4px;
-        }
-        .badge-km {
-            background-color: #ff3333;
-            color: #fff;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 12px;
-            display: inline-block;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .link-box {
-            background-color: #0d0d0d;
-            border: 1px dashed #555;
-            padding: 15px;
-            font-size: 18px;
-            color: #00ff55;
-            font-family: 'Courier New', Courier, monospace;
-            word-break: break-all;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-        .btn-copy {
-            background-color: #ffcc00;
-            color: #000;
-            border: none;
-            padding: 12px 30px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-        .btn-copy:hover {
-            background-color: #e6b800;
-        }
-        .btn-next-step {
-            background-color: #222;
-            color: #888;
-            border: 1px solid #444;
-            padding: 15px 30px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            width: 100%;
-            display: block;
-            text-decoration: none;
-            box-sizing: border-box;
-        }
-        .btn-next-step.ready {
-            background-color: #00cc44;
-            color: #000;
-            border: none;
-            box-shadow: 0 0 15px rgba(0, 204, 68, 0.3);
-        }
-        .btn-next-step.ready:hover {
-            background-color: #00ff55;
-        }
-        .alert-timer {
-            color: #ff3333;
-            font-weight: bold;
-            margin-top: 15px;
-            font-size: 14px;
-        }
+        body { background-color: #121212; color: #ffffff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        .video-container { background-color: #1e1e1e; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.7); max-width: 800px; width: 100%; text-align: center; position: relative; }
+        .logout-btn { position: absolute; top: 15px; right: 15px; background: transparent; border: 1px solid #ff3333; color: #ff3333; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        h2 { color: #ffcc00; margin-bottom: 10px; text-transform: uppercase; }
+        p { color: #aaaaaa; margin-bottom: 25px; }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000; margin-bottom: 25px; border: 2px solid #333; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .btn-next { width: 100%; background-color: #555555; color: #ffffff; border: none; padding: 15px 40px; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: not-allowed; text-transform: uppercase; box-sizing: border-box; }
+        .btn-next.ready { background-color: #00cc44; color: #000; cursor: pointer; box-shadow: 0 0 15px rgba(0, 204, 68, 0.4); }
+        .alert-box { color: #ff3333; background-color: rgba(255, 51, 51, 0.1); padding: 12px; border-radius: 6px; margin-top: 15px; display: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="victory-container">
-    <div style="text-align: center; margin-bottom: 10px;">
-        <img src="logo.jpg" alt="Logo Point Focal" style="max-width: 120px; height: auto; border-radius: 4px;">
+<div class="video-container">
+    <button class="logout-btn" onclick="deconnexion()" id="btn-logout">🚪</button>
+    <h2 id="txt-title"></h2>
+    <p id="txt-desc"></p>
+
+    <div class="video-wrapper">
+        <iframe id="presentationVideo" src="https://www.youtube.com/embed/VIDEO_ID?enablejsapi=1" frameborder="0" allowfullscreen></iframe>
     </div>
 
-    <div id="kmBadge" class="badge-km" style="display: none;">Membre Koma Mopao (KM)</div>
-    <h2>Étape 4 : Votre Lien d'Inscription Victory</h2>
-    
-    <div class="instructions">
-        <strong>⚠️ Procédure obligatoire :</strong><br>
-        1. Cliquez sur le bouton jaune pour copier le lien Victory officiel sélectionné.<br>
-        2. Ouvrez un nouvel onglet, inscrivez-vous et effectuez votre paiement sur la plateforme Victory.<br>
-        3. Revenez immédiatement ici pour valider vos informations de paiement.
-    </div>
-
-    <div id="victoryLinkDisplay" class="link-box">Attribution automatique de votre lien en cours...</div>
-
-    <button class="btn-copy" onclick="copierLienVictory()">📋 Copier le lien de parrainage</button>
-
-    <a href="payment.html" id="btnNextStep" class="btn-next-step">Passer à l'étape de validation du paiement</a>
-
-    <div id="timerWarning" class="alert-timer" style="display: none;">
-        ⏳ RÈGLE DES 48H ACTIVÉE : Vous avez exactement 48 heures pour finaliser votre paiement.
-    </div>
+    <button id="btnNext" class="btn-next" disabled onclick="validerVisionnageServeur()"></button>
+    <div id="errorAlert" class="alert-box"></div>
 </div>
 
 <script>
-    let lienGenere = "";
+    let secondesRestantes = 200; let chronoDemarre = false; let interval; let langueActive = "fr";
 
-    window.addEventListener('DOMContentLoaded', async () => {
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
-        const isKm = user.is_km_user || false;
+    const lexique = {
+        fr: { title: "Étape 3 : Vidéo de Présentation Obligatoire", desc: "Vous devez visionner l'intégralité de la vidéo (200 secondes minimum) pour débloquer la suite.", btnWait: "Veuillez visionner la vidéo (SAV_SEC)s", btnGo: "Étape Suivante : Obtenir mon lien Victory", logout: "Déconnexion 🚪", errServer: "Erreur serveur. Relancez la vidéo.", errValidation: "Validation échouée." },
+        en: { title: "Step 3: Mandatory Presentation Video", desc: "You must watch the entire video (minimum 200 seconds) to unlock the next step.", btnWait: "Please watch the video (SAV_SEC)s", btnGo: "Next Step: Get my Victory Link", logout: "Logout 🚪", errServer: "Server error. Please restart the video.", errValidation: "Validation failed." },
+        es: { title: "Paso 3: Video de Presentación Obligatorio", desc: "Debe ver el video completo (mínimo 200 segundos) para desbloquear el siguiente paso.", btnWait: "Por favor vea el video (SAV_SEC)s", btnGo: "Siguiente Paso: Obtener mi enlace Victory", logout: "Cerrar Sesión 🚪", errServer: "Error del servidor. Reinicie el video.", errValidation: "Validación fallida." },
+        pt: { title: "Passo 3: Vídeo de Apresentação Obrigatório", desc: "Você deve assistir ao vídeo completo (mínimo 200 segundos) para desbloquear a próxima etapa.", btnWait: "Por favor, assista ao vídeo (SAV_SEC)s", btnGo: "Próxima Etapa: Obter meu link Victory", logout: "Sair 🚪", errServer: "Erro de servidor. Reinicie o vídeo.", errValidation: "Validação falhou." }
+    };
 
-        if (isKm) {
-            document.getElementById('kmBadge').style.display = 'inline-block';
+    if (!localStorage.getItem('token')) { window.location.href = "register.html"; }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        langueActive = localStorage.getItem("point_focal_lang") || "fr";
+        document.getElementById("txt-title").innerText = lexique[langueActive].title;
+        document.getElementById("txt-desc").innerText = lexique[langueActive].desc;
+        document.getElementById("btn-logout").innerText = lexique[langueActive].logout;
+        majBoutonChrono();
+    });
+
+    function majBoutonChrono() {
+        const btn = document.getElementById('btnNext');
+        if (secondesRestantes > 0) {
+            btn.innerText = lexique[langueActive].btnWait.replace("SAV_SEC", secondesRestantes);
         } else {
-            document.getElementById('timerWarning').style.display = 'block';
+            btn.className = "btn-next ready"; btn.removeAttribute("disabled");
+            btn.innerText = lexique[langueActive].btnGo;
         }
+    }
 
-        try {
-            // Le serveur reçoit la requête et applique la règle métier : Parrain Réel s'il y en a un, sinon FIFO.
-            const response = await fetch('https://point-focal.onrender.com/api/victory/generate', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}` 
-                },
-                body: JSON.stringify({ mode: isKm ? 'KM' : 'NORMAL' })
-            });
-
-            const data = await response.json();
-
-            if (response.ok && data.ok) {
-                lienGenere = data.url; // C'est ici que l'URL attribuée (Parrain ou FIFO) est récupérée automatiquement
-                document.getElementById('victoryLinkDisplay').innerText = lienGenere;
-                
-                const btnNext = document.getElementById('btnNextStep');
-                btnNext.className = "btn-next-step ready";
-            } else {
-                document.getElementById('victoryLinkDisplay').innerText = "Erreur : Impossible d'attribuer un lien Victory.";
-                document.getElementById('victoryLinkDisplay').style.color = "#ff3333";
-            }
-        } catch (err) {
-            document.getElementById('victoryLinkDisplay').innerText = "Erreur de connexion avec le serveur.";
-            document.getElementById('victoryLinkDisplay').style.color = "#ff3333";
+    window.addEventListener('message', function(e) {
+        if (e.origin.includes('youtube.com')) {
+            try {
+                const d = JSON.parse(e.data);
+                if (d.event === 'infoDelivery' && d.info && d.info.playerState === 1 && !chronoDemarre) declencherChronoServeur();
+            } catch {}
         }
     });
 
-    function copierLienVictory() {
-        if (!lienGenere || lienGenere.includes("en cours") || lienGenere.includes("Erreur")) {
-            alert("Aucun lien valide à copier.");
-            return;
-        }
-        navigator.clipboard.writeText(lienGenere);
-        alert("Lien Victory copié ! Vous pouvez maintenant ouvrir un onglet pour vous inscrire.");
+    async function declencherChronoServeur() {
+        chronoDemarre = true;
+        try {
+            const res = await fetch('https://point-focal.onrender.com/api/video/start', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+            if(!res.ok) throw new Error();
+            interval = setInterval(() => {
+                secondesRestantes--; majBoutonChrono();
+                if (secondesRestantes <= 0) clearInterval(interval);
+            }, 1000);
+        } catch { document.getElementById('errorAlert').innerText = lexique[langueActive].errServer; document.getElementById('errorAlert').style.display = 'block'; }
     }
-</script>
 
+    async function validerVisionnageServeur() {
+        try {
+            const res = await fetch('https://point-focal.onrender.com/api/video/verify', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+            const d = await res.json();
+            if (res.ok && d.ok) { window.location.href = "victory-link.html"; } 
+            else { document.getElementById('errorAlert').innerText = lexique[langueActive].errValidation; document.getElementById('errorAlert').style.display = 'block'; }
+        } catch { }
+    }
+    function deconnexion() { localStorage.clear(); window.location.href = "register.html"; }
+</script>
 </body>
 </html>
