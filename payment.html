@@ -105,105 +105,167 @@
             margin-right: 10px;
             vertical-align: middle;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
 
 <div class="payment-container">
-    <div style="text-align: center; margin-bottom: 10px;">
-        <img src="logo.jpg" alt="Logo Point Focal" style="max-width: 120px; height: auto; border-radius: 4px;">
+
+    <div style="text-align:center; margin-bottom:10px;">
+        <img src="logo.jpg"
+             alt="Logo Point Focal"
+             style="max-width:120px; height:auto; border-radius:4px;">
     </div>
 
     <h2>Étape 5 : Déclencheur de Validation Automatique</h2>
-    
+
     <div class="info-box">
         <strong>⚡ AUCUN BOUTON DE SOUMISSION :</strong><br>
-        Remplissez simplement les 3 champs ci-dessous dans l'ordre exact. Dès que les formats blockchain et le lien Victory sont détectés comme valides, le système interroge le réseau BSC de manière 100 % automatisée.
+        Remplissez simplement les 3 champs ci-dessous dans l'ordre exact.
+        Dès que les formats blockchain et le lien Victory sont détectés
+        comme valides, le système interroge automatiquement le réseau BSC.
     </div>
 
     <div class="form-group">
-        <label for="victoryLink">1. Collez le Lien Victory que vous avez utilisé *</label>
-        <input type="url" id="victoryLink" placeholder="https://victoryautomatic.com/user/register/...">
+        <label for="victoryLink">
+            1. Collez le Lien Victory que vous avez utilisé *
+        </label>
+        <input
+            type="url"
+            id="victoryLink"
+            placeholder="https://victoryautomatic.com/user/register/..."
+        >
     </div>
 
     <div class="form-group">
-        <label for="adresseCible">2. Votre Adresse de Réception/Cible USDT (BEP20) *</label>
-        <input type="text" id="adresseCible" placeholder="0x... (Adresse de votre portefeuille)">
+        <label for="adresseCible">
+            2. Votre Adresse de Réception/Cible USDT (BEP20) *
+        </label>
+        <input
+            type="text"
+            id="adresseCible"
+            placeholder="0x... (Adresse de votre portefeuille)"
+        >
     </div>
 
     <div class="form-group">
-        <label for="txHash">3. Le Hash (TX ID) de votre transaction de 2.03 USDT *</label>
-        <input type="text" id="txHash" placeholder="0x... (Hash complet de la transaction)">
+        <label for="txHash">
+            3. Le Hash (TX ID) de votre transaction de 2.03 USDT *
+        </label>
+        <input
+            type="text"
+            id="txHash"
+            placeholder="0x... (Hash complet de la transaction)"
+        >
     </div>
 
     <div id="statusBox" class="status-box"></div>
+
 </div>
 
 <script>
-    const regexAdresse = /^0x[a-fA-F0-9]{40}$/;
-    const regexHash = /^0x[a-fA-F0-9]{66}$/;
+const regexAdresse = /^0x[a-fA-F0-9]{40}$/;
+const regexHash = /^0x[a-fA-F0-9]{66}$/;
 
-    async function verifierFormulaireAutomatique() {
-        const victoryLink = document.getElementById('victoryLink').value.trim();
-        const adresseCible = document.getElementById('adresseCible').value.trim();
-        const txHash = document.getElementById('txHash').value.trim();
-        const statusBox = document.getElementById('statusBox');
+async function verifierFormulaireAutomatique() {
 
-        if (!victoryLink || !adresseCible || !txHash) {
-            statusBox.style.display = 'none';
-            return;
-        }
+    const victoryLink =
+        document.getElementById("victoryLink").value.trim();
 
-        const isLinkValid = victoryLink.includes('victory');
-        const isAdresseValid = regexAdresse.test(adresseCible);
-        const isHashValid = regexHash.test(txHash);
+    const adresseCible =
+        document.getElementById("adresseCible").value.trim();
 
-        if (!isLinkValid || !isAdresseValid || !isHashValid) {
-            statusBox.className = "status-box status-error";
-            statusBox.innerHTML = "Format ou ordre des champs incorrect. En attente d'une saisie blockchain valide...";
-            statusBox.style.display = 'block';
-            return;
-        }
+    const txHash =
+        document.getElementById("txHash").value.trim();
 
-        statusBox.className = "status-box status-pending";
-        statusBox.innerHTML = "<div class='spinner'></div> Connexion Web3 en cours. Analyse des 12 confirmations blockchain et du montant (2.03 USDT)...";
-        statusBox.style.display = 'block';
+    const statusBox =
+        document.getElementById("statusBox");
 
-        try {
-            // URL Render configurée pour la détection
-            const response = await fetch('https://point-focal.onrender.com/api/payment/verify', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify({ victoryLink, adresseCible, txHash })
-            });
-
-            const data = await response.json();
-
-            if (response.ok && data.success) {
-                statusBox.className = "status-box status-success";
-                statusBox.innerHTML = "🎉 PAIEMENT VALIDÉ ! Redirection vers votre tableau de bord...";
-                
-                setTimeout(() => {
-                    window.location.href = "dashboard.html";
-                }, 2000);
-            } else {
-                statusBox.className = "status-box status-error";
-                statusBox.innerHTML = `❌ Erreur : ${data.error || "Validation impossible."}`;
-            }
-
-        } catch (error) {
-            statusBox.className = "status-box status-error";
-            statusBox.innerHTML = "❌ Erreur réseau. Impossible d'atteindre le serveur sur Render.";
-        }
+    if (!victoryLink || !adresseCible || !txHash) {
+        statusBox.style.display = "none";
+        return;
     }
 
-    document.getElementById('victoryLink').addEventListener('input', verifierFormulaireAutomatique);
-    document.getElementById('adresseCible').addEventListener('input', verifierFormulaireAutomatique);
-    document.getElementById('txHash').addEventListener('input', verifierFormulaireAutomatique);
+    const isLinkValid = victoryLink.includes("victory");
+    const isAdresseValid = regexAdresse.test(adresseCible);
+    const isHashValid = regexHash.test(txHash);
+
+    if (!isLinkValid || !isAdresseValid || !isHashValid) {
+        statusBox.className = "status-box status-error";
+        statusBox.innerHTML =
+            "Format ou ordre des champs incorrect. En attente d'une saisie blockchain valide...";
+        statusBox.style.display = "block";
+        return;
+    }
+
+    statusBox.className = "status-box status-pending";
+    statusBox.innerHTML =
+        "<div class='spinner'></div> Connexion Web3 en cours. Analyse des 12 confirmations blockchain et du montant (2.03 USDT)...";
+    statusBox.style.display = "block";
+
+    try {
+
+        const response = await fetch(
+            "https://point-focal.onrender.com/api/payment/verify",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization":
+                        `Bearer ${localStorage.getItem("token")}`
+                },
+                body: JSON.stringify({
+                    victoryLink,
+                    adresseCible,
+                    txHash
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+
+            statusBox.className =
+                "status-box status-success";
+
+            statusBox.innerHTML =
+                "🎉 PAIEMENT VALIDÉ ! Redirection vers votre tableau de bord...";
+
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 2000);
+
+        } else {
+
+            statusBox.className =
+                "status-box status-error";
+
+            statusBox.innerHTML =
+                `❌ Erreur : ${data.error || "Validation impossible."}`;
+        }
+
+    } catch (error) {
+
+        statusBox.className =
+            "status-box status-error";
+
+        statusBox.innerHTML =
+            "❌ Erreur réseau. Impossible d'atteindre le serveur sur Render.";
+    }
+}
+
+document.getElementById("victoryLink")
+    .addEventListener("input", verifierFormulaireAutomatique);
+
+document.getElementById("adresseCible")
+    .addEventListener("input", verifierFormulaireAutomatique);
+
+document.getElementById("txHash")
+    .addEventListener("input", verifierFormulaireAutomatique);
 </script>
 
 </body>
