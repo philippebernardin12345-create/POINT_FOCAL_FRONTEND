@@ -66,33 +66,59 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <script>
-    // URL pure et dure, aucun risque d'écrasement en [object Object]
     const BASE_API = "https://point-focal-backend.onrender.com/api/auth";
     let currentMode = "signup";
+    let langueActive = "fr";
 
     const phoneInput = document.querySelector("#whatsapp");
     const iti = window.intlTelInput(phoneInput, { initialCountry: "cd", preferredCountries: ["cd", "fr"], utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js" });
 
     function togglePasswordVisibility(id) { const f = document.getElementById(id); f.type = f.type === "password" ? "text" : "password"; }
 
+    // AJOUT DE LA FONCTION MANQUANTE ICI
+    function changerLangue(lang) {
+        langueActive = lang;
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`btn-${lang}`).classList.add('active');
+        
+        if (lang === 'en') {
+            document.getElementById("sponsorCode").placeholder = "Sponsor code (required)";
+            document.getElementById("btnSubmit").innerText = currentMode === "signup" ? "Register" : "Login";
+            if (currentMode === "signup") {
+                document.getElementById("formTitle").innerText = "Point Focal Registration";
+                document.getElementById("switchAuth").innerHTML = "Already have an account? <span>Login</span>";
+            } else {
+                document.getElementById("formTitle").innerText = "Point Focal Login";
+                document.getElementById("switchAuth").innerHTML = "No account? <span>Register</span>";
+            }
+        } else {
+            document.getElementById("sponsorCode").placeholder = "Code sponsor (obligatoire)";
+            document.getElementById("btnSubmit").innerText = currentMode === "signup" ? "S'inscrire" : "Se connecter";
+            if (currentMode === "signup") {
+                document.getElementById("formTitle").innerText = "Inscription Point Focal";
+                document.getElementById("switchAuth").innerHTML = "Déjà un compte ? <span>Connectez-vous</span>";
+            } else {
+                document.getElementById("formTitle").innerText = "Connexion Point Focal";
+                document.getElementById("switchAuth").innerHTML = "Pas de compte ? <span>Inscrivez-vous</span>";
+            }
+        }
+    }
+
     function toggleAuthMode(mode) {
         currentMode = mode;
         document.getElementById("error-box").style.display = "none";
         document.getElementById("success-box").style.display = "none";
+        document.getElementById("authSection").style.display = "block";
+        document.getElementById("verifyEmailSection").style.display = "none";
         
         if (mode === 'login') {
-            document.getElementById("formTitle").innerText = "Connexion Point Focal";
             document.getElementById("sponsorCode").parentNode.style.display = "none";
             document.getElementById("confirmPassword").parentNode.style.display = "none";
-            document.getElementById("btnSubmit").innerText = "Se connecter";
-            document.getElementById("switchAuth").innerHTML = "Pas de compte ? <span>Inscrivez-vous</span>";
         } else {
-            document.getElementById("formTitle").innerText = "Inscription Point Focal";
             document.getElementById("sponsorCode").parentNode.style.display = "block";
             document.getElementById("confirmPassword").parentNode.style.display = "block";
-            document.getElementById("btnSubmit").innerText = "S'inscrire";
-            document.getElementById("switchAuth").innerHTML = "Déjà un compte ? <span>Connectez-vous</span>";
         }
+        changerLangue(langueActive);
     }
 
     function handleSwitchAuth() {
@@ -114,7 +140,7 @@
 
             if (password !== confirmPassword) {
                 errBox.innerText = "Les mots de passe ne correspondent pas.";
-                errBox.style.style.display = "block";
+                errBox.style.display = "block";
                 return;
             }
             if (!iti.isValidNumber()) {
@@ -124,10 +150,7 @@
             }
 
             try {
-                const targetUrl = BASE_API + "/signup";
-                console.log("Envoi vers :", targetUrl);
-                
-                const res = await fetch(targetUrl, {
+                const res = await fetch(`${BASE_API}/signup`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email, whatsapp: iti.getNumber(), password, sponsor: sponsor || null })
@@ -142,13 +165,12 @@
                     errBox.style.display = "block";
                 }
             } catch (err) {
-                errBox.innerText = "Détail Erreur : " + err.message + " | Vérifiez que votre serveur Render est bien actif sur https://point-focal-backend.onrender.com";
-                errBox.style.style.display = "block";
+                errBox.innerText = "Erreur de communication : " + err.message + ". Assure-toi d'ouvrir ce fichier via un lien en https:// (pas file:///).";
+                errBox.style.display = "block";
             }
         } else {
-            // Logique de Connexion
             try {
-                const res = await fetch(BASE_API + "/login", {
+                const res = await fetch(`${BASE_API}/login`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email, password })
