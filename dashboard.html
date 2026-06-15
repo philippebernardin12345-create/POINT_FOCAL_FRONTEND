@@ -1,114 +1,155 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Point Focal - Espace Membre</title>
-    <style>
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Point Focal - Espace Membre</title>
 
-        .dashboard-layout {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
+<style>
+body {
+    background:#121212;
+    color:white;
+    font-family:Segoe UI, Arial;
+    margin:0;
+    padding:20px;
+}
 
-        .card {
-            background: #1e1e1e;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 12px rgba(0,0,0,0.3);
-        }
+.container {
+    max-width:900px;
+    margin:auto;
+}
 
-        h1, h2 {
-            color: #00bfff;
-        }
+h1 {
+    color:#00bfff;
+    text-align:center;
+    margin-bottom:20px;
+}
 
-        .stat {
-            font-size: 1.2rem;
-            margin: 10px 0;
-        }
+.card {
+    background:#1e1e1e;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:15px;
+    box-shadow:0 0 10px rgba(0,0,0,0.3);
+}
 
-        button {
-            background: #00bfff;
-            color: white;
-            border: none;
-            padding: 12px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-        }
+h2 {
+    color:#00bfff;
+    margin-bottom:10px;
+}
 
-        button:hover {
-            opacity: 0.9;
-        }
-    </style>
+.stat {
+    margin:8px 0;
+    font-size:1rem;
+    color:#ddd;
+}
+
+.value {
+    color:#fff;
+    font-weight:bold;
+}
+
+button {
+    width:100%;
+    padding:12px;
+    background:#00bfff;
+    border:none;
+    color:white;
+    font-weight:bold;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+button:hover {
+    opacity:0.9;
+}
+
+.badge {
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:6px;
+    background:#00bfff;
+    color:#000;
+    font-size:12px;
+    font-weight:bold;
+}
+</style>
 </head>
+
 <body>
 
-<div class="dashboard-layout">
+<div class="container">
 
     <h1>📊 Tableau de bord Point Focal</h1>
 
+    <!-- USER INFO -->
     <div class="card">
-        <h2>👤 Informations du compte</h2>
-        <div class="stat">
-            Identifiant : <span id="userId">Chargement...</span>
-        </div>
-        <div class="stat">
-            Statut : <span id="status">Actif</span>
+        <h2>👤 Compte utilisateur</h2>
+
+        <div class="stat">Email : <span class="value" id="email">...</span></div>
+        <div class="stat">ID : <span class="value" id="id">...</span></div>
+        <div class="stat">Code invitation : <span class="value" id="code">...</span></div>
+
+        <div class="stat">Statut :
+            <span class="badge">ACTIF</span>
         </div>
     </div>
 
+    <!-- LINKS -->
     <div class="card">
         <h2>🔗 Mes liens</h2>
 
-        <p>
-            <strong>Lien public :</strong>
-        </p>
-        <p id="publicLink">
-            Aucun lien disponible.
-        </p>
+        <div class="stat">Lien public :</div>
+        <div class="value" id="publicLink">Aucun lien</div>
 
-        <p>
-            <strong>Lien KM :</strong>
-        </p>
-        <p id="kmLink">
-            Aucun lien disponible.
-        </p>
+        <div class="stat" style="margin-top:10px;">Lien KM :</div>
+        <div class="value" id="kmLink">Aucun lien</div>
     </div>
 
+    <!-- ACTIONS -->
     <div class="card">
-        <h2>⚙️ Actions rapides</h2>
-
-        <button onclick="logout()">
-            Déconnexion
-        </button>
+        <h2>⚙️ Actions</h2>
+        <button onclick="logout()">Se déconnecter</button>
     </div>
 
 </div>
 
 <script>
-    function logout() {
-        localStorage.clear();
-        alert("Déconnexion effectuée.");
-        window.location.href = "index.html";
-    }
 
-    document.getElementById("userId").textContent =
-        localStorage.getItem("userId") || "Utilisateur";
+// ===============================
+// 1. PROTECTION PAGE (LOGIN CHECK)
+// ===============================
+const token = localStorage.getItem("token");
+const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-    document.getElementById("publicLink").textContent =
-        localStorage.getItem("publicLink") || "Aucun lien enregistré.";
+if (!token) {
+    window.location.href = "login.html";
+}
 
-    document.getElementById("kmLink").textContent =
-        localStorage.getItem("kmLink") || "Aucun lien enregistré.";
+// ===============================
+// 2. AFFICHAGE USER
+// ===============================
+document.getElementById("email").textContent = user.email || "Non disponible";
+document.getElementById("id").textContent = user.id || "Non disponible";
+document.getElementById("code").textContent = user.invitation_code || "Non disponible";
+
+// ===============================
+// 3. LINKS (si disponibles)
+// ===============================
+document.getElementById("publicLink").textContent =
+    localStorage.getItem("publicLink") || "Aucun lien disponible";
+
+document.getElementById("kmLink").textContent =
+    localStorage.getItem("kmLink") || "Aucun lien disponible";
+
+// ===============================
+// 4. LOGOUT
+// ===============================
+function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+
 </script>
 
 </body>
