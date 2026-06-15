@@ -1,282 +1,172 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>POINT FOCAL - Inscription</title>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
-
-<style>
-body {
-    background:#121212;
-    color:#fff;
-    font-family:Arial;
-    margin:0;
-    padding:20px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-}
-
-.auth-container {
-    background:#1e1e1e;
-    padding:25px;
-    border-radius:10px;
-    width:100%;
-    max-width:420px;
-}
-
-h2 {
-    color:#ffcc00;
-    text-align:center;
-}
-
-input {
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    background:#0d0d0d;
-    border:1px solid #333;
-    color:white;
-    box-sizing:border-box;
-}
-
-button {
-    width:100%;
-    padding:12px;
-    margin-top:15px;
-    background:#ffcc00;
-    border:none;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.box {
-    display:none;
-    margin-top:10px;
-    padding:10px;
-    border-radius:5px;
-    font-size:14px;
-}
-
-#error {
-    background-color: rgba(255, 51, 51, 0.1);
-    color:#ff3333;
-    border:1px solid #ff3333;
-}
-
-#success {
-    background-color: rgba(0, 204, 68, 0.1);
-    color:#00cc44;
-    border:1px solid #00cc44;
-}
-
-.debug-info {
-    display:none;
-    background:#0a0a0a;
-    color:#888;
-    padding:10px;
-    margin-top:10px;
-    font-size:11px;
-    border:1px solid #333;
-    border-radius:5px;
-    max-height:150px;
-    overflow-y:auto;
-    font-family:monospace;
-}
-
-.debug-info.show {
-    display:block;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POINT FOCAL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
+    <style>
+        body { background-color: #121212; color: #ffffff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        .auth-container { background-color: #1e1e1e; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.7); max-width: 400px; width: 100%; text-align: center; box-sizing: border-box; }
+        .lang-selector { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .lang-btn { background-color: #252525; color: #ffffff; border: 1px solid #444; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .lang-btn.active { background-color: #ffcc00; color: #000000; border-color: #ffcc00; }
+        h2 { color: #ffcc00; margin-bottom: 20px; text-transform: uppercase; }
+        .form-group { margin-bottom: 15px; text-align: left; position: relative; }
+        input { width: 100%; padding: 12px; border: 1px solid #333; background-color: #0d0d0d; color: #fff; font-size: 16px; box-sizing: border-box; border-radius: 6px; }
+        input:focus { border-color: #ffcc00; outline: none; }
+        .iti { width: 100%; }
+        .iti__country-list { background-color: #1e1e1e; color: #fff; }
+        .toggle-password { position: absolute; right: 12px; top: 38%; cursor: pointer; font-size: 14px; color: #ffcc00; user-select: none; }
+        button { width: 100%; background-color: #ffcc00; color: #000; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        .switch-link { margin-top: 15px; font-size: 14px; color: #aaaaaa; cursor: pointer; }
+        .switch-link span { color: #ffcc00; text-decoration: underline; }
+        .box { margin-top: 15px; padding: 10px; border-radius: 6px; font-weight: bold; display: none; word-break: break-word; }
+        #error-box { background-color: rgba(255, 51, 51, 0.1); color: #ff3333; border: 1px solid #ff3333; }
+        #success-box { background-color: rgba(0, 204, 68, 0.1); color: #00cc44; border: 1px solid #00cc44; }
+        #verifyEmailSection { display: none; }
+    </style>
 </head>
-
 <body>
 
-<div class="auth-container">
-    <h2>Inscription Point Focal</h2>
+<div class="auth-container" id="authSection">
+    <div class="lang-selector">
+        <button class="lang-btn active" id="btn-fr" onclick="changerLangue('fr')">FR</button>
+        <button class="lang-btn" id="btn-en" onclick="changerLangue('en')">EN</button>
+    </div>
 
-    <form id="registerForm">
-
-        <input id="email" type="email" placeholder="Email" required>
-
-        <input id="whatsapp" type="tel" placeholder="WhatsApp" required>
-
-        <input id="sponsor" type="text" placeholder="Code sponsor (obligatoire)" required>
-
-        <input id="password" type="password" placeholder="Mot de passe" required>
-
-        <input id="confirm" type="password" placeholder="Confirmer mot de passe" required>
-
-        <button type="submit">S'inscrire</button>
-
-        <div id="error" class="box"></div>
-        <div id="success" class="box"></div>
-        <div id="debugInfo" class="debug-info"></div>
-
+    <h2 id="formTitle">Inscription Point Focal</h2>
+    
+    <form id="authForm">
+        <div class="form-group"><input id="sponsorCode" type="text" placeholder="Code sponsor (obligatoire)" required autocomplete="off"></div>
+        <div class="form-group"><input id="email" type="email" placeholder="Email" required></div>
+        <div class="form-group"><input id="whatsapp" type="tel" required></div>
+        <div class="form-group">
+            <input id="password" type="password" placeholder="Mot de passe" required>
+            <span class="toggle-password" onclick="togglePasswordVisibility('password')">👁️</span>
+        </div>
+        <div class="form-group">
+            <input id="confirmPassword" type="password" placeholder="Confirmer mot de passe" required>
+            <span class="toggle-password" onclick="togglePasswordVisibility('confirmPassword')">👁️</span>
+        </div>
+        <button id="btnSubmit" type="submit">S'inscrire</button>
     </form>
+    
+    <div id="switchAuth" class="switch-link" onclick="handleSwitchAuth()">Déjà un compte ? <span>Connectez-vous</span></div>
+    <div id="error-box" class="box"></div>
+    <div id="success-box" class="box"></div>
+</div>
+
+<div class="auth-container" id="verifyEmailSection">
+    <span style="font-size:48px;">📩</span>
+    <h2>Vérifiez vos e-mails</h2>
+    <p style="color: #aaa; line-height: 1.5;">Un lien de confirmation vous a été envoyé. Veuillez cliquer dessus pour activer votre compte.</p>
+    <button onclick="toggleAuthMode('login')">Aller à la connexion</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-
 <script>
-// ✅ CONFORMITÉ CAHIER DES CHARGES 09/06 - BACKEND RENDER
-const API_URL = "https://point-focal-backend.onrender.com/api/auth";
+    // URL pure et dure, aucun risque d'écrasement en [object Object]
+    const BASE_API = "https://point-focal-backend.onrender.com/api/auth";
+    let currentMode = "signup";
 
-// DEBUG MODE - À mettre à false en production
-const DEBUG_MODE = true;
+    const phoneInput = document.querySelector("#whatsapp");
+    const iti = window.intlTelInput(phoneInput, { initialCountry: "cd", preferredCountries: ["cd", "fr"], utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js" });
 
-function logDebug(msg, data) {
-    const debugBox = document.getElementById("debugInfo");
-    const timestamp = new Date().toLocaleTimeString();
-    let text = `[${timestamp}] ${msg}`;
-    if (data) {
-        text += `\n${JSON.stringify(data, null, 2)}`;
-    }
-    debugBox.innerText += text + "\n---\n";
-    debugBox.classList.add("show");
-    console.log(msg, data);
-}
+    function togglePasswordVisibility(id) { const f = document.getElementById(id); f.type = f.type === "password" ? "text" : "password"; }
 
-const phoneInput = document.querySelector("#whatsapp");
-const iti = window.intlTelInput(phoneInput, {
-    initialCountry: "cd",
-    preferredCountries: ["cd","fr","be","cg"],
-    utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
-});
-
-document.getElementById("registerForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const errorBox = document.getElementById("error");
-    const successBox = document.getElementById("success");
-    const debugBox = document.getElementById("debugInfo");
-
-    errorBox.style.display = "none";
-    successBox.style.display = "none";
-    debugBox.innerText = "";
-
-    const email = document.getElementById("email").value;
-    const whatsapp = iti.getNumber();
-    const sponsor = document.getElementById("sponsor").value;
-    const password = document.getElementById("password").value;
-    const confirm = document.getElementById("confirm").value;
-
-    if (DEBUG_MODE) {
-        logDebug("📝 Données du formulaire :", {
-            email,
-            whatsapp,
-            sponsor,
-            passwordLength: password.length
-        });
-    }
-
-    // VALIDATION CLIENT
-    if (password !== confirm) {
-        errorBox.innerText = "❌ Les mots de passe ne correspondent pas";
-        errorBox.style.display = "block";
-        if (DEBUG_MODE) logDebug("Erreur validation : mots de passe différents");
-        return;
-    }
-
-    if (!iti.isValidNumber()) {
-        errorBox.innerText = "❌ Numéro WhatsApp invalide";
-        errorBox.style.display = "block";
-        if (DEBUG_MODE) logDebug("Erreur validation : WhatsApp invalide", { whatsapp });
-        return;
-    }
-
-    if (!email.includes("@")) {
-        errorBox.innerText = "❌ Email invalide";
-        errorBox.style.display = "block";
-        if (DEBUG_MODE) logDebug("Erreur validation : email invalide", { email });
-        return;
-    }
-
-    if (!sponsor || sponsor.trim() === "") {
-        errorBox.innerText = "❌ Code sponsor obligatoire";
-        errorBox.style.display = "block";
-        if (DEBUG_MODE) logDebug("Erreur validation : sponsor vide");
-        return;
-    }
-
-    try {
-        if (DEBUG_MODE) logDebug("🚀 Envoi requête vers : " + API_URL + "/signup");
-
-        const payload = {
-            email,
-            whatsapp,
-            password,
-            sponsor
-        };
-
-        if (DEBUG_MODE) logDebug("📦 Payload envoyé :", payload);
-
-        const res = await fetch(`${API_URL}/signup`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        });
-
-        if (DEBUG_MODE) logDebug("📡 Réponse reçue", {
-            status: res.status,
-            statusText: res.statusText,
-            headers: {
-                contentType: res.headers.get("content-type"),
-                corsOrigin: res.headers.get("Access-Control-Allow-Origin")
-            }
-        });
-
-        let data;
-        try {
-            data = await res.json();
-            if (DEBUG_MODE) logDebug("✅ JSON parsé :", data);
-        } catch (jsonErr) {
-            const text = await res.text();
-            if (DEBUG_MODE) logDebug("❌ JSON invalide, réponse brute :", text);
-            throw new Error("Réponse serveur invalide (pas du JSON)");
-        }
-
-        if (res.ok) {
-            successBox.innerText = "✅ Inscription réussie ! Vérifiez votre email.";
-            successBox.style.display = "block";
-            document.getElementById("registerForm").reset();
-            if (DEBUG_MODE) logDebug("🎉 Inscription réussie !");
-        } else {
-            const errorMsg = data.message || data.error || "Erreur inscription";
-            errorBox.innerText = "❌ " + errorMsg;
-            errorBox.style.display = "block";
-            if (DEBUG_MODE) logDebug("❌ Erreur serveur :", { status: res.status, message: errorMsg });
-        }
-
-    } catch (err) {
-        const errorMsg = err.message || "Erreur réseau";
-        errorBox.innerText = "❌ Erreur : " + errorMsg;
-        errorBox.style.display = "block";
+    function toggleAuthMode(mode) {
+        currentMode = mode;
+        document.getElementById("error-box").style.display = "none";
+        document.getElementById("success-box").style.display = "none";
         
-        if (DEBUG_MODE) {
-            logDebug("💥 Exception attrapée :", {
-                message: err.message,
-                stack: err.stack,
-                type: err.constructor.name
-            });
-            logDebug("🔗 Vérifiez : L'URL API est-elle correcte ?", { API_URL });
-            logDebug("🔗 Vérifiez : Le backend Render est-il actif ?");
-            logDebug("🔗 Vérifiez : CORS est-il configuré sur le backend ?");
+        if (mode === 'login') {
+            document.getElementById("formTitle").innerText = "Connexion Point Focal";
+            document.getElementById("sponsorCode").parentNode.style.display = "none";
+            document.getElementById("confirmPassword").parentNode.style.display = "none";
+            document.getElementById("btnSubmit").innerText = "Se connecter";
+            document.getElementById("switchAuth").innerHTML = "Pas de compte ? <span>Inscrivez-vous</span>";
+        } else {
+            document.getElementById("formTitle").innerText = "Inscription Point Focal";
+            document.getElementById("sponsorCode").parentNode.style.display = "block";
+            document.getElementById("confirmPassword").parentNode.style.display = "block";
+            document.getElementById("btnSubmit").innerText = "S'inscrire";
+            document.getElementById("switchAuth").innerHTML = "Déjà un compte ? <span>Connectez-vous</span>";
         }
     }
-});
 
-// Info au chargement
-if (DEBUG_MODE) {
-    logDebug("✅ App chargée - Mode DEBUG activé");
-    logDebug("🔗 API URL configurée :", { API_URL });
-}
+    function handleSwitchAuth() {
+        if (currentMode === "signup") toggleAuthMode("login");
+        else toggleAuthMode("signup");
+    }
+
+    document.getElementById("authForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const errBox = document.getElementById("error-box");
+        errBox.style.display = "none";
+
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        if (currentMode === "signup") {
+            const sponsor = document.getElementById("sponsorCode").value.trim();
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            if (password !== confirmPassword) {
+                errBox.innerText = "Les mots de passe ne correspondent pas.";
+                errBox.style.style.display = "block";
+                return;
+            }
+            if (!iti.isValidNumber()) {
+                errBox.innerText = "Numéro WhatsApp invalide.";
+                errBox.style.display = "block";
+                return;
+            }
+
+            try {
+                const targetUrl = BASE_API + "/signup";
+                console.log("Envoi vers :", targetUrl);
+                
+                const res = await fetch(targetUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, whatsapp: iti.getNumber(), password, sponsor: sponsor || null })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    document.getElementById("authSection").style.display = "none";
+                    document.getElementById("verifyEmailSection").style.display = "block";
+                } else {
+                    errBox.innerText = data.message || "Erreur lors de l'inscription";
+                    errBox.style.display = "block";
+                }
+            } catch (err) {
+                errBox.innerText = "Détail Erreur : " + err.message + " | Vérifiez que votre serveur Render est bien actif sur https://point-focal-backend.onrender.com";
+                errBox.style.style.display = "block";
+            }
+        } else {
+            // Logique de Connexion
+            try {
+                const res = await fetch(BASE_API + "/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    localStorage.setItem('token', data.token);
+                    window.location.href = "video.html";
+                } else {
+                    errBox.innerText = data.message || "Identifiants incorrects";
+                    errBox.style.display = "block";
+                }
+            } catch (err) {
+                errBox.innerText = "Erreur de connexion : " + err.message;
+                errBox.style.display = "block";
+            }
+        }
+    });
 </script>
-
 </body>
 </html>
