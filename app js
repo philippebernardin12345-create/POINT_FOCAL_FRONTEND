@@ -1,0 +1,495 @@
+// ============================================================
+// POINT FOCAL V6 - APPLICATION
+// ============================================================
+
+// ============================================================
+// 1. CONFIGURATION
+// ============================================================
+const CONFIG = {
+    // Pour le développement local, décommentez la ligne ci-dessous :
+    // API_URL: 'http://localhost:5000/api',
+    API_URL: 'https://point-focal-backend.onrender.com/api',
+    VERSION: '6.0.0'
+};
+
+// ============================================================
+// 2. ÉTAT DE L'APPLICATION
+// ============================================================
+const STATE = {
+    lang: localStorage.getItem('point_focal_lang') || 'fr',
+    step: 'register', // register | login | dashboard
+    user: null,
+    loading: false
+};
+
+// ============================================================
+// 3. TRADUCTIONS
+// ============================================================
+const TRANSLATIONS = {
+    fr: {
+        register: 'Inscription',
+        login: 'Connexion',
+        logout: 'Déconnexion',
+        email: 'Email',
+        password: 'Mot de passe',
+        confirm: 'Confirmer',
+        sponsor: 'Code sponsor',
+        whatsapp: 'WhatsApp',
+        submitRegister: "S'inscrire",
+        submitLogin: 'Se connecter',
+        already: 'Déjà un compte ?',
+        noAccount: 'Pas de compte ?',
+        welcome: 'Bienvenue',
+        userId: 'ID',
+        invitationCode: 'Code invitation',
+        status: 'Statut',
+        active: 'Actif',
+        publicLink: 'Lien public',
+        kmLink: 'Lien KM',
+        copy: 'Copier',
+        copied: 'Copié !',
+        noLink: 'Aucun lien disponible',
+        paymentStatus: 'Paiement',
+        pending: 'En attente',
+        verified: 'Validé',
+        expired: 'Expiré',
+        dashboard: 'Tableau de bord',
+        errorFields: 'Veuillez remplir tous les champs.',
+        errorPassword: 'Les mots de passe ne correspondent pas.',
+        errorLogin: 'Email ou mot de passe incorrect.',
+        errorRegister: 'Erreur lors de l\'inscription.',
+        successRegister: '✅ Inscription réussie ! Vérifiez vos emails.',
+        successLogin: '✅ Connexion réussie !',
+        passwordMin: 'Le mot de passe doit faire au moins 6 caractères.',
+        networkError: 'Erreur réseau. Vérifiez votre connexion.',
+        loading: 'Chargement...'
+    },
+    en: {
+        register: 'Register',
+        login: 'Login',
+        logout: 'Logout',
+        email: 'Email',
+        password: 'Password',
+        confirm: 'Confirm',
+        sponsor: 'Sponsor code',
+        whatsapp: 'WhatsApp',
+        submitRegister: 'Register',
+        submitLogin: 'Login',
+        already: 'Already have an account?',
+        noAccount: 'No account?',
+        welcome: 'Welcome',
+        userId: 'ID',
+        invitationCode: 'Invitation code',
+        status: 'Status',
+        active: 'Active',
+        publicLink: 'Public link',
+        kmLink: 'KM link',
+        copy: 'Copy',
+        copied: 'Copied!',
+        noLink: 'No link available',
+        paymentStatus: 'Payment',
+        pending: 'Pending',
+        verified: 'Verified',
+        expired: 'Expired',
+        dashboard: 'Dashboard',
+        errorFields: 'Please fill in all fields.',
+        errorPassword: 'Passwords do not match.',
+        errorLogin: 'Invalid email or password.',
+        errorRegister: 'Registration error.',
+        successRegister: '✅ Registration successful! Check your emails.',
+        successLogin: '✅ Login successful!',
+        passwordMin: 'Password must be at least 6 characters.',
+        networkError: 'Network error. Check your connection.',
+        loading: 'Loading...'
+    },
+    es: {
+        register: 'Registro',
+        login: 'Iniciar sesión',
+        logout: 'Cerrar sesión',
+        email: 'Correo',
+        password: 'Contraseña',
+        confirm: 'Confirmar',
+        sponsor: 'Código patrocinador',
+        whatsapp: 'WhatsApp',
+        submitRegister: 'Registrarse',
+        submitLogin: 'Iniciar sesión',
+        already: '¿Ya tienes cuenta?',
+        noAccount: '¿No tienes cuenta?',
+        welcome: 'Bienvenido',
+        userId: 'ID',
+        invitationCode: 'Código invitación',
+        status: 'Estado',
+        active: 'Activo',
+        publicLink: 'Enlace público',
+        kmLink: 'Enlace KM',
+        copy: 'Copiar',
+        copied: 'Copiado!',
+        noLink: 'Sin enlace disponible',
+        paymentStatus: 'Pago',
+        pending: 'Pendiente',
+        verified: 'Validado',
+        expired: 'Expirado',
+        dashboard: 'Panel',
+        errorFields: 'Complete todos los campos.',
+        errorPassword: 'Las contraseñas no coinciden.',
+        errorLogin: 'Correo o contraseña incorrectos.',
+        errorRegister: 'Error en el registro.',
+        successRegister: '✅ ¡Registro exitoso! Revise su correo.',
+        successLogin: '✅ ¡Inicio de sesión exitoso!',
+        passwordMin: 'La contraseña debe tener al menos 6 caracteres.',
+        networkError: 'Error de red. Verifique su conexión.',
+        loading: 'Cargando...'
+    },
+    pt: {
+        register: 'Registro',
+        login: 'Entrar',
+        logout: 'Sair',
+        email: 'E-mail',
+        password: 'Senha',
+        confirm: 'Confirmar',
+        sponsor: 'Código patrocinador',
+        whatsapp: 'WhatsApp',
+        submitRegister: 'Registrar',
+        submitLogin: 'Entrar',
+        already: 'Já tem conta?',
+        noAccount: 'Não tem conta?',
+        welcome: 'Bem-vindo',
+        userId: 'ID',
+        invitationCode: 'Código convite',
+        status: 'Status',
+        active: 'Ativo',
+        publicLink: 'Link público',
+        kmLink: 'Link KM',
+        copy: 'Copiar',
+        copied: 'Copiado!',
+        noLink: 'Sem link disponível',
+        paymentStatus: 'Pagamento',
+        pending: 'Pendente',
+        verified: 'Validado',
+        expired: 'Expirado',
+        dashboard: 'Painel',
+        errorFields: 'Preencha todos os campos.',
+        errorPassword: 'As senhas não coincidem.',
+        errorLogin: 'E-mail ou senha incorretos.',
+        errorRegister: 'Erro no registro.',
+        successRegister: '✅ Registro bem-sucedido! Verifique seu e-mail.',
+        successLogin: '✅ Login bem-sucedido!',
+        passwordMin: 'A senha deve ter pelo menos 6 caracteres.',
+        networkError: 'Erro de rede. Verifique sua conexão.',
+        loading: 'Carregando...'
+    }
+};
+
+// ============================================================
+// 4. FONCTIONS UTILITAIRES
+// ============================================================
+
+// Traduction
+function t(key) {
+    return TRANSLATIONS[STATE.lang]?.[key] || key;
+}
+
+// Message
+function showMessage(elementId, text, type = 'info') {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    el.textContent = text;
+    el.className = `message show ${type}`;
+}
+
+function hideMessage(elementId) {
+    const el = document.getElementById(elementId);
+    if (el) {
+        el.className = 'message';
+        el.textContent = '';
+    }
+}
+
+// API
+async function apiCall(endpoint, method = 'GET', body = null) {
+    const options = {
+        method,
+        headers: { 'Content-Type': 'application/json' }
+    };
+    
+    if (body) options.body = JSON.stringify(body);
+    
+    const token = localStorage.getItem('token');
+    if (token) {
+        options.headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    try {
+        const response = await fetch(`${CONFIG.API_URL}${endpoint}`, options);
+        const data = await response.json();
+        return { ok: response.ok, data, status: response.status };
+    } catch (error) {
+        console.error('API Error:', error);
+        return { ok: false, error: error.message };
+    }
+}
+
+// Copier dans le presse-papiers
+function copyToClipboard(text) {
+    if (!text || text === t('noLink')) return;
+    
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text)
+            .then(() => showToast(t('copied')))
+            .catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+}
+
+function fallbackCopy(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.cssText = 'position:fixed;opacity:0;pointer-events:none;';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+        document.execCommand('copy');
+        showToast(t('copied'));
+    } catch (e) {
+        alert(`📋 ${text}`);
+    }
+    document.body.removeChild(textarea);
+}
+
+// Toast notification
+function showToast(message) {
+    const existing = document.querySelector('.toast-notification');
+    if (existing) existing.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--bg-card);
+        color: var(--text-primary);
+        padding: 12px 24px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--gold);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 9999;
+        animation: fadeSlide 0.3s ease;
+        max-width: 90%;
+    `;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 2500);
+}
+
+// ============================================================
+// 5. GESTION DE LA LANGUE
+// ============================================================
+function setLang(lang) {
+    STATE.lang = lang;
+    localStorage.setItem('point_focal_lang', lang);
+    
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    
+    render();
+}
+
+// ============================================================
+// 6. AUTHENTIFICATION
+// ============================================================
+
+// Inscription
+async function handleRegister(event) {
+    event.preventDefault();
+    const form = event.target;
+    
+    const email = form.email.value.trim();
+    const whatsapp = form.whatsapp.value.trim();
+    const password = form.password.value;
+    const confirm = form.confirm.value;
+    const sponsor = form.sponsor.value.trim();
+
+    if (!email || !whatsapp || !password || !confirm) {
+        showMessage('authMessage', t('errorFields'), 'error');
+        return;
+    }
+    
+    if (password !== confirm) {
+        showMessage('authMessage', t('errorPassword'), 'error');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showMessage('authMessage', t('passwordMin'), 'error');
+        return;
+    }
+
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner spinner-white"></span> ' + t('loading');
+    hideMessage('authMessage');
+
+    const result = await apiCall('/auth/signup', 'POST', {
+        email,
+        whatsapp,
+        password,
+        sponsor: sponsor || null
+    });
+
+    if (result.ok) {
+        showMessage('authMessage', t('successRegister'), 'success');
+        setTimeout(() => {
+            STATE.step = 'login';
+            render();
+        }, 2000);
+    } else {
+        const msg = result.data?.message || result.error || t('errorRegister');
+        showMessage('authMessage', msg, 'error');
+    }
+
+    btn.disabled = false;
+    btn.textContent = t('submitRegister');
+}
+
+// Connexion
+async function handleLogin(event) {
+    event.preventDefault();
+    const form = event.target;
+    
+    const email = form.email.value.trim();
+    const password = form.password.value;
+
+    if (!email || !password) {
+        showMessage('authMessage', t('errorFields'), 'error');
+        return;
+    }
+
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner spinner-white"></span> ' + t('loading');
+    hideMessage('authMessage');
+
+    const result = await apiCall('/auth/login', 'POST', { email, password });
+
+    if (result.ok) {
+        localStorage.setItem('token', result.data.token);
+        localStorage.setItem('user', JSON.stringify(result.data.user));
+        STATE.user = result.data.user;
+        showMessage('authMessage', t('successLogin'), 'success');
+        setTimeout(() => {
+            STATE.step = 'dashboard';
+            render();
+        }, 500);
+    } else {
+        const msg = result.data?.message || result.error || t('errorLogin');
+        showMessage('authMessage', msg, 'error');
+    }
+
+    btn.disabled = false;
+    btn.textContent = t('submitLogin');
+}
+
+// Déconnexion
+function handleLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    STATE.user = null;
+    STATE.step = 'login';
+    render();
+}
+
+// ============================================================
+// 7. RENDU DES PAGES
+// ============================================================
+
+function render() {
+    const container = document.getElementById('appContent');
+    if (!container) return;
+
+    // Vérifier si l'utilisateur est connecté
+    if (!STATE.user) {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            try {
+                STATE.user = JSON.parse(userData);
+                if (localStorage.getItem('token')) {
+                    STATE.step = 'dashboard';
+                }
+            } catch (e) {
+                STATE.user = null;
+            }
+        }
+    }
+
+    // Afficher la bonne page
+    switch (STATE.step) {
+        case 'dashboard':
+            renderDashboard(container);
+            break;
+        case 'login':
+            renderLogin(container);
+            break;
+        default:
+            renderRegister(container);
+    }
+}
+
+// ============================================================
+// 8. RENDU - INSCRIPTION
+// ============================================================
+function renderRegister(container) {
+    container.innerHTML = `
+        <form class="auth-form" onsubmit="handleRegister(event)">
+            <div id="authMessage" class="message"></div>
+
+            <div class="form-group">
+                <label>${t('email')}</label>
+                <input type="email" name="email" placeholder="exemple@email.com" required autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label>${t('whatsapp')}</label>
+                <input type="tel" name="whatsapp" placeholder="+243 812 345 678" required autocomplete="tel">
+            </div>
+
+            <div class="form-group">
+                <label>${t('sponsor')}</label>
+                <input type="text" name="sponsor" placeholder="CODE123 (optionnel)" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label>${t('password')}</label>
+                <input type="password" name="password" placeholder="••••••••" required minlength="6" autocomplete="new-password">
+            </div>
+
+            <div class="form-group">
+                <label>${t('confirm')}</label>
+                <input type="password" name="confirm" placeholder="••••••••" required autocomplete="new-password">
+            </div>
+
+            <button type="submit" class="btn btn-primary">${t('submitRegister')}</button>
+
+            <div class="switch-link">
+                ${t('already')} <span class="link-text" onclick="STATE.step='login'; render();">${t('login')}</span>
+            </div>
+        </form>
+    `;
+}
+
+// ============================================================
+// 9. RENDU - CONNEXION
+// ============================================================
+function renderLogin(container) {
+    container.innerHTML = `
+        <form class="auth-form" onsubmit="
