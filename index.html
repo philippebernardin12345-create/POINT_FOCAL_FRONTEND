@@ -1,32 +1,420 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Point Focal V6 - Système Matrice & FIFO</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦅</text></svg>" />
+    
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
     <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            background-color: #f4f6f9;
+            min-height: 100vh;
+            background: linear-gradient(145deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ===== LOADER ===== */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #0a0a0f;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 204, 0, 0.1);
+            border-top-color: #ffcc00;
+            border-radius: 50%;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        }
+
+        .loader-text {
+            margin-top: 20px;
+            color: #ffcc00;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .loader-progress {
+            margin-top: 15px;
+            width: 200px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .loader-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ffcc00, #ff6b00);
+            border-radius: 2px;
+            animation: progress 2.5s ease-in-out forwards;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            30% { width: 25%; }
+            60% { width: 60%; }
+            85% { width: 80%; }
+            100% { width: 100%; }
+        }
+
+        /* ===== ROOT ===== */
+        #root {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* ===== MESSAGE D'ERREUR ===== */
+        .error-container {
+            background: rgba(255, 51, 51, 0.1);
+            border: 2px solid #ff3333;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 500px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .error-container .error-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .error-container h2 {
+            color: #ff3333;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .error-container p {
+            color: #aaaaaa;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .error-container button {
+            background: #ff3333;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .error-container button:hover {
+            background: #cc0000;
+            transform: scale(1.05);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            #root {
+                padding: 10px;
+            }
+
+            .loader-text {
+                font-size: 12px;
+            }
+
+            .loader-progress {
+                width: 150px;
+            }
+
+            .error-container {
+                padding: 25px;
+                margin: 10px;
+            }
+
+            .error-container h2 {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .loader-spinner {
+                width: 40px;
+                height: 40px;
+            }
+
+            .loader-text {
+                font-size: 10px;
+            }
+
+            .loader-progress {
+                width: 120px;
+            }
+
+            .error-container .error-icon {
+                font-size: 36px;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 204, 0, 0.3);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 204, 0, 0.5);
+        }
+
+        /* ===== SELECTION ===== */
+        ::selection {
+            background: #ffcc00;
+            color: #0a0a0f;
         }
     </style>
 </head>
+
 <body>
+    <!-- ===== LOADER ===== -->
+    <div id="loader" role="status" aria-label="Chargement de l'application">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">🦅 Point Focal V6</div>
+        <div class="loader-progress">
+            <div class="loader-progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- ===== APPLICATION ===== -->
     <div id="root"></div>
 
+    <!-- ===== SCRIPTS ===== -->
     <script type="text/babel" data-type="module">
+        // ============================================================
+        // 1. IMPORTS
+        // ============================================================
         import React from 'https://esm.sh/react@18.2.0';
         import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client';
         import App from './App.jsx';
 
-        const root = ReactDOM.createRoot(
-            document.getElementById('root')
-        );
+        // ============================================================
+        // 2. GESTION DES ERREURS GLOBALES
+        // ============================================================
+        window.addEventListener('error', (event) => {
+            console.error('❌ Erreur globale:', event.error || event.message);
+            
+            const root = document.getElementById('root');
+            if (root) {
+                root.innerHTML = `
+                    <div class="error-container">
+                        <div class="error-icon">⚠️</div>
+                        <h2>Erreur de chargement</h2>
+                        <p>Une erreur technique est survenue. Veuillez rafraîchir la page ou contacter le support.</p>
+                        <button onclick="window.location.reload()">🔄 Rafraîchir</button>
+                    </div>
+                `;
+            }
+        });
 
-        root.render(
-            React.createElement(App)
-        );
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('❌ Promesse non gérée:', event.reason);
+            // On ne bloque pas l'application pour une promesse non gérée
+        });
+
+        // ============================================================
+        // 3. DÉTECTION DU MODE (DÉVELOPPEMENT / PRODUCTION)
+        // ============================================================
+        const isDevelopment = window.location.hostname === 'localhost' || 
+                             window.location.hostname === '127.0.0.1';
+
+        console.log(`🔧 Mode: ${isDevelopment ? 'DÉVELOPPEMENT' : 'PRODUCTION'}`);
+        console.log(`🌐 URL: ${window.location.href}`);
+
+        // ============================================================
+        // 4. CONFIGURATION DE L'API
+        // ============================================================
+        // Définir l'URL de l'API en fonction de l'environnement
+        const API_URL = isDevelopment 
+            ? 'http://localhost:5000/api'
+            : 'https://point-focal-backend.onrender.com/api';
+
+        // Exposer l'URL de l'API dans le contexte global
+        window.__API_URL = API_URL;
+
+        // ============================================================
+        // 5. VÉRIFICATION DE LA CONNEXION
+        // ============================================================
+        async function checkConnection() {
+            try {
+                const response = await fetch(`${API_URL}/health`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' },
+                    signal: AbortSignal.timeout(5000)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ Serveur connecté:', data);
+                return true;
+            } catch (error) {
+                console.warn('⚠️ Serveur indisponible:', error.message);
+                return false;
+            }
+        }
+
+        // ============================================================
+        // 6. DÉMARRAGE DE L'APPLICATION
+        // ============================================================
+        async function bootstrap() {
+            const rootElement = document.getElementById('root');
+            const loader = document.getElementById('loader');
+
+            try {
+                // Vérifier la connexion au serveur
+                const isConnected = await checkConnection();
+                
+                if (!isConnected && !isDevelopment) {
+                    // En production, afficher un avertissement mais continuer
+                    console.warn('⚠️ Le serveur est peut-être en cours de démarrage...');
+                }
+
+                // Créer le root React
+                const root = ReactDOM.createRoot(rootElement);
+
+                // Rendre l'application avec le contexte API
+                root.render(
+                    React.createElement(
+                        App,
+                        { 
+                            apiUrl: API_URL,
+                            isDevelopment: isDevelopment
+                        }
+                    )
+                );
+
+                // Cacher le loader après un court délai
+                setTimeout(() => {
+                    if (loader) {
+                        loader.classList.add('hidden');
+                    }
+                }, 800);
+
+            } catch (error) {
+                console.error('❌ Erreur de bootstrap:', error);
+                
+                // Afficher une erreur dans le root
+                if (rootElement) {
+                    rootElement.innerHTML = `
+                        <div class="error-container">
+                            <div class="error-icon">🚨</div>
+                            <h2>Erreur de démarrage</h2>
+                            <p>Impossible de charger l'application. Vérifiez que tous les fichiers sont bien présents.</p>
+                            <p style="font-size: 12px; color: #666; margin-top: 5px;">
+                                ${error.message || 'Erreur inconnue'}
+                            </p>
+                            <button onclick="window.location.reload()">🔄 Rafraîchir</button>
+                        </div>
+                    `;
+                }
+
+                // Cacher le loader
+                if (loader) {
+                    loader.classList.add('hidden');
+                }
+            }
+        }
+
+        // ============================================================
+        // 7. LANCEMENT
+        // ============================================================
+        // Démarrer l'application après le chargement du DOM
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', bootstrap);
+        } else {
+            bootstrap();
+        }
+
+        // ============================================================
+        // 8. NETTOYAGE (Optionnel)
+        // ============================================================
+        // Nettoyer les événements si la page se ferme
+        window.addEventListener('beforeunload', () => {
+            console.log('🧹 Nettoyage de l\'application...');
+            // Les hooks React géreront le nettoyage
+        });
+
+        // ============================================================
+        // 9. EXPOSITION DES OUTILS DE DEBUG (Développement uniquement)
+        // ============================================================
+        if (isDevelopment) {
+            window.__DEBUG = {
+                API_URL: API_URL,
+                version: '1.0.0',
+                env: 'development',
+                checkConnection: checkConnection
+            };
+            console.log('🛠️ Mode debug activé. Utilisez window.__DEBUG');
+        }
+
+        console.log('🚀 Point Focal V6 - Application démarrée avec succès !');
     </script>
 </body>
 </html>
