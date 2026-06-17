@@ -8,7 +8,7 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
-            background-color: #0B0E11; /* Anthracite profond Binance */
+            background-color: #0B0E11; /* Anthracite Binance */
             color: #EAECEF; 
             font-family: 'Segoe UI', Arial, sans-serif; 
             display: flex; 
@@ -19,7 +19,7 @@
             padding: 20px; 
         }
         .auth-container { 
-            background-color: #1E2329; /* Couleur des conteneurs Binance */
+            background-color: #1E2329; 
             padding: 40px 30px; 
             border-radius: 4px; 
             max-width: 450px; 
@@ -52,8 +52,15 @@
             transition: all 0.2s;
         }
         input:focus { border-color: #F0B90B; outline: none; }
+        input:read-only {
+            background-color: #14151a;
+            color: #F0B90B;
+            border: 1px dashed #474D57;
+            cursor: not-allowed;
+            font-weight: bold;
+            font-family: monospace;
+        }
         .iti { width: 100%; }
-        .iti__clickable-country-list { background-color: #2B3139; border-color: #474D57; }
         button.btn-submit { 
             width: 100%; 
             padding: 14px; 
@@ -106,8 +113,9 @@
                 <input type="password" id="confirmPassword">
             </div>
             <div class="form-group" id="sponsorGroup">
-                <label>Code d'invitation obligatoire</label>
-                <input type="text" id="sponsorCode">
+                <label>Code d'invitation (Sécurisé automatiquement)</label>
+                <!-- RÈGLE IMPÉRATIVE : Champ en lecture seule, rempli via URL -->
+                <input type="text" id="sponsorCode" readonly placeholder="Détection du code d'invitation via le lien...">
             </div>
             <button type="submit" class="btn-submit" id="btnSubmit">S'inscrire</button>
         </form>
@@ -129,6 +137,33 @@
     const phoneInput = window.intlTelInput(document.getElementById("whatsapp"), {
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
         preferredCountries: ["fr", "ci", "sn", "cm"]
+    });
+
+    // --- DETECTION AUTOMATIQUE DU CODE D'INVITATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        // Détecte le paramètre '?ref=' ou '?sponsor=' dans l'URL
+        const codeInvitation = urlParams.get('ref') || urlParams.get('sponsor');
+        const sponsorField = document.getElementById("sponsorCode");
+        const errBox = document.getElementById("errorBox");
+
+        if (codeInvitation) {
+            const formattedCode = codeInvitation.trim().toUpperCase();
+            sponsorField.value = formattedCode;
+            
+            // Validation immédiate du format Série 1 / Série 2
+            const regex1 = /^[A-Z]{4}[0-9]{4}$/;
+            const regex2 = /^[0-9]{4}[A-Z]{4}$/;
+
+            if (!regex1.test(formattedCode) && !regex2.test(formattedCode)) {
+                errBox.innerText = "Attention : Le lien d'invitation utilisé possède un format de code incorrect (Série 1 ou 2 attendue).";
+                errBox.style.display = "block";
+            }
+        } else {
+            // Si aucun code n'est fourni, on l'indique clairement (Règle d'obligation stricte)
+            sponsorField.value = "";
+            sponsorField.placeholder = "❌ Aucun lien d'invitation détecté. Utilisez le lien fourni par votre parrain.";
+        }
     });
 
     function toggleForm() {
@@ -171,8 +206,10 @@
                 errBox.style.display = "block";
                 return;
             }
+            
+            // Sécurité anti-bypass : Blocage si aucun code n'a été chargé automatiquement
             if (!sponsor) {
-                errBox.innerText = "Le code d'invitation est obligatoire.";
+                errBox.innerText = "Inscription impossible : Vous devez obligatoirement utiliser un lien de parrainage valide.";
                 errBox.style.display = "block";
                 return;
             }
