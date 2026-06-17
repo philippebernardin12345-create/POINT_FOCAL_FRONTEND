@@ -3,27 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POINT FOCAL - Inscription</title>
+    <title>POINT FOCAL - Inscription & Connexion</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <style>
-        * { box-sizing: border-box; }
-        body { background-color: #121212; color: #ffffff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
-        .auth-container { background-color: #1e1e1e; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.7); max-width: 400px; width: 100%; text-align: center; }
-        .lang-selector { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
-        .lang-btn { background-color: #252525; color: #ffffff; border: 1px solid #444; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .lang-btn.active { background-color: #00cc44; border-color: #00cc44; }
-        h2 { margin-bottom: 20px; color: #00cc44; text-transform: uppercase; font-size: 20px; }
-        .form-group { margin-bottom: 15px; text-align: left; }
-        label { display: block; margin-bottom: 5px; font-size: 13px; color: #aaaaaa; }
-        input { width: 100%; padding: 10px; background-color: #252525; border: 1px solid #444; color: #ffffff; border-radius: 6px; font-size: 14px; }
-        input:focus { border-color: #00cc44; outline: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background-color: #0B0E11; /* Anthracite profond Binance */
+            color: #EAECEF; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        .auth-container { 
+            background-color: #1E2329; /* Couleur des conteneurs Binance */
+            padding: 40px 30px; 
+            border-radius: 4px; 
+            max-width: 450px; 
+            width: 100%; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5); 
+        }
+        .lang-selector { display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 25px; }
+        .lang-btn { 
+            background-color: #2B3139; 
+            color: #848E9C; 
+            border: none; 
+            padding: 6px 12px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 12px; 
+            font-weight: 600;
+        }
+        .lang-btn.active { background-color: #F0B90B; color: #000000; }
+        h2 { margin-bottom: 25px; color: #EAECEF; font-size: 24px; font-weight: 600; text-align: left; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; margin-bottom: 8px; font-size: 14px; color: #848E9C; }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            background-color: #2B3139; 
+            border: 1px solid #2B3139; 
+            color: #EAECEF; 
+            border-radius: 4px; 
+            font-size: 14px; 
+            transition: all 0.2s;
+        }
+        input:focus { border-color: #F0B90B; outline: none; }
         .iti { width: 100%; }
-        button.btn-submit { width: 100%; padding: 12px; background-color: #00cc44; color: #ffffff; border: none; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; }
-        button.btn-submit:hover { background-color: #00aa3a; }
-        .toggle-link { margin-top: 15px; font-size: 13px; color: #aaaaaa; cursor: pointer; display: block; }
-        .toggle-link:hover { color: #00cc44; }
-        .error-box { background-color: rgba(255,51,51,0.1); border: 1px solid #ff3333; color: #ff8888; padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 13px; display: none; }
-        .success-box { background-color: rgba(0,204,68,0.1); border: 1px solid #00cc44; color: #a3e635; padding: 15px; border-radius: 6px; font-size: 14px; display: none; }
+        .iti__clickable-country-list { background-color: #2B3139; border-color: #474D57; }
+        button.btn-submit { 
+            width: 100%; 
+            padding: 14px; 
+            background-color: #F0B90B; 
+            color: #000000; 
+            border: none; 
+            border-radius: 4px; 
+            font-weight: 700; 
+            font-size: 16px; 
+            cursor: pointer; 
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+        button.btn-submit:hover { background-color: #FFE15D; }
+        .toggle-link { margin-top: 20px; font-size: 14px; color: #F0B90B; cursor: pointer; display: block; text-align: left; font-weight: 500; }
+        .toggle-link:hover { color: #FFE15D; }
+        .error-box { background-color: rgba(234,57,67,0.1); border-left: 4px solid #EA3943; color: #EA3943; padding: 12px; border-radius: 4px; margin-bottom: 20px; font-size: 14px; display: none; text-align: left; }
+        .success-box { background-color: rgba(2,192,118,0.1); border-left: 4px solid #02C076; color: #02C076; padding: 25px; border-radius: 4px; font-size: 14px; display: none; text-align: left; }
     </style>
 </head>
 <body>
@@ -39,7 +87,7 @@
     <div id="errorBox" class="error-box"></div>
 
     <div id="authSection">
-        <h2 id="formTitle">Inscription</h2>
+        <h2 id="formTitle">Créer un compte</h2>
         <form id="authForm">
             <div class="form-group">
                 <label>Adresse e-mail</label>
@@ -67,9 +115,9 @@
     </div>
 
     <div id="verifyEmailSection" class="success-box">
-        <h3>📧 Validation Requise</h3>
-        <p>Un e-mail de confirmation vous a été envoyé. Veuillez cliquer sur le lien présent dans le message pour valider votre compte, puis connectez-vous.</p>
-        <button class="btn-submit" onclick="window.location.reload()">Aller à la connexion</button>
+        <h3 style="margin-bottom: 10px; font-size: 18px;">📧 Validation requise</h3>
+        <p style="line-height: 1.5; margin-bottom: 15px;">Un e-mail de confirmation vous a été envoyé. Veuillez cliquer sur le lien d'activation présent dans le message afin d'accéder à l'application.</p>
+        <button class="btn-submit" onclick="window.location.reload()">Retourner à la connexion</button>
     </div>
 </div>
 
@@ -80,22 +128,20 @@
     
     const phoneInput = window.intlTelInput(document.getElementById("whatsapp"), {
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-        preferredCountries: ["fr", "ci", "sn", "cm", "be"]
+        preferredCountries: ["fr", "ci", "sn", "cm"]
     });
 
     function toggleForm() {
         isRegister = !isRegister;
-        const errBox = document.getElementById("errorBox");
-        errBox.style.display = "none";
-
-        document.getElementById("formTitle").innerText = isRegister ? "Inscription" : "Connexion";
+        document.getElementById("errorBox").style.display = "none";
+        document.getElementById("formTitle").innerText = isRegister ? "Créer un compte" : "Se connecter";
         document.getElementById("whatsappGroup").style.display = isRegister ? "block" : "none";
         document.getElementById("confirmPasswordGroup").style.display = isRegister ? "block" : "none";
         document.getElementById("sponsorGroup").style.display = isRegister ? "block" : "none";
         document.getElementById("btnSubmit").innerText = isRegister ? "S'inscrire" : "Se connecter";
-        document.getElementById("toggleAuth").innerText = isRegister ? "Déjà inscrit ? Se connecter" : "Pas de compte ? S'inscrire";
+        document.getElementById("toggleAuth").innerText = isRegister ? "Déjà inscrit ? Se connecter" : "Pas encore de compte ? S'inscrire";
         
-        if(isRegister) {
+        if (isRegister) {
             document.getElementById("whatsapp").setAttribute("required", "required");
         } else {
             document.getElementById("whatsapp").removeAttribute("required");
@@ -116,17 +162,17 @@
             const whatsapp = phoneInput.getNumber();
 
             if (!phoneInput.isValidNumber()) {
-                errBox.innerText = "Numéro WhatsApp invalide.";
+                errBox.innerText = "Format de numéro WhatsApp incorrect.";
                 errBox.style.display = "block";
                 return;
             }
             if (password !== confirmPassword) {
-                errBox.innerText = "Les mots de passe ne correspondent pas.";
+                errBox.innerText = "Les mots de passe saisis ne sont pas identiques.";
                 errBox.style.display = "block";
                 return;
             }
             if (!sponsor) {
-                errBox.innerText = "Le code d'invitation est strictement obligatoire.";
+                errBox.innerText = "Le code d'invitation est obligatoire.";
                 errBox.style.display = "block";
                 return;
             }
@@ -146,7 +192,7 @@
                     errBox.style.display = "block";
                 }
             } catch (err) {
-                errBox.innerText = "Erreur de serveur.";
+                errBox.innerText = "Erreur technique serveur.";
                 errBox.style.display = "block";
             }
         } else {
@@ -160,15 +206,13 @@
                 if (res.ok) {
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
-                    
-                    // RÈGLE INVIOLABLE : Redirection obligatoire vers le popup d'avertissement 10s
                     window.location.href = "popup-youtube.html";
                 } else {
-                    errBox.innerText = data.message || "Identifiants incorrects ou e-mail non validé.";
+                    errBox.innerText = data.message || "Identifiants invalides ou e-mail non vérifié.";
                     errBox.style.display = "block";
                 }
             } catch (err) {
-                errBox.innerText = "Erreur de connexion.";
+                errBox.innerText = "Connexion impossible.";
                 errBox.style.display = "block";
             }
         }
