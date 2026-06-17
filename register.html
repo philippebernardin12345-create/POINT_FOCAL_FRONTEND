@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POINT FOCAL - Inscription & Connexion</title>
+    <title>POINT FOCAL - Inscription Écosystème</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
-            background-color: #0B0E11; /* Anthracite Binance */
+            background-color: #0B0E11; /* Fond sombre Binance */
             color: #EAECEF; 
             font-family: 'Segoe UI', Arial, sans-serif; 
             display: flex; 
@@ -19,7 +19,7 @@
             padding: 20px; 
         }
         .auth-container { 
-            background-color: #1E2329; 
+            background-color: #1E2329; /* Conteneur style Binance */
             padding: 40px 30px; 
             border-radius: 4px; 
             max-width: 450px; 
@@ -38,7 +38,8 @@
             font-weight: 600;
         }
         .lang-btn.active { background-color: #F0B90B; color: #000000; }
-        h2 { margin-bottom: 25px; color: #EAECEF; font-size: 24px; font-weight: 600; text-align: left; }
+        h2 { margin-bottom: 5px; color: #EAECEF; font-size: 24px; font-weight: 600; text-align: left; }
+        .subtitle-form { color: #848E9C; font-size: 13px; margin-bottom: 25px; text-align: left; line-height: 1.4; }
         .form-group { margin-bottom: 20px; text-align: left; }
         label { display: block; margin-bottom: 8px; font-size: 14px; color: #848E9C; }
         input { 
@@ -95,6 +96,8 @@
 
     <div id="authSection">
         <h2 id="formTitle">Créer un compte</h2>
+        <p class="subtitle-form" id="formSubtitle">Inscription sur le lien de votre parrain réel (Régulation FIFO active si saturation).</p>
+        
         <form id="authForm">
             <div class="form-group">
                 <label>Adresse e-mail</label>
@@ -113,9 +116,8 @@
                 <input type="password" id="confirmPassword">
             </div>
             <div class="form-group" id="sponsorGroup">
-                <label>Code d'invitation (Sécurisé automatiquement)</label>
-                <!-- RÈGLE IMPÉRATIVE : Champ en lecture seule, rempli via URL -->
-                <input type="text" id="sponsorCode" readonly placeholder="Détection du code d'invitation via le lien...">
+                <label>Code d'invitation Victory Automatic (Parrain Réel détecté)</label>
+                <input type="text" id="sponsorCode" readonly placeholder="Extraction du code parrain en cours...">
             </div>
             <button type="submit" class="btn-submit" id="btnSubmit">S'inscrire</button>
         </form>
@@ -139,10 +141,10 @@
         preferredCountries: ["fr", "ci", "sn", "cm"]
     });
 
-    // --- DETECTION AUTOMATIQUE DU CODE D'INVITATION ---
+    // --- LOGIQUE AUTOMATIQUE D'EXTRACTION DU CODE PARRAIN RÉEL ---
     window.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
-        // Détecte le paramètre '?ref=' ou '?sponsor=' dans l'URL
+        // Extrait le code '?ref=' du lien partagé par le parrain
         const codeInvitation = urlParams.get('ref') || urlParams.get('sponsor');
         const sponsorField = document.getElementById("sponsorCode");
         const errBox = document.getElementById("errorBox");
@@ -151,18 +153,17 @@
             const formattedCode = codeInvitation.trim().toUpperCase();
             sponsorField.value = formattedCode;
             
-            // Validation immédiate du format Série 1 / Série 2
+            // Format Réglementaire Série 1 ou Série 2
             const regex1 = /^[A-Z]{4}[0-9]{4}$/;
             const regex2 = /^[0-9]{4}[A-Z]{4}$/;
 
             if (!regex1.test(formattedCode) && !regex2.test(formattedCode)) {
-                errBox.innerText = "Attention : Le lien d'invitation utilisé possède un format de code incorrect (Série 1 ou 2 attendue).";
+                errBox.innerText = "Attention : Le format du code d'invitation extrait n'est pas valide (Série 1 ou 2 requise).";
                 errBox.style.display = "block";
             }
         } else {
-            // Si aucun code n'est fourni, on l'indique clairement (Règle d'obligation stricte)
             sponsorField.value = "";
-            sponsorField.placeholder = "❌ Aucun lien d'invitation détecté. Utilisez le lien fourni par votre parrain.";
+            sponsorField.placeholder = "❌ Aucun parrain détecté. Inscription interdite.";
         }
     });
 
@@ -170,6 +171,7 @@
         isRegister = !isRegister;
         document.getElementById("errorBox").style.display = "none";
         document.getElementById("formTitle").innerText = isRegister ? "Créer un compte" : "Se connecter";
+        document.getElementById("formSubtitle").style.display = isRegister ? "block" : "none";
         document.getElementById("whatsappGroup").style.display = isRegister ? "block" : "none";
         document.getElementById("confirmPasswordGroup").style.display = isRegister ? "block" : "none";
         document.getElementById("sponsorGroup").style.display = isRegister ? "block" : "none";
@@ -207,14 +209,15 @@
                 return;
             }
             
-            // Sécurité anti-bypass : Blocage si aucun code n'a été chargé automatiquement
+            // Rejet immédiat si tentative de bypass sans lien Victory réel
             if (!sponsor) {
-                errBox.innerText = "Inscription impossible : Vous devez obligatoirement utiliser un lien de parrainage valide.";
+                errBox.innerText = "Inscription refusée : Vous devez obligatoirement utiliser le lien Victory Automatic fourni par un parrain.";
                 errBox.style.display = "block";
                 return;
             }
 
             try {
+                // Envoi à l'API : l'API se chargera de rattacher au parrain ou de basculer en FIFO si saturé
                 const res = await fetch(`${BASE_API}/register`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -229,7 +232,7 @@
                     errBox.style.display = "block";
                 }
             } catch (err) {
-                errBox.innerText = "Erreur technique serveur.";
+                errBox.innerText = "Échec de connexion avec le serveur d'attribution.";
                 errBox.style.display = "block";
             }
         } else {
@@ -245,11 +248,11 @@
                     localStorage.setItem('user', JSON.stringify(data.user));
                     window.location.href = "popup-youtube.html";
                 } else {
-                    errBox.innerText = data.message || "Identifiants invalides ou e-mail non vérifié.";
+                    errBox.innerText = data.message || "Identifiants incorrects ou e-mail non validé.";
                     errBox.style.display = "block";
                 }
             } catch (err) {
-                errBox.innerText = "Connexion impossible.";
+                errBox.innerText = "Connexion impossible pour le moment.";
                 errBox.style.display = "block";
             }
         }
