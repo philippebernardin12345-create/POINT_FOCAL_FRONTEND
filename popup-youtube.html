@@ -3,164 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Point Focal - Mission Communautaire</title>
-
+    <title>Point Focal - IMPORTANT</title>
     <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial, Helvetica, sans-serif;
+        * { box-sizing: border-box; }
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
-
-        body{
-            background:linear-gradient(135deg,#0f172a,#1e3a8a);
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            min-height:100vh;
-            padding:20px;
+        .popup-box {
+            background-color: #000000;
+            border: 5px solid #ffffff;
+            padding: 40px;
+            max-width: 650px;
+            width: 90%;
+            text-align: center;
         }
-
-        .popup{
-            width:100%;
-            max-width:650px;
-            background:#ffffff;
-            border-radius:15px;
-            padding:30px;
-            box-shadow:0 15px 40px rgba(0,0,0,0.35);
-            text-align:center;
+        h1 {
+            color: #ff0000;
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
         }
-
-        h1{
-            color:#1e3a8a;
-            margin-bottom:20px;
-            font-size:30px;
+        .emotional-text {
+            color: #ffff00;
+            font-size: 16px;
+            line-height: 1.6;
+            text-align: left;
+            margin-bottom: 30px;
         }
-
-        .community-box{
-            background:#eff6ff;
-            border-left:6px solid #2563eb;
-            padding:20px;
-            border-radius:8px;
-            text-align:left;
-            margin-bottom:25px;
+        .emotional-text p { margin-bottom: 15px; }
+        .emotional-text ul { padding-left: 20px; margin-top: 10px; }
+        .emotional-text li { margin-bottom: 10px; }
+        .timer-display {
+            font-size: 18px;
+            color: #ff3333;
+            margin-bottom: 25px;
+            font-weight: bold;
         }
-
-        .community-box h2{
-            color:#1d4ed8;
-            margin-bottom:15px;
-            font-size:22px;
+        button {
+            background-color: #222222;
+            color: #888888;
+            border: 2px solid #444444;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: not-allowed;
+            text-transform: uppercase;
+            width: 100%;
+            transition: all 0.3s ease;
         }
-
-        .community-box p{
-            color:#333;
-            line-height:1.7;
-            margin-bottom:15px;
-        }
-
-        ul{
-            list-style:none;
-            margin-top:15px;
-        }
-
-        ul li{
-            padding:10px 0;
-            font-size:17px;
-            color:#222;
-        }
-
-        .footer-message{
-            margin-top:25px;
-            padding:18px;
-            background:#f8fafc;
-            border-radius:8px;
-            color:#0f172a;
-            font-weight:bold;
-            line-height:1.6;
-        }
-
-        button{
-            margin-top:30px;
-            width:100%;
-            padding:15px;
-            border:none;
-            border-radius:10px;
-            background:#2563eb;
-            color:white;
-            font-size:18px;
-            font-weight:bold;
-            cursor:pointer;
-            transition:0.3s;
-        }
-
-        button:hover{
-            background:#1d4ed8;
-        }
-
-        .small-text{
-            margin-top:15px;
-            font-size:13px;
-            color:#666;
+        button.active {
+            background-color: #ff0000;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            cursor: pointer;
         }
     </style>
 </head>
-
 <body>
 
-<div class="popup">
-
-    <h1>🚀 Mission Communautaire Point Focal</h1>
-
-    <div class="community-box">
-
-        <h2>🎯 Objectif communautaire</h2>
-
-        <p>
-            Chaque interaction <strong>(vue, J'aime, commentaire et partage)</strong>
-            contribue à améliorer la visibilité de cette vidéo sur YouTube.
-        </p>
-
-        <p>
-            En participant, vous aidez l'algorithme à recommander le contenu à
-            davantage de personnes, ce qui renforce la notoriété et le développement
-            de toute la communauté <strong>Point Focal</strong>.
-        </p>
-
-        <p>
-            <strong>Avant de poursuivre, nous vous invitons à :</strong>
-        </p>
-
+<div class="popup-box">
+    <h1>IMPORTANT</h1>
+    
+    <div class="emotional-text">
+        <p>Les likes augmentent la visibilité de la vidéo.</p>
+        <p>Les commentaires pertinents renforcent l'engagement.</p>
+        <p>Les partages augmentent la portée.</p>
+        <p><strong>Plus la vidéo est recommandée par YouTube :</strong></p>
         <ul>
-            <li>▶️ Regarder la vidéo.</li>
-            <li>👍 Ajouter un J'aime.</li>
-            <li>💬 Laisser un commentaire authentique.</li>
-            <li>🔄 Partager la vidéo si vous la trouvez utile.</li>
-            <li>🔔 Vous abonner à la chaîne si vous souhaitez suivre les prochaines publications.</li>
+            <li>Plus de nouveaux membres découvrent Point Focal.</li>
+            <li>Plus la communauté grandit.</li>
+            <li>Plus les opportunités profitent à tous.</li>
         </ul>
-
     </div>
 
-    <div class="footer-message">
-        🤝 Ensemble, chaque interaction contribue à faire grandir
-        l'écosystème Point Focal.
-    </div>
-
-    <button onclick="continuer()">
-        🚀 Accéder à la vidéo
-    </button>
-
-    <div class="small-text">
-        Merci pour votre contribution au développement de la communauté.
-    </div>
-
+    <div id="timer" class="timer-display">Veuillez lire attentivement pendant 10 secondes...</div>
+    <button id="btnContinue" disabled>Bouton Verrouillé</button>
 </div>
 
 <script>
-function continuer(){
-    window.location.href = "video.html";
-}
-</script>
+    let timeLeft = 10;
+    const timerDisplay = document.getElementById('timer');
+    const btnContinue = document.getElementById('btnContinue');
 
+    const countdown = setInterval(() => {
+        timeLeft--;
+        if (timeLeft > 0) {
+            timerDisplay.innerText = `Attente obligatoire : ${timeLeft}s`;
+        } else {
+            clearInterval(countdown);
+            timerDisplay.innerText = "✓ Règle lue et comprise.";
+            timerDisplay.style.color = "#00ff00";
+            btnContinue.innerText = "JE COMPRENDS — PASSER À LA VIDÉO";
+            btnContinue.disabled = false;
+            btnContinue.classList.add('active');
+        }
+    }, 1000);
+
+    btnContinue.addEventListener('click', () => {
+        window.location.href = "video.html";
+    });
+</script>
 </body>
 </html>
