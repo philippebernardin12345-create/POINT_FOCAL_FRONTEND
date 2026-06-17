@@ -3,87 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Point Focal - Attribution du Lien Victory</title>
+    <title>Point Focal - Lien Victory</title>
     <style>
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: #121212;
-            color: #ffffff;
+            background-color: #0B0E11;
+            color: #EAECEF;
             font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            padding: 20px;
         }
         .victory-container {
-            background-color: #1e1e1e;
-            padding: 35px;
-            border-radius: 12px;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.8);
-            max-width: 600px;
+            background-color: #1E2329;
+            padding: 40px 30px;
+            border-radius: 4px;
+            max-width: 550px;
             width: 100%;
             text-align: center;
-            border: 2px solid #ffcc00;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
         }
         h2 {
-            color: #ffcc00;
-            margin-bottom: 15px;
-            text-transform: uppercase;
+            color: #EAECEF;
+            margin-bottom: 20px;
             font-size: 22px;
-        }
-        .instructions {
-            color: #dddddd;
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 25px;
+            font-weight: 600;
             text-align: left;
         }
-        .link-box {
-            background-color: #252525;
+        .timer-alert {
+            background-color: rgba(234, 57, 67, 0.1);
+            border-left: 4px solid #EA3943;
+            color: #EA3943;
             padding: 15px;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 16px;
-            color: #ffffff;
-            border: 1px dashed #ffcc00;
-            margin-bottom: 20px;
-            word-break: break-all;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: left;
+            margin-bottom: 25px;
+            line-height: 1.5;
         }
-        .btn-copy {
-            background-color: #ffcc00;
-            color: #121212;
-            border: none;
-            padding: 12px 25px;
+        .link-box {
+            background-color: #2B3139;
+            padding: 16px;
+            border-radius: 4px;
+            font-family: monospace;
             font-size: 15px;
-            font-weight: bold;
-            border-radius: 6px;
+            color: #F0B90B;
+            border: 1px solid #474D57;
+            margin-bottom: 25px;
+            word-break: break-all;
+            text-align: left;
+        }
+        .btn-action {
+            background-color: #F0B90B;
+            color: #000000;
+            border: none;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background 0.2s;
             width: 100%;
             margin-bottom: 15px;
+            text-transform: uppercase;
         }
-        .btn-copy:hover { background-color: #e6b800; }
-        .btn-next-step {
+        .btn-action:hover { background-color: #FFE15D; }
+        .btn-next {
             display: block;
             width: 100%;
             padding: 15px;
-            background-color: #444444;
-            color: #888888;
+            background-color: #2B3139;
+            color: #848E9C;
             text-decoration: none;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: not-allowed;
+            font-weight: 700;
+            border-radius: 4px;
             text-transform: uppercase;
-            transition: all 0.3s;
+            font-size: 14px;
+            pointer-events: none;
+            transition: all 0.2s;
         }
-        .btn-next-step.ready {
-            background-color: #00cc44;
-            color: white;
-            cursor: pointer;
+        .btn-next.ready {
+            background-color: #02C076;
+            color: #FFFFFF;
+            pointer-events: auto;
         }
+        .btn-next.ready:hover { background-color: #03D381; }
     </style>
 </head>
 <body>
@@ -91,23 +96,18 @@
 <div class="victory-container">
     <h2>🔗 Attribution du Lien Victory Automatic</h2>
     
-    <div class="info-box" id="timerWarning" style="background-color: rgba(255, 51, 51, 0.1); border: 1px solid #ff3333; color: #ff8888; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-weight: bold; text-align: left;">
-        ⏳ CHRONOMÈTRE 24 HEURES ACTIVÉ : Le processus d'activation expire automatiquement après 24 heures. Vous devez finaliser votre validation avant cette limite.
+    <div class="timer-alert" id="timerWarning">
+        ⏳ CHRONOMÈTRE 24 HEURES ACTIVÉ : Le processus d'activation expire automatiquement après un délai strict de 24 heures. Vous devez finaliser l'étape blockchain avant cette limite sous peine de blocage.
     </div>
 
-    <div class="instructions">
-        <p>Le système Point Focal vous a attribué de façon optimale le lien d'inscription ci-dessous (Parrain direct prioritaire ou file d'attente globale FIFO) :</p>
-    </div>
+    <div class="link-box" id="victoryLinkDisplay">Traitement de l'algorithme FIFO / Parrain...</div>
 
-    <div class="link-box" id="victoryLinkDisplay">Attribution du lien serveur en cours...</div>
-
-    <button class="btn-copy" onclick="copierLienVictory()">📋 COPIER LE LIEN</button>
-    
-    <a href="payment.html" class="btn-next-step" id="btnNextStep">J'ai copié le lien — Étape Suivante</a>
+    <button class="btn-action" onclick="copierLien()">Copier le lien attribué</button>
+    <a href="payment.html" class="btn-next" id="btnNextStep">Étape suivante</a>
 </div>
 
 <script>
-    let lienGenere = "";
+    let linkAllocated = "";
 
     window.addEventListener('DOMContentLoaded', async () => {
         const token = localStorage.getItem('token');
@@ -120,31 +120,29 @@
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}` 
                 },
-                body: JSON.stringify({}) // Plus de mode KM ici, structure 100% standard FIFO/Parrain
+                body: JSON.stringify({}) // Plus aucune mention de mode KM
             });
 
             const data = await response.json();
-
             if (response.ok && data.ok) {
-                lienGenere = data.url;
-                document.getElementById('victoryLinkDisplay').innerText = lienGenere;
-                document.getElementById('btnNextStep').className = "btn-next-step ready";
+                linkAllocated = data.url;
+                document.getElementById('victoryLinkDisplay').innerText = linkAllocated;
+                document.getElementById('btnNextStep').classList.add("ready");
             } else {
-                document.getElementById('victoryLinkDisplay').innerText = "Erreur : " + (data.error || "Lien indisponible.");
-                document.getElementById('victoryLinkDisplay').style.color = "#ff3333";
+                document.getElementById('victoryLinkDisplay').innerText = "Erreur : " + (data.error || "Aucun parrain ou slot FIFO de disponible.");
+                document.getElementById('victoryLinkDisplay').style.color = "#EA3943";
             }
         } catch (err) {
-            document.getElementById('victoryLinkDisplay').innerText = "Erreur réseau de communication avec le serveur.";
-            document.getElementById('victoryLinkDisplay').style.color = "#ff3333";
+            document.getElementById('victoryLinkDisplay').innerText = "Échec de connexion au serveur API.";
+            document.getElementById('victoryLinkDisplay').style.color = "#EA3943";
         }
     });
 
-    function copierLienVictory() {
-        if (!lienGenere || lienGenere.includes("en cours") || lienGenere.includes("Erreur")) return;
-        navigator.clipboard.writeText(lienGenere);
-        alert("Lien Victory copié ! Complétez votre formulaire à l'étape suivante.");
+    function copierLien() {
+        if (!linkAllocated) return;
+        navigator.clipboard.writeText(linkAllocated);
+        alert("Lien Victory enregistré dans le presse-papiers.");
     }
 </script>
-
 </body>
 </html>
