@@ -6,93 +6,7 @@
     <title>POINT FOCAL - Inscription & Connexion</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            background-color: #0B0E11; 
-            color: #EAECEF; 
-            font-family: 'Segoe UI', Arial, sans-serif; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 100vh; 
-            padding: 20px; 
-        }
-        .auth-container { 
-            background-color: #1E2329; 
-            padding: 40px 30px; 
-            border-radius: 4px; 
-            max-width: 450px; 
-            width: 100%; 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5); 
-        }
-        .lang-selector { display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 25px; }
-        .lang-btn { 
-            background-color: #2B3139; 
-            color: #848E9C; 
-            border: none; 
-            padding: 6px 12px; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            font-size: 12px; 
-            font-weight: 600;
-        }
-        .lang-btn.active { background-color: #F0B90B; color: #000000; }
-        h2 { margin-bottom: 5px; color: #EAECEF; font-size: 24px; font-weight: 600; text-align: left; }
-        .subtitle-form { color: #848E9C; font-size: 13px; margin-bottom: 25px; text-align: left; line-height: 1.4; }
-        .form-group { margin-bottom: 20px; text-align: left; position: relative; }
-        label { display: block; margin-bottom: 8px; font-size: 14px; color: #848E9C; }
-        input { 
-            width: 100%; 
-            padding: 12px; 
-            background-color: #2B3139; 
-            border: 1px solid #2B3139; 
-            color: #EAECEF; 
-            border-radius: 4px; 
-            font-size: 14px; 
-            transition: all 0.2s;
-        }
-        input:focus { border-color: #F0B90B; outline: none; }
-        input:read-only {
-            background-color: #14151a;
-            color: #F0B90B;
-            border: 1px dashed #474D57;
-            cursor: not-allowed;
-            font-weight: bold;
-            font-family: monospace;
-        }
-        /* Style pour masquer/afficher le mot de passe */
-        .password-wrapper { position: relative; width: 100%; }
-        .toggle-password {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #848E9C;
-            font-size: 14px;
-            user-select: none;
-        }
-        .toggle-password:hover { color: #F0B90B; }
-        .iti { width: 100%; }
-        button.btn-submit { 
-            width: 100%; 
-            padding: 14px; 
-            background-color: #F0B90B; 
-            color: #000000; 
-            border: none; 
-            border-radius: 4px; 
-            font-weight: 700; 
-            font-size: 16px; 
-            cursor: pointer; 
-            margin-top: 10px;
-            transition: background-color 0.2s;
-        }
-        button.btn-submit:hover { background-color: #FFE15D; }
-        .toggle-link { margin-top: 20px; font-size: 14px; color: #F0B90B; cursor: pointer; display: block; text-align: left; font-weight: 500; }
-        .toggle-link:hover { color: #FFE15D; }
-        .error-box { background-color: rgba(234,57,67,0.1); border-left: 4px solid #EA3943; color: #EA3943; padding: 12px; border-radius: 4px; margin-bottom: 20px; font-size: 14px; display: none; text-align: left; }
-        .success-box { background-color: rgba(2,192,118,0.1); border-left: 4px solid #02C076; color: #02C076; padding: 25px; border-radius: 4px; font-size: 14px; display: none; text-align: left; }
+        /* ... VOTRE CSS EXISTANT ... */
     </style>
 </head>
 <body>
@@ -152,7 +66,10 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <script>
-    const BASE_API = "https://point-focal-backend.onrender.com/api";
+    // ✅ URL CORRECTE
+    const BASE_API = "https://point-focal.onrender.com/api";
+    console.log('🌐 Backend API:', BASE_API);
+
     let isRegister = true;
     let currentLang = 'FR';
     
@@ -209,11 +126,11 @@
             errPhone: "Formato de número do WhatsApp incorreto.", errMatch: "As senhas inseridas não coincidem.",
             errNoSponsor: "Inscrição recusada: Código de convite em falta.",
             errFormatCode: "Atenção: O formato do código de convite não é válido (Série 1 ou 2 necessária).",
-            successTitle: "📧 Validação necessária", successText: "Um e-mail de正式 confirmação foi enviado. Por favor, clique no link de ativação para acessar.", btnBack: "Voltar para o login"
+            successTitle: "📧 Validação necessária", successText: "Um e-mail de confirmação foi enviado. Por favor, clique no link de ativação para acessar.", btnBack: "Voltar para o login"
         }
     };
 
-    // Afficher ou masquer le mot de passe en clair
+    // Afficher ou masquer le mot de passe
     function togglePasswordVisibility(fieldId, iconElement) {
         const input = document.getElementById(fieldId);
         if (input.type === "password") {
@@ -251,14 +168,13 @@
         }
     }
 
-    // --- DETECTION ET INTEGRATION AUTOMATIQUE (RACINE PAR DEFAUT) ---
+    // Détection du code sponsor
     window.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         let codeInvitation = urlParams.get('ref') || urlParams.get('sponsor');
         const sponsorField = document.getElementById("sponsorCode");
         const errBox = document.getElementById("errorBox");
 
-        // REGLE DE LA RACINE : Si aucun code n'est fourni, on applique par défaut ABCD1000
         if (!codeInvitation) {
             codeInvitation = "ABCD1000";
         }
@@ -266,7 +182,6 @@
         const formattedCode = codeInvitation.trim().toUpperCase();
         sponsorField.value = formattedCode;
         
-        // Validation stricte Regex
         const regex1 = /^[A-Z]{4}[0-9]{4}$/;
         const regex2 = /^[0-9]{4}[A-Z]{4}$/;
 
@@ -296,6 +211,9 @@
         }
     }
 
+    // ==============================================
+    // SOUMISSION DU FORMULAIRE (AVEC LOGS)
+    // ==============================================
     document.getElementById("authForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const errBox = document.getElementById("errorBox");
@@ -327,12 +245,19 @@
             }
 
             try {
+                console.log('📡 Envoi à:', `${BASE_API}/register`);
+                console.log('📦 Données:', { email, whatsapp, password, sponsor });
+
                 const res = await fetch(`${BASE_API}/register`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email, whatsapp, password, sponsor })
                 });
+
+                console.log('📥 Status:', res.status);
                 const data = await res.json();
+                console.log('📦 Réponse:', data);
+
                 if (res.ok) {
                     document.getElementById("authSection").style.display = "none";
                     document.getElementById("verifyEmailSection").style.display = "block";
@@ -341,17 +266,24 @@
                     errBox.style.display = "block";
                 }
             } catch (err) {
-                errBox.innerText = "Échec de connexion au serveur.";
+                console.error('❌ Erreur complète:', err);
+                errBox.innerText = `Échec de connexion au serveur (${err.message}). Vérifiez que le backend est accessible sur ${BASE_API}`;
                 errBox.style.display = "block";
             }
         } else {
+            // Login
             try {
+                console.log('📡 Envoi à:', `${BASE_API}/login`);
+                
                 const res = await fetch(`${BASE_API}/login`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email, password })
                 });
+                
                 const data = await res.json();
+                console.log('📦 Réponse login:', data);
+
                 if (res.ok) {
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
@@ -361,7 +293,8 @@
                     errBox.style.display = "block";
                 }
             } catch (err) {
-                errBox.innerText = "Connexion impossible.";
+                console.error('❌ Erreur login:', err);
+                errBox.innerText = "Connexion impossible. Vérifiez votre connexion.";
                 errBox.style.display = "block";
             }
         }
