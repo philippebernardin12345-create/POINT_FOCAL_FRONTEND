@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Point Focal V6 - Système Matrice & FIFO</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦅</text></svg>" />
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    
+    <div class="app-wrapper">
+        
+        <!-- ===== HEADER ===== -->
+        <header class="app-header">
+            <div class="header-brand">
+                <span class="brand-icon">🦅</span>
+                <h1 class="brand-title">Point Focal</h1>
+                <span class="brand-version">V6</span>
+            </div>
+            <p class="brand-subtitle">Système Matrice &amp; FIFO</p>
+            
+            <!-- Sélecteur de langue -->
+            <div class="lang-selector">
+                <button class="lang-btn active" data-lang="fr" onclick="setLang('fr')">FR</button>
+                <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+                <button class="lang-btn" data-lang="es" onclick="setLang('es')">ES</button>
+                <button class="lang-btn" data-lang="pt" onclick="setLang('pt')">PT</button>
+            </div>
+        </header>
+        
+        <!-- ===== CONTENU PRINCIPAL ===== -->
+        <main class="app-content" id="appContent">
+            <!-- Rendu dynamique via JavaScript -->
+        </main>
+        
+        <!-- ===== FOOTER ===== -->
+        <footer class="app-footer">
+            <p>© 2026 Point Focal — Tous droits réservés</p>
+            <p class="footer-version">v6.0.0</p>
+        </footer>
+        
+    </div>
+    
+    <!-- ===== SCRIPTS ===== -->
+    <script src="app.js"></script>
+    
+</body>
+</html>
