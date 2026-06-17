@@ -3,145 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Point Focal - Lien Victory</title>
+    <title>Point Focal - Attribution du Lien Victory</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: #0B0E11;
-            color: #EAECEF;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+        body { 
+            background-color: #0B0E11; 
+            color: #EAECEF; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0;
             padding: 20px;
         }
-        .victory-container {
-            background-color: #1E2329;
-            padding: 40px 30px;
+        .card { 
+            background-color: #1E2329; 
+            padding: 40px; 
+            border-radius: 6px; 
+            max-width: 500px; 
+            width: 100%; 
+            text-align: center; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .timer-box { 
+            background: rgba(234, 57, 67, 0.1); 
+            border-left: 4px solid #EA3943; 
+            color: #EA3943; 
+            padding: 15px; 
+            margin-bottom: 25px; 
+            font-weight: bold; 
             border-radius: 4px;
-            max-width: 550px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-        }
-        h2 {
-            color: #EAECEF;
-            margin-bottom: 20px;
-            font-size: 22px;
-            font-weight: 600;
-            text-align: left;
-        }
-        .timer-alert {
-            background-color: rgba(234, 57, 67, 0.1);
-            border-left: 4px solid #EA3943;
-            color: #EA3943;
-            padding: 15px;
             font-size: 14px;
-            font-weight: 600;
-            text-align: left;
-            margin-bottom: 25px;
-            line-height: 1.5;
         }
-        .link-box {
-            background-color: #2B3139;
-            padding: 16px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 15px;
-            color: #F0B90B;
-            border: 1px solid #474D57;
-            margin-bottom: 25px;
+        .link-box { 
+            background: #2B3139; 
+            color: #F0B90B; 
+            padding: 18px; 
+            border-radius: 4px; 
+            margin-bottom: 25px; 
+            font-family: 'Courier New', Courier, monospace; 
+            font-weight: bold;
             word-break: break-all;
-            text-align: left;
+            border: 1px dashed #474D57;
         }
-        .btn-action {
-            background-color: #F0B90B;
-            color: #000000;
-            border: none;
-            padding: 14px;
-            font-size: 15px;
-            font-weight: 700;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 15px;
-            text-transform: uppercase;
+        .btn-ready { 
+            background: #02C076; 
+            color: white; 
+            padding: 16px; 
+            border: none; 
+            width: 100%; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: bold;
+            font-size: 16px;
+            transition: background 0.2s;
         }
-        .btn-action:hover { background-color: #FFE15D; }
-        .btn-next {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background-color: #2B3139;
-            color: #848E9C;
-            text-decoration: none;
-            font-weight: 700;
-            border-radius: 4px;
-            text-transform: uppercase;
-            font-size: 14px;
-            pointer-events: none;
-            transition: all 0.2s;
+        .btn-ready:hover {
+            background: #03A666;
         }
-        .btn-next.ready {
-            background-color: #02C076;
-            color: #FFFFFF;
-            pointer-events: auto;
-        }
-        .btn-next.ready:hover { background-color: #03D381; }
     </style>
 </head>
 <body>
 
-<div class="victory-container">
-    <h2>🔗 Attribution du Lien Victory Automatic</h2>
+<div class="card">
+    <!-- Règle de la matrice : Chronomètre d'activation de 24 heures -->
+    <div class="timer-box">⏳ CHRONOMÈTRE DE MATRICE (24H) : Votre lien expire dans 24 heures sans activation.</div>
     
-    <div class="timer-alert" id="timerWarning">
-        ⏳ CHRONOMÈTRE 24 HEURES ACTIVÉ : Le processus d'activation expire automatiquement après un délai strict de 24 heures. Vous devez finaliser l'étape blockchain avant cette limite sous peine de blocage.
-    </div>
-
-    <div class="link-box" id="victoryLinkDisplay">Traitement de l'algorithme FIFO / Parrain...</div>
-
-    <button class="btn-action" onclick="copierLien()">Copier le lien attribué</button>
-    <a href="payment.html" class="btn-next" id="btnNextStep">Étape suivante</a>
+    <p style="color: #848E9C; font-size: 15px; margin-bottom: 15px;">Voici votre Lien Victory Automatic attribué (Système FIFO) :</p>
+    <div id="linkDisplay" class="link-box">Génération de votre lien en cours...</div>
+    
+    <button id="btnNext" class="btn-ready" onclick="window.location.href='payment.html'">Passer au Paiement sécurisé</button>
 </div>
 
 <script>
-    let linkAllocated = "";
-
-    window.addEventListener('DOMContentLoaded', async () => {
+    window.onload = async () => {
         const token = localStorage.getItem('token');
-        if (!token) { window.location.href = "register.html"; return; }
+        const user = JSON.parse(localStorage.getItem('user'));
 
+        if (!token) {
+            window.location.href = "register.html";
+            return;
+        }
+
+        // AJOUT N°2 : Sécurité en cas d'utilisateur déjà activé
+        if (user && user.isActivated) {
+            window.location.href = "dashboard.html";
+            return;
+        }
+
+        // Appel API automatique pour charger ou assigner le lien (FIFO / Parrain réel)
         try {
-            const response = await fetch('https://point-focal-backend.onrender.com/api/victory-link/assign', {
+            const res = await fetch('https://point-focal-backend.onrender.com/api/victory-link/assign', {
                 method: 'POST',
                 headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` 
-                },
-                body: JSON.stringify({}) // Plus aucune mention de mode KM
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
             });
-
-            const data = await response.json();
-            if (response.ok && data.ok) {
-                linkAllocated = data.url;
-                document.getElementById('victoryLinkDisplay').innerText = linkAllocated;
-                document.getElementById('btnNextStep').classList.add("ready");
+            
+            const data = await res.json();
+            
+            if (res.ok && data.url) {
+                document.getElementById('linkDisplay').innerText = data.url;
             } else {
-                document.getElementById('victoryLinkDisplay').innerText = "Erreur : " + (data.error || "Aucun parrain ou slot FIFO de disponible.");
-                document.getElementById('victoryLinkDisplay').style.color = "#EA3943";
+                document.getElementById('linkDisplay').innerText = "Erreur d'attribution. Contactez le support.";
+                document.getElementById('linkDisplay').style.color = "#EA3943";
             }
-        } catch (err) {
-            document.getElementById('victoryLinkDisplay').innerText = "Échec de connexion au serveur API.";
-            document.getElementById('victoryLinkDisplay').style.color = "#EA3943";
+        } catch (error) {
+            console.error("Erreur serveur :", error);
+            document.getElementById('linkDisplay').innerText = "Erreur de connexion avec le serveur.";
         }
-    });
-
-    function copierLien() {
-        if (!linkAllocated) return;
-        navigator.clipboard.writeText(linkAllocated);
-        alert("Lien Victory enregistré dans le presse-papiers.");
     }
 </script>
 </body>
