@@ -1,53 +1,91 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Point Focal V6 - Système Matrice & FIFO</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦅</text></svg>" />
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POINT FOCAL - Accueil</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #0B0E11;
+            color: #EAECEF;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .welcome-card {
+            background-color: #1E2329;
+            padding: 50px 40px;
+            border-radius: 4px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            border: 1px solid #2B3139;
+        }
+        .logo-space {
+            font-size: 48px;
+            color: #F0B90B;
+            margin-bottom: 20px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #EAECEF;
+        }
+        p {
+            color: #848E9C;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 35px;
+        }
+        .btn-gate {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #F0B90B;
+            color: #000000;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            transition: background-color 0.2s;
+        }
+        .btn-gate:hover {
+            background-color: #FFE15D;
+        }
+    </style>
 </head>
 <body>
+
+<div class="welcome-card">
+    <div class="logo-space">🎯</div>
+    <h1>Bienvenue sur Point Focal</h1>
+    <p>Accédez à l'écosystème de croissance collective automatisé. Rejoignez la file d'attente globale ou connectez-vous à votre espace personnel.</p>
     
-    <div class="app-wrapper">
+    <a href="#" id="gateWayBtn" class="btn-gate">Accéder à l'application</a>
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        const gateWayBtn = document.getElementById('gateWayBtn');
         
-        <!-- ===== HEADER ===== -->
-        <header class="app-header">
-            <div class="header-brand">
-                <span class="brand-icon">🦅</span>
-                <h1 class="brand-title">Point Focal</h1>
-                <span class="brand-version">V6</span>
-            </div>
-            <p class="brand-subtitle">Système Matrice &amp; FIFO</p>
-            
-            <!-- Sélecteur de langue -->
-            <div class="lang-selector">
-                <button class="lang-btn active" data-lang="fr" onclick="setLang('fr')">FR</button>
-                <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
-                <button class="lang-btn" data-lang="es" onclick="setLang('es')">ES</button>
-                <button class="lang-btn" data-lang="pt" onclick="setLang('pt')">PT</button>
-            </div>
-        </header>
-        
-        <!-- ===== CONTENU PRINCIPAL ===== -->
-        <main class="app-content" id="appContent">
-            <!-- Rendu dynamique via JavaScript -->
-        </main>
-        
-        <!-- ===== FOOTER ===== -->
-        <footer class="app-footer">
-            <p>© 2026 Point Focal — Tous droits réservés</p>
-            <p class="footer-version">v6.0.0</p>
-        </footer>
-        
-    </div>
-    
-    <!-- ===== SCRIPTS ===== -->
-    <script src="app.js"></script>
-    
+        if (token) {
+            gateWayBtn.innerText = "Aller au Tableau de Bord";
+            gateWayBtn.href = "dashboard.html";
+        } else {
+            gateWayBtn.innerText = "Commencer l'inscription";
+            gateWayBtn.href = "register.html";
+        }
+    });
+</script>
 </body>
 </html>
