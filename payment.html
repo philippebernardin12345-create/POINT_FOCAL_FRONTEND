@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Point Focal - Validation Automatique du Don Blockchain</title>
+    <title>Point Focal - Validation Automatique Blockchain</title>
     <style>
+        * { box-sizing: border-box; }
         body {
             background-color: #121212;
             color: #ffffff;
@@ -31,205 +32,124 @@
             color: #00cc44;
             margin-bottom: 15px;
             text-transform: uppercase;
-            font-size: 22px;
-        }
-        .info-box {
-            background-color: rgba(0, 204, 68, 0.1);
-            color: #d4edda;
-            padding: 15px;
-            border-radius: 6px;
-            font-size: 14px;
-            line-height: 1.5;
-            text-align: left;
-            margin-bottom: 25px;
-            border-left: 4px solid #00cc44;
+            font-size: 20px;
         }
         .form-group {
-            margin-bottom: 20px;
             text-align: left;
+            margin-bottom: 20px;
         }
         label {
             display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #cccccc;
+            margin-bottom: 7px;
+            font-size: 13px;
+            color: #aaaaaa;
             font-weight: bold;
         }
         input {
             width: 100%;
             padding: 12px;
-            border: 1px solid #333;
-            background-color: #0d0d0d;
-            color: #00ff55;
-            font-family: 'Courier New', Courier, monospace;
+            background-color: #252525;
+            border: 1px solid #444;
+            color: #ffffff;
             border-radius: 6px;
-            box-sizing: border-box;
+            font-family: monospace;
             font-size: 14px;
         }
-        input:focus {
-            border-color: #00cc44;
-            outline: none;
-            box-shadow: 0 0 8px rgba(0, 204, 68, 0.2);
-        }
+        input:focus { border-color: #00cc44; outline: none; }
         .status-box {
-            margin-top: 25px;
             padding: 15px;
             border-radius: 6px;
-            font-weight: bold;
-            font-size: 15px;
+            margin-top: 20px;
+            font-size: 14px;
+            text-align: left;
             display: none;
+            line-height: 1.5;
         }
-        .status-pending {
-            background-color: rgba(255, 204, 0, 0.1);
-            color: #ffcc00;
-            border: 1px solid #ffcc00;
-        }
-        .status-error {
-            background-color: rgba(255, 51, 51, 0.1);
-            color: #ff3333;
-            border: 1px solid #ff3333;
-        }
-        .status-success {
-            background-color: rgba(0, 204, 68, 0.1);
-            color: #00cc44;
-            border: 1px solid #00cc44;
-        }
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #ffcc00;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        .status-loading { background-color: rgba(0, 204, 200, 0.1); border: 1px solid #00cccc; color: #00ffff; }
+        .status-success { background-color: rgba(0, 204, 68, 0.1); border: 1px solid #00cc44; color: #a3e635; }
+        .status-error { background-color: rgba(255, 51, 51, 0.1); border: 1px solid #ff3333; color: #ff8888; }
     </style>
 </head>
 <body>
 
 <div class="payment-container">
-
-    <div style="text-align:center; margin-bottom:10px;">
-        <img src="logo.jpg"
-             alt="Logo Point Focal"
-             style="max-width:120px; height:auto; border-radius:4px;">
-    </div>
-
-    <h2>Étape 5 : Déclencheur de Validation du Don</h2>
-
-    <div class="info-box">
-        <strong>⚡ FLUX AUTOMATIQUE :</strong><br>
-        Une fois inscrit sur Victory Automatic, effectuez votre don vers l'adresse cible fournie par la plateforme. Remplissez ensuite vos informations personnelles ci-dessous pour lier définitivement votre compte. Le système scannera le réseau instantanément.
+    <h2>💳 Formulaire de Validation</h2>
+    <p style="color: #aaa; font-size: 14px; margin-bottom: 25px;">Ordre obligatoire des champs. La validation se lance automatiquement sans bouton dès le remplissage du 3ème champ.</p>
+    
+    <div class="form-group">
+        <label>1. Lien Victory Automatic</label>
+        <input type="text" id="victoryLink" placeholder="Entrez le lien officiel reçu">
     </div>
 
     <div class="form-group">
-        <label for="victoryLink">
-            1. Collez VOTRE propre lien de parrainage Victory Automatic généré *
-        </label>
-        <input
-            type="url"
-            id="victoryLink"
-            placeholder="https://victoryautomatic.com/user/register/VOTRE_PSEUDO"
-        >
+        <label>2. Adresse Cible (Doit commencer par 0x - Longueur: 42)</label>
+        <input type="text" id="adresseCible" maxlength="42" placeholder="0x...">
     </div>
 
     <div class="form-group">
-        <label for="adresseCible">
-            2. L'Adresse Cible USDT (BEP20) indiquée par Victory pour faire le don *
-        </label>
-        <input
-            type="text"
-            id="adresseCible"
-            placeholder="0x... (Adresse du destinataire de votre don)"
-        >
-    </div>
-
-    <div class="form-group">
-        <label for="txHash">
-            3. Le Hash (TX ID) de votre don blockchain de 2.03 USDT *
-        </label>
-        <input
-            type="text"
-            id="txHash"
-            placeholder="0x... (Reçu de transaction de votre portefeuille)"
-        >
+        <label>3. Hash de Transaction (Doit commencer par 0x - Longueur: 66)</label>
+        <input type="text" id="txHash" maxlength="66" placeholder="0x...">
     </div>
 
     <div id="statusBox" class="status-box"></div>
-
 </div>
 
 <script>
-const regexAdresse = /^0x[a-fA-F0-9]{40}$/;
-const regexHash = /^0x[a-fA-F0-9]{66}$/;
+const BASE_API = "https://point-focal-backend.onrender.com/api";
 
-async function verifierFormulaireAutomatique() {
-
+function verifierFormulaireAutomatique() {
     const victoryLink = document.getElementById("victoryLink").value.trim();
     const adresseCible = document.getElementById("adresseCible").value.trim();
     const txHash = document.getElementById("txHash").value.trim();
     const statusBox = document.getElementById("statusBox");
 
-    if (!victoryLink || !adresseCible || !txHash) {
-        statusBox.style.display = "none";
-        return;
-    }
+    // Validation stricte des formats et longueurs requises (Section 6)
+    const isVictoryFilled = victoryLink.length > 10;
+    const isAddressValid = adresseCible.startsWith("0x") && adresseCible.length === 42;
+    const isHashValid = txHash.startsWith("0x") && txHash.length === 66;
 
-    const isLinkValid = victoryLink.includes("victory");
-    const isAdresseValid = regexAdresse.test(adresseCible);
-    const isHashValid = regexHash.test(txHash);
-
-    if (!isLinkValid || !isAdresseValid || !isHashValid) {
-        statusBox.className = "status-box status-error";
-        statusBox.innerHTML = "Format des données invalide. En attente de saisies blockchain et d'un lien Victory conformes...";
+    if (isVictoryFilled && isAddressValid && isHashValid) {
+        // Section 8 : Déclenchement automatique sans bouton supplémentaire
         statusBox.style.display = "block";
-        return;
+        statusBox.className = "status-box status-loading";
+        statusBox.innerHTML = "⚡ <strong>DÉCLENCHEMENT AUTOMATIQUE</strong> : Validation blockchain (BSC) en cours... (USDT BEP20, Montant exact : 2.03, 12 confirmations).";
+        
+        executerValidationDon(victoryLink, adresseCible, txHash);
     }
+}
 
-    statusBox.className = "status-box status-pending";
-    statusBox.innerHTML = "<div class='spinner'></div> Synchronisation Web3. Analyse du don vers l'adresse cible (2.03 USDT) et validation de votre lien personnel...";
-    statusBox.style.display = "block";
+async function executerValidationDon(victoryLink, adresseCible, txHash) {
+    const statusBox = document.getElementById("statusBox");
+    const token = localStorage.getItem("token");
 
     try {
-        const response = await fetch(
-            "https://point-focal.onrender.com/api/payment/verify",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`
-                },
-                body: JSON.stringify({
-                    victoryLink,   // Votre propre lien Victory transmis au serveur
-                    adresseCible,  // L'adresse qui a reçu le don
-                    txHash         // Preuve de transaction
-                })
-            }
-        );
+        const response = await fetch(`${BASE_API}/payment/auto-trigger`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ victoryLink, adresseCible, txHash })
+        });
 
         const data = await response.json();
 
         if (response.ok && data.success) {
             statusBox.className = "status-box status-success";
-            statusBox.innerHTML = "🎉 DON ET LIEN VALIDÉS AVEC SUCCÈS ! Activation de votre espace membre Point Focal...";
+            statusBox.innerHTML = "🎉 PAIEMENT VALIDÉ ! Génération immédiate des liens Point Focal Public...";
+            
+            localStorage.setItem("publicLink", data.publicLink);
 
             setTimeout(() => {
                 window.location.href = "dashboard.html";
-            }, 2500);
-
+            }, 2000);
         } else {
             statusBox.className = "status-box status-error";
-            statusBox.innerHTML = `❌ Rétroaction : ${data.error || "Don introuvable ou adresse cible incorrecte."}`;
+            statusBox.innerHTML = `❌ Rejet immédiat : ${data.error || "Critères de transaction blockchain non respectés."}`;
         }
-
     } catch (error) {
         statusBox.className = "status-box status-error";
-        statusBox.innerHTML = "❌ Erreur réseau. Impossible de contacter le serveur de validation sur Render.";
+        statusBox.innerHTML = "❌ Erreur de communication avec le serveur de validation.";
     }
 }
 
