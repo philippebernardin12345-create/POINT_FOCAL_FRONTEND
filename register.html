@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <style>
-        /* Styles spécifiques à l'authentification (Design inspiré de Binance) */
         body {
             background-color: var(--bg-primary, #0b0e11);
             color: var(--text-primary, #ffffff);
@@ -132,7 +131,6 @@
             display: none;
             line-height: 1.4;
         }
-        /* Ajustement du composant téléphone */
         .iti { width: 100%; }
     </style>
 </head>
@@ -146,7 +144,7 @@
         <button class="lang-btn" onclick="changeLanguage('PT', this)">PT</button>
     </div>
 
-    <div id=\"errorBox\" class="error-box"></div>
+    <div id="errorBox" class="error-box"></div>
 
     <div id="authSection">
         <h2 id="formTitle">Créer un compte</h2>
@@ -184,10 +182,9 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <script>
-    // 1. CONFIGURATION UNIFORMISÉE DE L'API BACKEND
+    // 1. ADRESSE DE L'API ALIGNÉE AVEC SRC/APP.JS
     const BASE_API = "https://point-focal-backend.onrender.com/api";
 
-    // 2. GESTION DE L'ÉTAT ET DES TRADUCTIONS
     let isRegisterMode = true;
     let currentLang = 'FR';
 
@@ -208,13 +205,12 @@
             lblEmail: "Correo electrónico", lblWhatsapp: "Número de WhatsApp", lblSponsor: "Código de patrocinador", lblPassword: "Contraseña"
         },
         PT: {
-            titleReg: "Criar uma conta", subtitleReg: "Registre-se usando o link do seu patrocinador real (regulação FIFO ativa se saturado).", btnReg: "Cadastrar-se", switchReg: "Já é membro? <span class='link-text' onclick='toggleAuthMode()'>Conectar-se</span>",
+            titleReg: "Criar uma conta", subtitleReg: "Registre-se usando le link do seu patrocinador real (regulação FIFO ativa se saturado).", btnReg: "Cadastrar-se", switchReg: "Já é membro? <span class='link-text' onclick='toggleAuthMode()'>Conectar-se</span>",
             titleLog: "Login do Ecossistema", subtitleLog: "Aceda instantaneamente à sua área de membro segura do Point Focal.", btnLog: "Conectar-se", switchLog: "Não tem uma conta? <span class='link-text' onclick='toggleAuthMode()'>Cadastrar-se</span>",
             lblEmail: "Endereço de e-mail", lblWhatsapp: "Número do WhatsApp", lblSponsor: "Código do patrocinador", lblPassword: "Senha"
         }
     };
 
-    // Initialisation du sélecteur de pays pour le numéro de téléphone
     const phoneInput = document.querySelector("#whatsapp");
     const iti = window.intlTelInput(phoneInput, {
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
@@ -222,7 +218,6 @@
         separateDialCode: true
     });
 
-    // Extraction automatique du code sponsor depuis l'URL si existant (?sponsor=CODE)
     window.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const sponsorParam = urlParams.get('sponsor');
@@ -234,14 +229,11 @@
         }
     });
 
-    // Gestion du basculement entre Inscription et Connexion
     function toggleAuthMode() {
         isRegisterMode = !isRegisterMode;
         const whatsappGroup = document.getElementById("whatsapp").closest('.form-group');
         const sponsorGroup = document.getElementById("sponsor").closest('.form-group');
-        const errBox = document.getElementById("errorBox");
-        
-        errBox.style.display = "none";
+        document.getElementById("errorBox").style.display = "none";
 
         if (isRegisterMode) {
             whatsappGroup.style.display = "flex";
@@ -255,7 +247,6 @@
         updateDOMTexts();
     }
 
-    // Gestion du changement de langue
     function changeLanguage(lang, btnElement) {
         currentLang = lang;
         document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
@@ -283,7 +274,6 @@
         }
     }
 
-    // 3. ENVOI DU FORMULAIRE ET CORRESPONDANCE API SÉCURISÉE
     document.getElementById("authForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const errBox = document.getElementById("errorBox");
@@ -292,21 +282,20 @@
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
 
+        // -- COMMUNIQUE EN FONCTION DU MODE --
         if (isRegisterMode) {
-            // -- TRAITEMENT DE L'INSCRIPTION --
             const sponsor = document.getElementById("sponsor").value.trim();
-            const rawPhone = iti.getNumber(); // Récupère le numéro complet avec l'indicatif (+243...)
+            const rawPhone = iti.getNumber();
 
             if (!iti.isValidNumber()) {
-                errBox.innerText = currentLang === 'FR' ? "Numéro WhatsApp invalide. Veuillez vérifier." : "Invalid WhatsApp number.";
+                errBox.innerText = currentLang === 'FR' ? "Numéro WhatsApp invalide." : "Invalid WhatsApp number.";
                 errBox.style.display = "block";
                 return;
             }
 
             try {
-                console.log('📡 Tentative d\'inscription à:', `${BASE_API}/auth/signup`);
-                
-                const res = await fetch(`${BASE_API}/auth/signup`, {
+                // MISE À JOUR : Appel direct de la route du backend /api/register
+                const res = await fetch(`${BASE_API}/register`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ 
@@ -318,29 +307,22 @@
                 });
 
                 const data = await res.json();
-                console.log('📦 Réponse serveur:', data);
 
                 if (res.ok) {
-                    // Inscription réussie -> Stockage de session local
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
-                    
-                    // Redirection réglementaire vers les étapes de validation
                     window.location.href = "popup-youtube.html";
                 } else {
                     errBox.innerText = data.message || "Erreur lors de la création du compte.";
                     errBox.style.display = "block";
                 }
             } catch (err) {
-                console.error('❌ Erreur réseau:', err);
-                errBox.innerText = `Connexion réseau impossible au serveur backend principal.`;
+                errBox.innerText = "Le serveur met trop de temps à répondre (redémarrage Render en cours). Veuillez patienter 30 secondes et cliquer à nouveau.";
                 errBox.style.display = "block";
             }
         } else {
-            // -- TRAITEMENT DE LA CONNEXION --
+            // -- TRAITEMENT DU LOGIN (/api/login) --
             try {
-                console.log('📡 Tentative de connexion à:', `${BASE_API}/login`);
-                
                 const res = await fetch(`${BASE_API}/login`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -348,19 +330,17 @@
                 });
                 
                 const data = await res.json();
-                console.log('📦 Réponse serveur login:', data);
 
                 if (res.ok) {
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
                     window.location.href = "popup-youtube.html";
                 } else {
-                    errBox.innerText = data.message || "Identifiants de connexion incorrects.";
+                    errBox.innerText = data.message || "Identifiants incorrects.";
                     errBox.style.display = "block";
                 }
             } catch (err) {
-                console.error('❌ Erreur réseau login:', err);
-                errBox.innerText = "Connexion impossible. Veuillez vérifier vos accès serveurs.";
+                errBox.innerText = "Erreur de communication avec le serveur principal.";
                 errBox.style.display = "block";
             }
         }
