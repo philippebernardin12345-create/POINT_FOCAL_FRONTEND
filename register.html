@@ -40,7 +40,7 @@
         .lang-btn.active { background-color: #F0B90B; color: #000000; }
         h2 { margin-bottom: 5px; color: #EAECEF; font-size: 24px; font-weight: 600; text-align: left; }
         .subtitle-form { color: #848E9C; font-size: 13px; margin-bottom: 25px; text-align: left; line-height: 1.4; }
-        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group { margin-bottom: 20px; text-align: left; position: relative; }
         label { display: block; margin-bottom: 8px; font-size: 14px; color: #848E9C; }
         input { 
             width: 100%; 
@@ -61,6 +61,19 @@
             font-weight: bold;
             font-family: monospace;
         }
+        /* Style pour masquer/afficher le mot de passe */
+        .password-wrapper { position: relative; width: 100%; }
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #848E9C;
+            font-size: 14px;
+            user-select: none;
+        }
+        .toggle-password:hover { color: #F0B90B; }
         .iti { width: 100%; }
         button.btn-submit { 
             width: 100%; 
@@ -85,7 +98,6 @@
 <body>
 
 <div class="auth-container">
-    <!-- Sélecteur de langue avec événement onclick -->
     <div class="lang-selector">
         <button class="lang-btn active" onclick="changeLanguage('FR', this)">FR</button>
         <button class="lang-btn" onclick="changeLanguage('EN', this)">EN</button>
@@ -110,15 +122,21 @@
             </div>
             <div class="form-group">
                 <label id="lblPassword">Mot de passe</label>
-                <input type="password" id="password" required>
+                <div class="password-wrapper">
+                    <input type="password" id="password" required>
+                    <span class="toggle-password" onclick="togglePasswordVisibility('password', this)">👁️</span>
+                </div>
             </div>
             <div class="form-group" id="confirmPasswordGroup">
                 <label id="lblConfirm">Confirmation du mot de passe</label>
-                <input type="password" id="confirmPassword">
+                <div class="password-wrapper">
+                    <input type="password" id="confirmPassword">
+                    <span class="toggle-password" onclick="togglePasswordVisibility('confirmPassword', this)">👁️</span>
+                </div>
             </div>
             <div class="form-group" id="sponsorGroup">
-                <label id="lblSponsor">Code d'invitation Victory Automatic (Parrain Réel détecté)</label>
-                <input type="text" id="sponsorCode" readonly placeholder="Extraction du code parrain en cours...">
+                <label id="lblSponsor">Code d'invitation Victory Automatic</label>
+                <input type="text" id="sponsorCode" readonly>
             </div>
             <button type="submit" class="btn-submit" id="btnSubmit">S'inscrire</button>
         </form>
@@ -143,44 +161,41 @@
         preferredCountries: ["fr", "ci", "sn", "cm"]
     });
 
-    // --- DICTIONNAIRE DES TRADUCTIONS ---
     const translations = {
         FR: {
             titleRegister: "Créer un compte", titleLogin: "Se connecter",
             subRegister: "Inscription sur le lien de votre parrain réel (Régulation FIFO active si saturation).",
             lblEmail: "Adresse e-mail", lblWhatsapp: "Numéro WhatsApp", lblPassword: "Mot de passe",
-            lblConfirm: "Confirmation du mot de passe", lblSponsor: "Code d'invitation Victory Automatic (Parrain Réel détecté)",
+            lblConfirm: "Confirmation du mot de passe", lblSponsor: "Code d'invitation Victory Automatic",
             btnRegister: "S'inscrire", btnLogin: "Se connecter",
             linkLogin: "Déjà inscrit ? Se connecter", linkRegister: "Pas encore de compte ? S'inscrire",
-            placeholderSponsorWait: "Extraction du code parrain en cours...", placeholderSponsorError: "❌ Aucun parrain détecté. Inscription interdite.",
             errPhone: "Format de numéro WhatsApp incorrect.", errMatch: "Les mots de passe saisis ne sont pas identiques.",
-            errNoSponsor: "Inscription refusée : Vous devez obligatoirement utiliser le lien Victory Automatic fourni par un parrain.",
-            errFormatCode: "Attention : Le format du code d'invitation extrait n'est pas valide (Série 1 ou 2 requise).",
+            errNoSponsor: "Inscription refusée : Code d'invitation manquant.",
+            errFormatCode: "Attention : Le format du code n'est pas valide (Série 1 ou 2 requise).",
             successTitle: "📧 Validation requise", successText: "Un e-mail de confirmation vous a été envoyé. Veuillez cliquer sur le lien d'activation présent dans le message afin d'accéder à l'application.", btnBack: "Retourner à la connexion"
         },
         EN: {
             titleRegister: "Create an account", titleLogin: "Sign In",
             subRegister: "Registration via your real sponsor link (FIFO regulation active if saturated).",
             lblEmail: "Email Address", lblWhatsapp: "WhatsApp Number", lblPassword: "Password",
-            lblConfirm: "Confirm Password", lblSponsor: "Victory Automatic Invitation Code (Real Sponsor Detected)",
+            lblConfirm: "Confirm Password", lblSponsor: "Victory Automatic Invitation Code",
             btnRegister: "Register", btnLogin: "Login",
             linkLogin: "Already registered? Sign In", linkRegister: "No account yet? Register",
-            placeholderSponsorWait: "Extracting sponsor code...", placeholderSponsorError: "❌ No sponsor detected. Registration blocked.",
             errPhone: "Incorrect WhatsApp number format.", errMatch: "The entered passwords do not match.",
-            errNoSponsor: "Registration denied: You must use a valid Victory Automatic link from a sponsor.",
-            errFormatCode: "Warning: Extracted invitation code format is invalid (Series 1 or 2 required).",
+            errNoSponsor: "Registration denied: Invitation code missing.",
+            errFormatCode: "Warning: Invitation code format is invalid (Series 1 or 2 required).",
             successTitle: "📧 Verification Required", successText: "A confirmation email has been sent. Please click the activation link in the message to access the app.", btnBack: "Back to Login"
         },
         ES: {
             titleRegister: "Crear una cuenta", titleLogin: "Iniciar sesión",
             subRegister: "Registro a través de su enlace de patrocinador real (Regulación FIFO activa si está saturado).",
             lblEmail: "Correo electrónico", lblWhatsapp: "Número de WhatsApp", lblPassword: "Contraseña",
-            lblConfirm: "Confirmar contraseña", lblSponsor: "Código de invitación Victory Automatic (Patrocinador real detectado)",
+            lblConfirm: "Confirmar contraseña", lblSponsor: "Código de invitación Victory Automatic",
             btnRegister: "Registrarse", btnLogin: "Iniciar sesión",
             linkLogin: "¿Ya estás registrado? Iniciar sesión", linkRegister: "¿Aún no tienes cuenta? Registrarse",
-            placeholderSponsorWait: "Extrayendo código de patrocinador...", placeholderSponsorError: "❌ No se detectó patrocinador. Registro bloqueado.",
+            placeholderSponsorError: "❌ No se detectó patrocinador.",
             errPhone: "Formato de número de WhatsApp incorrecto.", errMatch: "Las contraseñas introducidas no coinciden.",
-            errNoSponsor: "Registro denegado: Debe utilizar un enlace Victory Automatic válido de un patrocinador.",
+            errNoSponsor: "Registro denegado: Código de invitación ausente.",
             errFormatCode: "Atención: El formato del código de invitación no es válido (Se requiere Serie 1 o 2).",
             successTitle: "📧 Validación requerida", successText: "Se ha enviado un correo electrónico de confirmación. Por favor, haga clic en el enlace de activación para acceder.", btnBack: "Volver al inicio de sesión"
         },
@@ -188,39 +203,43 @@
             titleRegister: "Criar uma conta", titleLogin: "Iniciar sessão",
             subRegister: "Inscrição através do link do seu patrocinador real (Regulação FIFO ativa se saturado).",
             lblEmail: "Endereço de e-mail", lblWhatsapp: "Número do WhatsApp", lblPassword: "Senha",
-            lblConfirm: "Confirmar senha", lblSponsor: "Código de convite Victory Automatic (Patrocinador real detectado)",
+            lblConfirm: "Confirmar senha", lblSponsor: "Código de convite Victory Automatic",
             btnRegister: "Cadastrar", btnLogin: "Entrar",
             linkLogin: "Já tem uma conta? Iniciar sessão", linkRegister: "Não tem uma conta? Cadastrar-se",
-            placeholderSponsorWait: "Extraindo código do patrocinador...", placeholderSponsorError: "❌ Nenhum patrocinador detectado. Inscrição bloqueada.",
             errPhone: "Formato de número do WhatsApp incorreto.", errMatch: "As senhas inseridas não coincidem.",
-            errNoSponsor: "Inscrição recusada: Deve obrigatoriamente utilizar um link Victory Automatic válido de um patrocinador.",
+            errNoSponsor: "Inscrição recusada: Código de convite em falta.",
             errFormatCode: "Atenção: O formato do código de convite não é válido (Série 1 ou 2 necessária).",
-            successTitle: "📧 Validação necessária", successText: "Um e-mail de confirmação foi enviado. Por favor, clique no link de ativação para acessar o aplicativo.", btnBack: "Voltar para o login"
+            successTitle: "📧 Validação necessária", successText: "Um e-mail de正式 confirmação foi enviado. Por favor, clique no link de ativação para acessar.", btnBack: "Voltar para o login"
         }
     };
 
-    // --- GESTION DU CHANGEMENT DE LANGUE ---
+    // Afficher ou masquer le mot de passe en clair
+    function togglePasswordVisibility(fieldId, iconElement) {
+        const input = document.getElementById(fieldId);
+        if (input.type === "password") {
+            input.type = "text";
+            iconElement.innerText = "🙈";
+        } else {
+            input.type = "password";
+            iconElement.innerText = "👁️";
+        }
+    }
+
     function changeLanguage(lang, element) {
         currentLang = lang;
-        
-        // Mettre à jour la classe active sur les boutons
         document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
         element.classList.add('active');
 
-        // Appliquer les textes selon la langue
         const t = translations[lang];
         document.getElementById('lblEmail').innerText = t.lblEmail;
         document.getElementById('lblWhatsapp').innerText = t.lblWhatsapp;
         document.getElementById('lblPassword').innerText = t.lblPassword;
         document.getElementById('lblConfirm').innerText = t.lblConfirm;
         document.getElementById('lblSponsor').innerText = t.lblSponsor;
-        
-        // Textes de succès
         document.getElementById('successTitle').innerText = t.successTitle;
         document.getElementById('successText').innerText = t.successText;
         document.getElementById('btnBackLogin').innerText = t.btnBack;
 
-        // Ajustement selon l'état Connexion / Inscription
         if (isRegister) {
             document.getElementById("formTitle").innerText = t.titleRegister;
             document.getElementById("btnSubmit").innerText = t.btnRegister;
@@ -230,37 +249,30 @@
             document.getElementById("btnSubmit").innerText = t.btnLogin;
             document.getElementById("toggleAuth").innerText = t.linkRegister;
         }
-
-        // Placeholder dynamique
-        const sponsorField = document.getElementById("sponsorCode");
-        if (!sponsorField.value) {
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('ref') || urlParams.get('sponsor');
-            sponsorField.placeholder = code ? t.placeholderSponsorWait : t.placeholderSponsorError;
-        }
     }
 
-    // --- EXTRACTION AUTOMATIQUE ---
+    // --- DETECTION ET INTEGRATION AUTOMATIQUE (RACINE PAR DEFAUT) ---
     window.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
-        const codeInvitation = urlParams.get('ref') || urlParams.get('sponsor');
+        let codeInvitation = urlParams.get('ref') || urlParams.get('sponsor');
         const sponsorField = document.getElementById("sponsorCode");
         const errBox = document.getElementById("errorBox");
 
-        if (codeInvitation) {
-            const formattedCode = codeInvitation.trim().toUpperCase();
-            sponsorField.value = formattedCode;
-            
-            const regex1 = /^[A-Z]{4}[0-9]{4}$/;
-            const regex2 = /^[0-9]{4}[A-Z]{4}$/;
+        // REGLE DE LA RACINE : Si aucun code n'est fourni, on applique par défaut ABCD1000
+        if (!codeInvitation) {
+            codeInvitation = "ABCD1000";
+        }
 
-            if (!regex1.test(formattedCode) && !regex2.test(formattedCode)) {
-                errBox.innerText = translations[currentLang].errFormatCode;
-                errBox.style.display = "block";
-            }
-        } else {
-            sponsorField.value = "";
-            sponsorField.placeholder = translations[currentLang].placeholderSponsorError;
+        const formattedCode = codeInvitation.trim().toUpperCase();
+        sponsorField.value = formattedCode;
+        
+        // Validation stricte Regex
+        const regex1 = /^[A-Z]{4}[0-9]{4}$/;
+        const regex2 = /^[0-9]{4}[A-Z]{4}$/;
+
+        if (!regex1.test(formattedCode) && !regex2.test(formattedCode)) {
+            errBox.innerText = translations[currentLang].errFormatCode;
+            errBox.style.display = "block";
         }
     });
 
@@ -329,7 +341,7 @@
                     errBox.style.display = "block";
                 }
             } catch (err) {
-                errBox.innerText = "Échec de connexion.";
+                errBox.innerText = "Échec de connexion au serveur.";
                 errBox.style.display = "block";
             }
         } else {
