@@ -3,91 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Point Focal - Validation Automatique Blockchain</title>
+    <title>Point Focal - Validation Automatique</title>
     <style>
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: #121212;
-            color: #ffffff;
+            background-color: #0B0E11;
+            color: #EAECEF;
             font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            padding: 20px;
         }
         .payment-container {
-            background-color: #1e1e1e;
-            padding: 35px;
-            border-radius: 12px;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.8);
+            background-color: #1E2329;
+            padding: 40px 30px;
+            border-radius: 4px;
             max-width: 550px;
             width: 100%;
-            text-align: center;
-            border: 2px solid #00cc44;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
         }
         h2 {
-            color: #00cc44;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            font-size: 20px;
-        }
-        .form-group {
+            color: #EAECEF;
+            margin-bottom: 10px;
+            font-size: 22px;
+            font-weight: 600;
             text-align: left;
-            margin-bottom: 20px;
         }
-        label {
-            display: block;
-            margin-bottom: 7px;
-            font-size: 13px;
-            color: #aaaaaa;
-            font-weight: bold;
-        }
+        .subtitle { color: #848E9C; font-size: 14px; margin-bottom: 25px; text-align: left; line-height: 1.4; }
+        .form-group { text-align: left; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-size: 13px; color: #848E9C; font-weight: 600; }
         input {
             width: 100%;
             padding: 12px;
-            background-color: #252525;
-            border: 1px solid #444;
-            color: #ffffff;
-            border-radius: 6px;
+            background-color: #2B3139;
+            border: 1px solid #2B3139;
+            color: #EAECEF;
+            border-radius: 4px;
             font-family: monospace;
             font-size: 14px;
+            transition: border-color 0.2s;
         }
-        input:focus { border-color: #00cc44; outline: none; }
+        input:focus { border-color: #F0B90B; outline: none; }
         .status-box {
             padding: 15px;
-            border-radius: 6px;
-            margin-top: 20px;
+            border-radius: 4px;
+            margin-top: 25px;
             font-size: 14px;
             text-align: left;
             display: none;
             line-height: 1.5;
         }
-        .status-loading { background-color: rgba(0, 204, 200, 0.1); border: 1px solid #00cccc; color: #00ffff; }
-        .status-success { background-color: rgba(0, 204, 68, 0.1); border: 1px solid #00cc44; color: #a3e635; }
-        .status-error { background-color: rgba(255, 51, 51, 0.1); border: 1px solid #ff3333; color: #ff8888; }
+        .status-loading { background-color: rgba(240, 185, 11, 0.1); border-left: 4px solid #F0B90B; color: #F0B90B; }
+        .status-success { background-color: rgba(2, 192, 118, 0.1); border-left: 4px solid #02C076; color: #02C076; }
+        .status-error { background-color: rgba(234, 57, 67, 0.1); border-left: 4px solid #EA3943; color: #EA3943; }
     </style>
 </head>
 <body>
 
 <div class="payment-container">
     <h2>💳 Formulaire de Validation</h2>
-    <p style="color: #aaa; font-size: 14px; margin-bottom: 25px;">Ordre obligatoire des champs. La validation se lance automatiquement sans bouton dès le remplissage du 3ème champ.</p>
+    <p class="subtitle">L'ordre des champs est obligatoire. La soumission et l'audit réseau s'effectuent de manière entièrement autonome au remplissage du dernier critère.</p>
     
     <div class="form-group">
         <label>1. Lien Victory Automatic</label>
-        <input type="text" id="victoryLink" placeholder="Entrez le lien officiel reçu">
+        <input type="text" id="victoryLink" placeholder="Collez le lien Victory reçu">
     </div>
 
     <div class="form-group">
-        <label>2. Adresse Cible (Doit commencer par 0x - Longueur: 42)</label>
+        <label>2. Adresse cible (Débute par 0x - Longueur exacte : 42)</label>
         <input type="text" id="adresseCible" maxlength="42" placeholder="0x...">
     </div>
 
     <div class="form-group">
-        <label>3. Hash de Transaction (Doit commencer par 0x - Longueur: 66)</label>
+        <label>3. Hash de transaction (Débute par 0x - Longueur exacte : 66)</label>
         <input type="text" id="txHash" maxlength="66" placeholder="0x...">
     </div>
 
@@ -103,16 +93,14 @@ function verifierFormulaireAutomatique() {
     const txHash = document.getElementById("txHash").value.trim();
     const statusBox = document.getElementById("statusBox");
 
-    // Validation stricte des formats et longueurs requises (Section 6)
     const isVictoryFilled = victoryLink.length > 10;
     const isAddressValid = adresseCible.startsWith("0x") && adresseCible.length === 42;
     const isHashValid = txHash.startsWith("0x") && txHash.length === 66;
 
     if (isVictoryFilled && isAddressValid && isHashValid) {
-        // Section 8 : Déclenchement automatique sans bouton supplémentaire
         statusBox.style.display = "block";
         statusBox.className = "status-box status-loading";
-        statusBox.innerHTML = "⚡ <strong>DÉCLENCHEMENT AUTOMATIQUE</strong> : Validation blockchain (BSC) en cours... (USDT BEP20, Montant exact : 2.03, 12 confirmations).";
+        statusBox.innerHTML = "⚡ <strong>DÉCLENCHEMENT AUTOMATIQUE</strong> : Validation cryptographique BSC lancée. Analyse des 12 confirmations et du montant requis de 2.03 USDT BEP20...";
         
         executerValidationDon(victoryLink, adresseCible, txHash);
     }
@@ -120,14 +108,12 @@ function verifierFormulaireAutomatique() {
 
 async function executerValidationDon(victoryLink, adresseCible, txHash) {
     const statusBox = document.getElementById("statusBox");
-    const token = localStorage.getItem("token");
-
     try {
         const response = await fetch(`${BASE_API}/payment/auto-trigger`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify({ victoryLink, adresseCible, txHash })
         });
@@ -136,20 +122,20 @@ async function executerValidationDon(victoryLink, adresseCible, txHash) {
 
         if (response.ok && data.success) {
             statusBox.className = "status-box status-success";
-            statusBox.innerHTML = "🎉 PAIEMENT VALIDÉ ! Génération immédiate des liens Point Focal Public...";
+            statusBox.innerHTML = "🎉 TRANSACTION BLOCKCHAIN ACCEPTEE ! Initialisation immédiate de vos accès et de votre lien Point Focal Public...";
             
             localStorage.setItem("publicLink", data.publicLink);
 
             setTimeout(() => {
                 window.location.href = "dashboard.html";
-            }, 2000);
+            }, 2500);
         } else {
             statusBox.className = "status-box status-error";
-            statusBox.innerHTML = `❌ Rejet immédiat : ${data.error || "Critères de transaction blockchain non respectés."}`;
+            statusBox.innerHTML = `❌ REJET IMMÉDIAT : ${data.error || "Données blockchain non conformes."}`;
         }
     } catch (error) {
         statusBox.className = "status-box status-error";
-        statusBox.innerHTML = "❌ Erreur de communication avec le serveur de validation.";
+        statusBox.innerHTML = "❌ Dysfonctionnement réseau avec l'API de validation.";
     }
 }
 
@@ -157,6 +143,5 @@ document.getElementById("victoryLink").addEventListener("input", verifierFormula
 document.getElementById("adresseCible").addEventListener("input", verifierFormulaireAutomatique);
 document.getElementById("txHash").addEventListener("input", verifierFormulaireAutomatique);
 </script>
-
 </body>
 </html>
