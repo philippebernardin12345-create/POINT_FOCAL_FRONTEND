@@ -3,95 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Point Focal</title>
+    <title>Point Focal - Présentation Officielle</title>
     <style>
-        body { background-color: #121212; color: #ffffff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
-        .video-container { background-color: #1e1e1e; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.7); max-width: 800px; width: 100%; text-align: center; position: relative; }
-        .logout-btn { position: absolute; top: 15px; right: 15px; background: transparent; border: 1px solid #ff3333; color: #ff3333; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        h2 { color: #ffcc00; margin-bottom: 10px; text-transform: uppercase; }
-        p { color: #aaaaaa; margin-bottom: 25px; }
-        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000; margin-bottom: 25px; border: 2px solid #333; }
-        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        .btn-next { width: 100%; background-color: #555555; color: #ffffff; border: none; padding: 15px 40px; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: not-allowed; text-transform: uppercase; box-sizing: border-box; }
-        .btn-next.ready { background-color: #00cc44; color: #000; cursor: pointer; box-shadow: 0 0 15px rgba(0, 204, 68, 0.4); }
-        .alert-box { color: #ff3333; background-color: rgba(255, 51, 51, 0.1); padding: 12px; border-radius: 6px; margin-top: 15px; display: none; font-weight: bold; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #0B0E11;
+            color: #EAECEF;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .video-container {
+            background-color: #1E2329;
+            padding: 30px;
+            border-radius: 4px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+        h2 {
+            color: #EAECEF;
+            margin-bottom: 10px;
+            font-size: 22px;
+            font-weight: 600;
+            text-align: left;
+        }
+        .subtitle {
+            color: #848E9C;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* Ratio 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 4px;
+            background-color: #000000;
+            margin-bottom: 25px;
+            border: 1px solid #2B3139;
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .btn-next {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background-color: #F0B90B;
+            color: #000000;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background-color 0.2s;
+        }
+        .btn-next:hover {
+            background-color: #FFE15D;
+        }
     </style>
 </head>
 <body>
 
 <div class="video-container">
-    <button class="logout-btn" onclick="deconnexion()" id="btn-logout">🚪</button>
-    <h2 id="txt-title"></h2>
-    <p id="txt-desc"></p>
-
+    <h2>Outil de Présentation Stratégique</h2>
+    <p class="subtitle">Prenez le temps de liker, commenter et vous abonner pour maximiser le référencement algorithmique de la communauté.</p>
+    
     <div class="video-wrapper">
-        <iframe id="presentationVideo" src="https://www.youtube.com/embed/VIDEO_ID?enablejsapi=1" frameborder="0" allowfullscreen></iframe>
+        <!-- Remplacer VOTRE_ID_VIDEO par l'identifiant réel de votre vidéo YouTube -->
+        <iframe src="https://www.youtube.com/embed/VOTRE_ID_VIDEO?rel=0&modestbranding=1" allowfullscreen></iframe>
     </div>
 
-    <button id="btnNext" class="btn-next" disabled onclick="validerVisionnageServeur()"></button>
-    <div id="errorAlert" class="alert-box"></div>
+    <a href="victory-link.html" class="btn-next">J'ai visionné et interagi — Passer à l'activation</a>
 </div>
 
 <script>
-    let secondesRestantes = 200; let chronoDemarre = false; let interval; let langueActive = "fr";
-
-    const lexique = {
-        fr: { title: "Étape 3 : Vidéo de Présentation Obligatoire", desc: "Vous devez visionner l'intégralité de la vidéo (200 secondes minimum) pour débloquer la suite.", btnWait: "Veuillez visionner la vidéo (SAV_SEC)s", btnGo: "Étape Suivante : Obtenir mon lien Victory", logout: "Déconnexion 🚪", errServer: "Erreur serveur. Relancez la vidéo.", errValidation: "Validation échouée." },
-        en: { title: "Step 3: Mandatory Presentation Video", desc: "You must watch the entire video (minimum 200 seconds) to unlock the next step.", btnWait: "Please watch the video (SAV_SEC)s", btnGo: "Next Step: Get my Victory Link", logout: "Logout 🚪", errServer: "Server error. Please restart the video.", errValidation: "Validation failed." },
-        es: { title: "Paso 3: Video de Presentación Obligatorio", desc: "Debe ver el video completo (mínimo 200 segundos) para desbloquear el siguiente paso.", btnWait: "Por favor vea el video (SAV_SEC)s", btnGo: "Siguiente Paso: Obtener mi enlace Victory", logout: "Cerrar Sesión 🚪", errServer: "Error del servidor. Reinicie el video.", errValidation: "Validación fallida." },
-        pt: { title: "Passo 3: Vídeo de Apresentação Obrigatório", desc: "Você deve assistir ao vídeo completo (mínimo 200 segundos) para desbloquear a próxima etapa.", btnWait: "Por favor, assista ao vídeo (SAV_SEC)s", btnGo: "Próxima Etapa: Obter meu link Victory", logout: "Sair 🚪", errServer: "Erro de servidor. Reinicie o vídeo.", errValidation: "Validação falhou." }
-    };
-
-    if (!localStorage.getItem('token')) { window.location.href = "register.html"; }
-
     window.addEventListener('DOMContentLoaded', () => {
-        langueActive = localStorage.getItem("point_focal_lang") || "fr";
-        document.getElementById("txt-title").innerText = lexique[langueActive].title;
-        document.getElementById("txt-desc").innerText = lexique[langueActive].desc;
-        document.getElementById("btn-logout").innerText = lexique[langueActive].logout;
-        majBoutonChrono();
-    });
-
-    function majBoutonChrono() {
-        const btn = document.getElementById('btnNext');
-        if (secondesRestantes > 0) {
-            btn.innerText = lexique[langueActive].btnWait.replace("SAV_SEC", secondesRestantes);
-        } else {
-            btn.className = "btn-next ready"; btn.removeAttribute("disabled");
-            btn.innerText = lexique[langueActive].btnGo;
-        }
-    }
-
-    window.addEventListener('message', function(e) {
-        if (e.origin.includes('youtube.com')) {
-            try {
-                const d = JSON.parse(e.data);
-                if (d.event === 'infoDelivery' && d.info && d.info.playerState === 1 && !chronoDemarre) declencherChronoServeur();
-            } catch {}
+        if (!localStorage.getItem('token')) {
+            window.location.href = "register.html";
         }
     });
-
-    async function declencherChronoServeur() {
-        chronoDemarre = true;
-        try {
-            const res = await fetch('https://point-focal.onrender.com/api/video/start', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
-            if(!res.ok) throw new Error();
-            interval = setInterval(() => {
-                secondesRestantes--; majBoutonChrono();
-                if (secondesRestantes <= 0) clearInterval(interval);
-            }, 1000);
-        } catch { document.getElementById('errorAlert').innerText = lexique[langueActive].errServer; document.getElementById('errorAlert').style.display = 'block'; }
-    }
-
-    async function validerVisionnageServeur() {
-        try {
-            const res = await fetch('https://point-focal.onrender.com/api/video/verify', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
-            const d = await res.json();
-            if (res.ok && d.ok) { window.location.href = "victory-link.html"; } 
-            else { document.getElementById('errorAlert').innerText = lexique[langueActive].errValidation; document.getElementById('errorAlert').style.display = 'block'; }
-        } catch { }
-    }
-    function deconnexion() { localStorage.clear(); window.location.href = "register.html"; }
 </script>
 </body>
 </html>
