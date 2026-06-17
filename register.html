@@ -3,169 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POINT FOCAL</title>
+    <title>POINT FOCAL - Inscription</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <style>
+        * { box-sizing: border-box; }
         body { background-color: #121212; color: #ffffff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
-        .auth-container { background-color: #1e1e1e; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.7); max-width: 400px; width: 100%; text-align: center; box-sizing: border-box; }
+        .auth-container { background-color: #1e1e1e; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.7); max-width: 400px; width: 100%; text-align: center; }
         .lang-selector { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
-        .lang-btn { background-color: #252525; color: #ffffff; border: 1px solid #444; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        .lang-btn.active { background-color: #ffcc00; color: #000000; border-color: #ffcc00; }
-        h2 { color: #ffcc00; margin-bottom: 20px; text-transform: uppercase; }
-        .form-group { margin-bottom: 15px; text-align: left; position: relative; }
-        input { width: 100%; padding: 12px; border: 1px solid #333; background-color: #0d0d0d; color: #fff; font-size: 16px; box-sizing: border-box; border-radius: 6px; }
-        input:focus { border-color: #ffcc00; outline: none; }
+        .lang-btn { background-color: #252525; color: #ffffff; border: 1px solid #444; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .lang-btn.active { background-color: #00cc44; border-color: #00cc44; }
+        h2 { margin-bottom: 20px; color: #00cc44; text-transform: uppercase; font-size: 20px; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; margin-bottom: 5px; font-size: 13px; color: #aaaaaa; }
+        input { width: 100%; padding: 10px; background-color: #252525; border: 1px solid #444; color: #ffffff; border-radius: 6px; font-size: 14px; }
+        input:focus { border-color: #00cc44; outline: none; }
         .iti { width: 100%; }
-        .iti__country-list { background-color: #1e1e1e; color: #fff; }
-        .toggle-password { position: absolute; right: 12px; top: 38%; cursor: pointer; font-size: 14px; color: #ffcc00; user-select: none; }
-        button { width: 100%; background-color: #ffcc00; color: #000; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
-        .switch-link { margin-top: 15px; font-size: 14px; color: #aaaaaa; cursor: pointer; }
-        .switch-link span { color: #ffcc00; text-decoration: underline; }
-        .box { margin-top: 15px; padding: 10px; border-radius: 6px; font-weight: bold; display: none; word-break: break-word; }
-        #error-box { background-color: rgba(255, 51, 51, 0.1); color: #ff3333; border: 1px solid #ff3333; }
-        #success-box { background-color: rgba(0, 204, 68, 0.1); color: #00cc44; border: 1px solid #00cc44; }
-        #verifyEmailSection { display: none; }
+        button.btn-submit { width: 100%; padding: 12px; background-color: #00cc44; color: #ffffff; border: none; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; }
+        button.btn-submit:hover { background-color: #00aa3a; }
+        .toggle-link { margin-top: 15px; font-size: 13px; color: #aaaaaa; cursor: pointer; display: block; }
+        .toggle-link:hover { color: #00cc44; }
+        .error-box { background-color: rgba(255,51,51,0.1); border: 1px solid #ff3333; color: #ff8888; padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 13px; display: none; }
+        .success-box { background-color: rgba(0,204,68,0.1); border: 1px solid #00cc44; color: #a3e635; padding: 15px; border-radius: 6px; font-size: 14px; display: none; }
     </style>
 </head>
 <body>
 
-<div class="auth-container" id="authSection">
+<div class="auth-container">
     <div class="lang-selector">
-        <button class="lang-btn active" id="btn-fr" onclick="changerLangue('fr')">FR</button>
-        <button class="lang-btn" id="btn-en" onclick="changerLangue('en')">EN</button>
+        <button class="lang-btn active">FR</button>
+        <button class="lang-btn">EN</button>
+        <button class="lang-btn">ES</button>
+        <button class="lang-btn">PT</button>
     </div>
 
-    <h2 id="formTitle">Inscription Point Focal</h2>
-    
-    <form id="authForm">
-        <div class="form-group"><input id="sponsorCode" type="text" placeholder="Code sponsor (obligatoire)" required autocomplete="off"></div>
-        <div class="form-group"><input id="email" type="email" placeholder="Email" required></div>
-        <div class="form-group"><input id="whatsapp" type="tel" required></div>
-        <div class="form-group">
-            <input id="password" type="password" placeholder="Mot de passe" required>
-            <span class="toggle-password" onclick="togglePasswordVisibility('password')">👁️</span>
-        </div>
-        <div class="form-group">
-            <input id="confirmPassword" type="password" placeholder="Confirmer mot de passe" required>
-            <span class="toggle-password" onclick="togglePasswordVisibility('confirmPassword')">👁️</span>
-        </div>
-        <button id="btnSubmit" type="submit">S'inscrire</button>
-    </form>
-    
-    <div id="switchAuth" class="switch-link" onclick="handleSwitchAuth()">Déjà un compte ? <span>Connectez-vous</span></div>
-    <div id="error-box" class="box"></div>
-    <div id="success-box" class="box"></div>
-</div>
+    <div id="errorBox" class="error-box"></div>
 
-<div class="auth-container" id="verifyEmailSection">
-    <span style="font-size:48px;">📩</span>
-    <h2>Vérifiez vos e-mails</h2>
-    <p style="color: #aaa; line-height: 1.5;">Un lien de confirmation vous a été envoyé. Veuillez cliquer dessus pour activer votre compte.</p>
-    <button onclick="toggleAuthMode('login')">Aller à la connexion</button>
+    <div id="authSection">
+        <h2 id="formTitle">Inscription</h2>
+        <form id="authForm">
+            <div class="form-group">
+                <label>Adresse e-mail</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group" id="whatsappGroup">
+                <label>Numéro WhatsApp</label>
+                <input type="tel" id="whatsapp" required>
+            </div>
+            <div class="form-group">
+                <label>Mot de passe</label>
+                <input type="password" id="password" required>
+            </div>
+            <div class="form-group" id="confirmPasswordGroup">
+                <label>Confirmation du mot de passe</label>
+                <input type="password" id="confirmPassword">
+            </div>
+            <div class="form-group" id="sponsorGroup">
+                <label>Code d'invitation obligatoire</label>
+                <input type="text" id="sponsorCode">
+            </div>
+            <button type="submit" class="btn-submit" id="btnSubmit">S'inscrire</button>
+        </form>
+        <span class="toggle-link" id="toggleAuth" onclick="toggleForm()">Déjà inscrit ? Se connecter</span>
+    </div>
+
+    <div id="verifyEmailSection" class="success-box">
+        <h3>📧 Validation Requise</h3>
+        <p>Un e-mail de confirmation vous a été envoyé. Veuillez cliquer sur le lien présent dans le message pour valider votre compte, puis connectez-vous.</p>
+        <button class="btn-submit" onclick="window.location.reload()">Aller à la connexion</button>
+    </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <script>
-    const BASE_API = "https://point-focal-backend.onrender.com/api/auth";
-    let currentMode = "signup";
-    let langueActive = "fr";
+    const BASE_API = "https://point-focal-backend.onrender.com/api";
+    let isRegister = true;
+    
+    const phoneInput = window.intlTelInput(document.getElementById("whatsapp"), {
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        preferredCountries: ["fr", "ci", "sn", "cm", "be"]
+    });
 
-    const phoneInput = document.querySelector("#whatsapp");
-    const iti = window.intlTelInput(phoneInput, { initialCountry: "cd", preferredCountries: ["cd", "fr"], utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js" });
+    function toggleForm() {
+        isRegister = !isRegister;
+        const errBox = document.getElementById("errorBox");
+        errBox.style.display = "none";
 
-    function togglePasswordVisibility(id) { const f = document.getElementById(id); f.type = f.type === "password" ? "text" : "password"; }
-
-    // AJOUT DE LA FONCTION MANQUANTE ICI
-    function changerLangue(lang) {
-        langueActive = lang;
-        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(`btn-${lang}`).classList.add('active');
+        document.getElementById("formTitle").innerText = isRegister ? "Inscription" : "Connexion";
+        document.getElementById("whatsappGroup").style.display = isRegister ? "block" : "none";
+        document.getElementById("confirmPasswordGroup").style.display = isRegister ? "block" : "none";
+        document.getElementById("sponsorGroup").style.display = isRegister ? "block" : "none";
+        document.getElementById("btnSubmit").innerText = isRegister ? "S'inscrire" : "Se connecter";
+        document.getElementById("toggleAuth").innerText = isRegister ? "Déjà inscrit ? Se connecter" : "Pas de compte ? S'inscrire";
         
-        if (lang === 'en') {
-            document.getElementById("sponsorCode").placeholder = "Sponsor code (required)";
-            document.getElementById("btnSubmit").innerText = currentMode === "signup" ? "Register" : "Login";
-            if (currentMode === "signup") {
-                document.getElementById("formTitle").innerText = "Point Focal Registration";
-                document.getElementById("switchAuth").innerHTML = "Already have an account? <span>Login</span>";
-            } else {
-                document.getElementById("formTitle").innerText = "Point Focal Login";
-                document.getElementById("switchAuth").innerHTML = "No account? <span>Register</span>";
-            }
+        if(isRegister) {
+            document.getElementById("whatsapp").setAttribute("required", "required");
         } else {
-            document.getElementById("sponsorCode").placeholder = "Code sponsor (obligatoire)";
-            document.getElementById("btnSubmit").innerText = currentMode === "signup" ? "S'inscrire" : "Se connecter";
-            if (currentMode === "signup") {
-                document.getElementById("formTitle").innerText = "Inscription Point Focal";
-                document.getElementById("switchAuth").innerHTML = "Déjà un compte ? <span>Connectez-vous</span>";
-            } else {
-                document.getElementById("formTitle").innerText = "Connexion Point Focal";
-                document.getElementById("switchAuth").innerHTML = "Pas de compte ? <span>Inscrivez-vous</span>";
-            }
+            document.getElementById("whatsapp").removeAttribute("required");
         }
-    }
-
-    function toggleAuthMode(mode) {
-        currentMode = mode;
-        document.getElementById("error-box").style.display = "none";
-        document.getElementById("success-box").style.display = "none";
-        document.getElementById("authSection").style.display = "block";
-        document.getElementById("verifyEmailSection").style.display = "none";
-        
-        if (mode === 'login') {
-            document.getElementById("sponsorCode").parentNode.style.display = "none";
-            document.getElementById("confirmPassword").parentNode.style.display = "none";
-        } else {
-            document.getElementById("sponsorCode").parentNode.style.display = "block";
-            document.getElementById("confirmPassword").parentNode.style.display = "block";
-        }
-        changerLangue(langueActive);
-    }
-
-    function handleSwitchAuth() {
-        if (currentMode === "signup") toggleAuthMode("login");
-        else toggleAuthMode("signup");
     }
 
     document.getElementById("authForm").addEventListener("submit", async (e) => {
         e.preventDefault();
-        const errBox = document.getElementById("error-box");
+        const errBox = document.getElementById("errorBox");
         errBox.style.display = "none";
 
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
 
-        if (currentMode === "signup") {
-            const sponsor = document.getElementById("sponsorCode").value.trim();
+        if (isRegister) {
             const confirmPassword = document.getElementById("confirmPassword").value;
+            const sponsor = document.getElementById("sponsorCode").value.trim();
+            const whatsapp = phoneInput.getNumber();
 
+            if (!phoneInput.isValidNumber()) {
+                errBox.innerText = "Numéro WhatsApp invalide.";
+                errBox.style.display = "block";
+                return;
+            }
             if (password !== confirmPassword) {
                 errBox.innerText = "Les mots de passe ne correspondent pas.";
                 errBox.style.display = "block";
                 return;
             }
-            if (!iti.isValidNumber()) {
-                errBox.innerText = "Numéro WhatsApp invalide.";
+            if (!sponsor) {
+                errBox.innerText = "Le code d'invitation est strictement obligatoire.";
                 errBox.style.display = "block";
                 return;
             }
 
             try {
-                const res = await fetch(`${BASE_API}/signup`, {
+                const res = await fetch(`${BASE_API}/register`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, whatsapp: iti.getNumber(), password, sponsor: sponsor || null })
+                    body: JSON.stringify({ email, whatsapp, password, sponsor })
                 });
-
                 const data = await res.json();
                 if (res.ok) {
                     document.getElementById("authSection").style.display = "none";
                     document.getElementById("verifyEmailSection").style.display = "block";
                 } else {
-                    errBox.innerText = data.message || "Erreur lors de l'inscription";
+                    errBox.innerText = data.message || "Erreur d'inscription.";
                     errBox.style.display = "block";
                 }
             } catch (err) {
-                errBox.innerText = "Erreur de communication : " + err.message + ". Assure-toi d'ouvrir ce fichier via un lien en https:// (pas file:///).";
+                errBox.innerText = "Erreur de serveur.";
                 errBox.style.display = "block";
             }
         } else {
@@ -178,13 +159,16 @@
                 const data = await res.json();
                 if (res.ok) {
                     localStorage.setItem('token', data.token);
-                    window.location.href = "video.html";
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // RÈGLE INVIOLABLE : Redirection obligatoire vers le popup d'avertissement 10s
+                    window.location.href = "popup-youtube.html";
                 } else {
-                    errBox.innerText = data.message || "Identifiants incorrects";
+                    errBox.innerText = data.message || "Identifiants incorrects ou e-mail non validé.";
                     errBox.style.display = "block";
                 }
             } catch (err) {
-                errBox.innerText = "Erreur de connexion : " + err.message;
+                errBox.innerText = "Erreur de connexion.";
                 errBox.style.display = "block";
             }
         }
