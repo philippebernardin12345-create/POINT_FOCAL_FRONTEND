@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Point Focal - Votre Lien Victory</title>
+    <title>Point Focal - Attribution du Lien Victory</title>
     <style>
+        * { box-sizing: border-box; }
         body {
             background-color: #121212;
             color: #ffffff;
@@ -31,143 +32,95 @@
             color: #ffcc00;
             margin-bottom: 15px;
             text-transform: uppercase;
-            font-size: 24px;
+            font-size: 22px;
         }
         .instructions {
             color: #dddddd;
-            font-size: 16px;
+            font-size: 15px;
             line-height: 1.6;
             margin-bottom: 25px;
             text-align: left;
-            background: #252525;
-            padding: 15px;
-            border-left: 4px solid #ffcc00;
-            border-radius: 4px;
-        }
-        .badge-km {
-            background-color: #ff3333;
-            color: #fff;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 12px;
-            display: inline-block;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
         .link-box {
-            background-color: #0d0d0d;
-            border: 1px dashed #555;
+            background-color: #252525;
             padding: 15px;
-            font-size: 18px;
-            color: #00ff55;
-            font-family: 'Courier New', Courier, monospace;
-            word-break: break-all;
-            border-radius: 6px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 16px;
+            color: #ffffff;
+            border: 1px dashed #ffcc00;
             margin-bottom: 20px;
-            font-weight: bold;
+            word-break: break-all;
         }
         .btn-copy {
             background-color: #ffcc00;
-            color: #000;
+            color: #121212;
             border: none;
-            padding: 12px 30px;
-            font-size: 16px;
+            padding: 12px 25px;
+            font-size: 15px;
             font-weight: bold;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
+            transition: background 0.2s;
             width: 100%;
             margin-bottom: 15px;
         }
-        .btn-copy:hover {
-            background-color: #e6b800;
-        }
+        .btn-copy:hover { background-color: #e6b800; }
         .btn-next-step {
-            background-color: #222;
-            color: #888;
-            border: 1px solid #444;
-            padding: 15px 30px;
-            font-size: 16px;
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #444444;
+            color: #888888;
+            text-decoration: none;
             font-weight: bold;
             border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
+            cursor: not-allowed;
             text-transform: uppercase;
-            width: 100%;
-            display: block;
-            text-decoration: none;
-            box-sizing: border-box;
+            transition: all 0.3s;
         }
         .btn-next-step.ready {
             background-color: #00cc44;
-            color: #000;
-            border: none;
-            box-shadow: 0 0 15px rgba(0, 204, 68, 0.3);
-        }
-        .btn-next-step.ready:hover {
-            background-color: #00ff55;
-        }
-        .alert-timer {
-            color: #ff3333;
-            font-weight: bold;
-            margin-top: 15px;
-            font-size: 14px;
+            color: white;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
 <div class="victory-container">
-    <div style="text-align: center; margin-bottom: 10px;">
-        <img src="logo.jpg" alt="Logo Point Focal" style="max-width: 120px; height: auto; border-radius: 4px;">
-    </div>
-
-    <div id="kmBadge" class="badge-km" style="display: none;">Membre Koma Mopao (KM)</div>
-    <h2>Étape 4 : Votre Lien d'Inscription Victory</h2>
+    <h2>🔗 Attribution du Lien Victory Automatic</h2>
     
+    <div class="info-box" id="timerWarning" style="background-color: rgba(255, 51, 51, 0.1); border: 1px solid #ff3333; color: #ff8888; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-weight: bold; text-align: left;">
+        ⏳ CHRONOMÈTRE 24 HEURES ACTIVÉ : Le processus d'activation expire automatiquement après 24 heures. Vous devez finaliser votre validation avant cette limite.
+    </div>
+
     <div class="instructions">
-        <strong>⚠️ Procédure obligatoire :</strong><br>
-        1. Cliquez sur le bouton jaune pour copier le lien Victory officiel.<br>
-        2. Ouvrez un nouvel onglet, inscrivez-vous et effectuez votre paiement sur la plateforme Victory.<br>
-        3. Revenez immédiatement ici pour valider vos informations de paiement.
+        <p>Le système Point Focal vous a attribué de façon optimale le lien d'inscription ci-dessous (Parrain direct prioritaire ou file d'attente globale FIFO) :</p>
     </div>
 
-    <div id="victoryLinkDisplay" class="link-box">Génération du lien en cours...</div>
+    <div class="link-box" id="victoryLinkDisplay">Attribution du lien serveur en cours...</div>
 
-    <button class="btn-copy" onclick="copierLienVictory()">📋 Copier le lien de parrainage</button>
-
-    <a href="payment.html" id="btnNextStep" class="btn-next-step">Passer à l'étape de validation du paiement</a>
-
-    <div id="timerWarning" class="alert-timer" style="display: none;">
-        ⏳ RÈGLE DES 48H ACTIVÉE : Vous avez exactement 48 heures pour finaliser votre paiement.
-    </div>
+    <button class="btn-copy" onclick="copierLienVictory()">📋 COPIER LE LIEN</button>
+    
+    <a href="payment.html" class="btn-next-step" id="btnNextStep">J'ai copié le lien — Étape Suivante</a>
 </div>
 
 <script>
     let lienGenere = "";
 
     window.addEventListener('DOMContentLoaded', async () => {
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
-        const isKm = user.is_km_user || false;
-
-        if (isKm) {
-            document.getElementById('kmBadge').style.display = 'inline-block';
-        } else {
-            document.getElementById('timerWarning').style.display = 'block';
-        }
+        const token = localStorage.getItem('token');
+        if (!token) { window.location.href = "register.html"; return; }
 
         try {
-            // URL de votre API Render connectée ici pour attribuer le lien
-            const response = await fetch('https://point-focal.onrender.com/api/victory/generate', {
+            const response = await fetch('https://point-focal-backend.onrender.com/api/victory-link/assign', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}` 
+                    'Authorization': `Bearer ${token}` 
                 },
-                body: JSON.stringify({ mode: isKm ? 'KM' : 'NORMAL' })
+                body: JSON.stringify({}) // Plus de mode KM ici, structure 100% standard FIFO/Parrain
             });
 
             const data = await response.json();
@@ -175,26 +128,21 @@
             if (response.ok && data.ok) {
                 lienGenere = data.url;
                 document.getElementById('victoryLinkDisplay').innerText = lienGenere;
-                
-                const btnNext = document.getElementById('btnNextStep');
-                btnNext.className = "btn-next-step ready";
+                document.getElementById('btnNextStep').className = "btn-next-step ready";
             } else {
-                document.getElementById('victoryLinkDisplay').innerText = "Erreur : Impossible d'attribuer un sponsor.";
+                document.getElementById('victoryLinkDisplay').innerText = "Erreur : " + (data.error || "Lien indisponible.");
                 document.getElementById('victoryLinkDisplay').style.color = "#ff3333";
             }
         } catch (err) {
-            document.getElementById('victoryLinkDisplay').innerText = "Erreur de connexion avec le serveur sur Render.";
+            document.getElementById('victoryLinkDisplay').innerText = "Erreur réseau de communication avec le serveur.";
             document.getElementById('victoryLinkDisplay').style.color = "#ff3333";
         }
     });
 
     function copierLienVictory() {
-        if (!lienGenere || lienGenere.includes("en cours") || lienGenere.includes("Erreur")) {
-            alert("Aucun lien valide à copier.");
-            return;
-        }
+        if (!lienGenere || lienGenere.includes("en cours") || lienGenere.includes("Erreur")) return;
         navigator.clipboard.writeText(lienGenere);
-        alert("Lien Victory copié avec succès ! Vous pouvez aller faire votre inscription.");
+        alert("Lien Victory copié ! Complétez votre formulaire à l'étape suivante.");
     }
 </script>
 
