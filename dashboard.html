@@ -1,65 +1,113 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Point Focal - Espace Membre</title>
-<style>
-    body { background:#121212; color:white; font-family:'Segoe UI', Arial, sans-serif; margin:0; padding:20px; }
-    .container { max-width:600px; margin:auto; }
-    h1 { color:#00cc44; text-align:center; margin-bottom:25px; text-transform: uppercase; font-size: 24px;}
-    .card { background:#1e1e1e; border-radius:12px; padding:20px; margin-bottom:15px; border: 1px solid #333; }
-    h2 { color:#00cc44; margin-top: 0; margin-bottom:15px; font-size: 18px; }
-    .stat { margin:8px 0; font-size:14px; color:#aaa; }
-    .value { color:#fff; font-weight:bold; word-break: break-all; font-family: monospace; background: #252525; padding: 10px; border-radius: 6px; margin-top: 5px; display: block;}
-    button { width:100%; padding:12px; background:#ff3333; border:none; color:white; font-weight:bold; border-radius:6px; cursor:pointer; font-size: 15px;}
-    button:hover { background:#cc2424; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Point Focal - Espace Membre</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background-color: #0B0E11; 
+            color: #EAECEF; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            padding: 30px 20px; 
+        }
+        .container { max-width: 650px; margin: auto; }
+        h1 { color: #EAECEF; font-size: 24px; font-weight: 600; margin-bottom: 30px; text-align: left; }
+        .card { 
+            background-color: #1E2329; 
+            border-radius: 4px; 
+            padding: 25px; 
+            margin-bottom: 20px; 
+            border: 1px solid #2B3139; 
+        }
+        h2 { color: #F0B90B; margin-bottom: 20px; font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-item { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 12px 0; 
+            border-bottom: 1px solid #2B3139;
+            font-size: 14px;
+        }
+        .stat-item:last-child { border-bottom: none; }
+        .label { color: #848E9C; }
+        .value { color: #EAECEF; font-weight: 600; }
+        .link-output { 
+            width: 100%;
+            background-color: #2B3139; 
+            color: #F0B90B; 
+            font-family: monospace; 
+            padding: 14px; 
+            border-radius: 4px; 
+            margin-top: 10px; 
+            word-break: break-all;
+            font-size: 14px;
+            border: 1px solid #474D57;
+        }
+        button.btn-logout { 
+            width: 100%; 
+            padding: 14px; 
+            background-color: transparent; 
+            border: 1px solid #EA3943; 
+            color: #EA3943; 
+            font-weight: 700; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+        button.btn-logout:hover { background-color: rgba(234, 57, 67, 0.08); }
+    </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>👤 Dashboard Utilisateur</h1>
+    <h1>Espace Personnel Utilisateur</h1>
 
     <div class="card">
-        <h2>ℹ️ Informations de Compte</h2>
-        <div class="stat">E-mail : <span style="color: white; font-weight: bold;" id="email">...</span></div>
-        <div class="stat">ID Utilisateur : <span style="color: white; font-weight: bold;" id="id">...</span></div>
-        <div class="stat">Code d'invitation généré : <span style="color: #ffcc00; font-weight: bold;" id="code">...</span></div>
+        <h2>Compte & Profil</h2>
+        <div class="stat-item">
+            <span class="label">Adresse e-mail</span>
+            <span class="value" id="email">...</span>
+        </div>
+        <div class="stat-item">
+            <span class="label">Identifiant unique (ID)</span>
+            <span class="value" id="id">...</span>
+        </div>
+        <div class="stat-item">
+            <span class="label">Code d'invitation personnel</span>
+            <span class="value" style="color: #F0B90B;" id="code">...</span>
+        </div>
     </div>
 
     <div class="card">
-        <h2>🔗 Liens Générés Automatiquement</h2>
-        <div class="stat">Lien Point Focal Public (Destiné aux réseaux sociaux) :</div>
-        <div class="value" id="publicLink">Génération en cours...</div>
+        <h2>Réseau & Partage public</h2>
+        <p style="color: #848E9C; font-size: 13px; line-height: 1.4;">Ci-dessous votre lien Point Focal public officiel généré après validation de votre transaction. Utilisez-le pour vos partages sur les réseaux sociaux et publications.</p>
+        <div class="link-output" id="publicLink">Génération et attribution en cours...</div>
     </div>
 
-    <div class="card">
-        <h2>⚙️ Gestion de session</h2>
-        <button onclick="logout()">Se déconnecter</button>
+    <div class="card" style="background-color: transparent; border: none; padding: 0;">
+        <button class="btn-logout" onclick="logout()">Fermer la session</button>
     </div>
 </div>
 
 <script>
-const token = localStorage.getItem("token");
-const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-if (!token) {
-    window.location.href = "register.html";
-}
+    if (!token) { window.location.href = "register.html"; }
 
-document.getElementById("email").textContent = user.email || "Non disponible";
-document.getElementById("id").textContent = user.id || "Non disponible";
-document.getElementById("code").textContent = user.invitation_code || "Non disponible";
+    document.getElementById("email").textContent = user.email || "Indisponible";
+    document.getElementById("id").textContent = user.id || "Indisponible";
+    document.getElementById("code").textContent = user.invitation_code || "Indisponible";
 
-// Affichage exclusif du Lien Public réglementaire (Section 10)
-document.getElementById("publicLink").textContent = localStorage.getItem("publicLink") || "Aucun lien disponible";
+    // Affichage strict du lien public unique (Plus de lien KM)
+    document.getElementById("publicLink").textContent = localStorage.getItem("publicLink") || "Aucun lien actif constaté.";
 
-function logout() {
-    localStorage.clear();
-    window.location.href = "register.html";
-}
+    function logout() {
+        localStorage.clear();
+        window.location.href = "register.html";
+    }
 </script>
-
 </body>
 </html>
