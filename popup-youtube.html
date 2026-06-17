@@ -5,67 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Point Focal - IMPORTANT</title>
     <style>
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: #000000;
-            color: #ffffff;
+            background-color: #000000; /* Fond noir strict */
+            color: #EAECEF;
             font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            padding: 20px;
         }
         .popup-box {
             background-color: #000000;
-            border: 5px solid #ffffff;
-            padding: 40px;
-            max-width: 650px;
-            width: 90%;
+            border: 4px solid #FFFFFF; /* Cadre blanc strict */
+            padding: 40px 30px;
+            max-width: 600px;
+            width: 100%;
             text-align: center;
+            box-shadow: 0px 0px 30px rgba(255, 255, 255, 0.1);
         }
         h1 {
-            color: #ff0000;
+            color: #EA3943; /* Titre rouge réglementaire : IMPORTANT */
             font-size: 32px;
-            font-weight: bold;
-            margin-top: 0;
+            font-weight: 800;
             margin-bottom: 25px;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
         }
         .emotional-text {
-            color: #ffff00;
+            color: #F0B90B; /* Texte jaune émotionnel (Style Jaune Binance) */
             font-size: 16px;
             line-height: 1.6;
             text-align: left;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
-        .emotional-text p { margin-bottom: 15px; }
-        .emotional-text ul { padding-left: 20px; margin-top: 10px; }
-        .emotional-text li { margin-bottom: 10px; }
+        .emotional-text p { margin-bottom: 15px; font-weight: 600; }
+        .emotional-text ul { padding-left: 20px; }
+        .emotional-text li { margin-bottom: 12px; font-weight: 500; }
         .timer-display {
             font-size: 18px;
-            color: #ff3333;
+            color: #EA3943;
             margin-bottom: 25px;
-            font-weight: bold;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
         button {
-            background-color: #222222;
-            color: #888888;
-            border: 2px solid #444444;
-            padding: 15px 30px;
-            font-size: 16px;
-            font-weight: bold;
+            background-color: #2B3139;
+            color: #848E9C;
+            border: none;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: not-allowed;
             text-transform: uppercase;
             width: 100%;
+            letter-spacing: 1px;
             transition: all 0.3s ease;
         }
         button.active {
-            background-color: #ff0000;
-            color: #ffffff;
-            border: 2px solid #ffffff;
+            background-color: #F0B90B;
+            color: #000000;
             cursor: pointer;
+        }
+        button.active:hover {
+            background-color: #FFE15D;
         }
     </style>
 </head>
@@ -78,7 +81,7 @@
         <p>Les likes augmentent la visibilité de la vidéo.</p>
         <p>Les commentaires pertinents renforcent l'engagement.</p>
         <p>Les partages augmentent la portée.</p>
-        <p><strong>Plus la vidéo est recommandée par YouTube :</strong></p>
+        <p>Plus la vidéo est recommandée par YouTube :</p>
         <ul>
             <li>Plus de nouveaux membres découvrent Point Focal.</li>
             <li>Plus la communauté grandit.</li>
@@ -101,8 +104,8 @@
             timerDisplay.innerText = `Attente obligatoire : ${timeLeft}s`;
         } else {
             clearInterval(countdown);
-            timerDisplay.innerText = "✓ Règle lue et comprise.";
-            timerDisplay.style.color = "#00ff00";
+            timerDisplay.innerText = "✓ Règle lue et comprise de manière permanente.";
+            timerDisplay.style.color = "#02C076";
             btnContinue.innerText = "JE COMPRENDS — PASSER À LA VIDÉO";
             btnContinue.disabled = false;
             btnContinue.classList.add('active');
