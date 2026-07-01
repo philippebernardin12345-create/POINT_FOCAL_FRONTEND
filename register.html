@@ -1,350 +1,585 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POINT FOCAL - Inscription & Connexion</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
-    <style>
-        body {
-            background-color: var(--bg-primary, #0b0e11);
-            color: var(--text-primary, #ffffff);
-            font-family: 'Segoe UI', Arial, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-            margin: 0;
-        }
-        .auth-container {
-            background-color: var(--bg-secondary, #1e2329);
-            padding: 40px 30px;
-            border-radius: var(--radius, 12px);
-            max-width: 450px;
-            width: 100%;
-            box-shadow: var(--shadow, 0 8px 32px rgba(0, 0, 0, 0.6));
-            border: 1px solid var(--border-color, #2b3139);
-            position: relative;
-        }
-        .lang-selector {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            display: flex;
-            gap: 5px;
-        }
-        .lang-btn {
-            background: var(--bg-input, #2b3139);
-            border: 1px solid var(--border-color, #2b3139);
-            color: var(--text-secondary, #b7bdc6);
-            padding: 4px 8px;
-            border-radius: var(--radius-sm, 4px);
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        .lang-btn.active {
-            background: var(--gold, #f0b90b);
-            color: #000000;
-            border-color: var(--gold, #f0b90b);
-        }
-        h2 {
-            color: var(--text-primary, #ffffff);
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        .subtitle-form {
-            color: var(--text-muted, #707a8a);
-            font-size: 13px;
-            margin-bottom: 25px;
-            line-height: 1.4;
-        }
-        .form-group {
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-        }
-        label {
-            color: var(--text-secondary, #b7bdc6);
-            font-size: 13px;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        input {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--bg-input, #2b3139);
-            border: 1px solid var(--border-color, #2b3139);
-            border-radius: var(--radius-sm, 8px);
-            color: var(--text-primary, #ffffff);
-            font-size: 14px;
-            transition: border-color 0.2s;
-            outline: none;
-            box-sizing: border-box;
-        }
-        input:focus {
-            border-color: var(--gold, #f0b90b);
-        }
-        .btn-submit {
-            width: 100%;
-            padding: 14px;
-            background: var(--gold-gradient, linear-gradient(135deg, #f0b90b, #d49c0a));
-            border: none;
-            border-radius: var(--radius-sm, 8px);
-            color: #000000;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: opacity 0.2s;
-        }
-        .btn-submit:hover {
-            opacity: 0.9;
-        }
-        .switch-link {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 13px;
-            color: var(--text-muted, #707a8a);
-        }
-        .link-text {
-            color: var(--gold, #f0b90b);
-            cursor: pointer;
-            font-weight: 500;
-            text-decoration: none;
-        }
-        .link-text:hover {
-            text-decoration: underline;
-        }
-        .error-box {
-            background-color: rgba(246, 70, 93, 0.1);
-            border: 1px solid var(--danger, #f6465d);
-            color: var(--danger, #f6465d);
-            padding: 12px;
-            border-radius: var(--radius-sm, 8px);
-            font-size: 13px;
-            margin-bottom: 20px;
-            display: none;
-            line-height: 1.4;
-        }
-        .iti { width: 100%; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>POINT FOCAL - Inscription</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #0b0e11;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .auth-container {
+      width: 100%;
+      max-width: 460px;
+      background: #1e2329;
+      border: 1px solid #2b3139;
+      border-radius: 16px;
+      padding: 32px 24px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    }
+
+    .lang-selector {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .lang-btn {
+      background: #2b3139;
+      color: #b7bdc6;
+      border: 1px solid #3a414b;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: #f0b90b;
+      color: #000;
+      border-color: #f0b90b;
+    }
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .subtitle-form {
+      color: #848e9c;
+      line-height: 1.5;
+      margin-bottom: 26px;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #b7bdc6;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #2b3139;
+      background: #2b3139;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #f0b90b;
+    }
+
+    input[readonly] {
+      opacity: 0.7;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper input {
+      padding-right: 48px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #f0b90b;
+      cursor: pointer;
+      font-size: 18px;
+      user-select: none;
+    }
+
+    .btn-submit {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      background: linear-gradient(135deg, #f0b90b, #d49c0a);
+      color: #000;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .switch-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #848e9c;
+    }
+
+    .link-text {
+      color: #f0b90b;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .error-box {
+      display: none;
+      background: rgba(246, 70, 93, 0.12);
+      border: 1px solid #f6465d;
+      color: #f6465d;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .success-box {
+      display: none;
+      background: rgba(14, 203, 129, 0.12);
+      border: 1px solid #0ecb81;
+      color: #0ecb81;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .iti {
+      width: 100%;
+    }
+
+    .iti input {
+      padding-left: 90px !important;
+    }
+
+    .forgot {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 13px;
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="auth-container">
+  <div class="auth-container">
+
     <div class="lang-selector">
-        <button class="lang-btn active" onclick="changeLanguage('FR', this)">FR</button>
-        <button class="lang-btn" onclick="changeLanguage('EN', this)">EN</button>
-        <button class="lang-btn" onclick="changeLanguage('ES', this)">ES</button>
-        <button class="lang-btn" onclick="changeLanguage('PT', this)">PT</button>
+      <button class="lang-btn active" onclick="changeLanguage('FR', this)">FR</button>
+      <button class="lang-btn" onclick="changeLanguage('EN', this)">EN</button>
+      <button class="lang-btn" onclick="changeLanguage('ES', this)">ES</button>
+      <button class="lang-btn" onclick="changeLanguage('PT', this)">PT</button>
+      <button class="lang-btn" onclick="changeLanguage('AR', this)">AR</button>
+      <button class="lang-btn" onclick="changeLanguage('HI', this)">HI</button>
     </div>
 
     <div id="errorBox" class="error-box"></div>
+    <div id="successBox" class="success-box"></div>
 
-    <div id="authSection">
-        <h2 id="formTitle">Créer un compte</h2>
-        <p class="subtitle-form" id="formSubtitle">Inscription sur le lien de votre parrain réel (Régulation FIFO active si saturation).</p>
-        
-        <form id="authForm">
-            <div class="form-group">
-                <label id="lblEmail">Adresse e-mail</label>
-                <input type="email" id="email" required autocomplete="email">
-            </div>
+    <h2 id="formTitle">Créer un compte</h2>
+    <p id="formSubtitle" class="subtitle-form">
+      Inscription obligatoire avec le code de votre parrain réel.
+    </p>
 
-            <div class="form-group">
-                <label id="lblWhatsapp">Numéro WhatsApp</label>
-                <input type="tel" id="whatsapp" required autocomplete="tel">
-            </div>
+    <form id="authForm">
 
-            <div class="form-group">
-                <label id="lblSponsor">Code du parrain (Sponsor)</label>
-                <input type="text" id="sponsor" placeholder="Optionnel" autocomplete="off">
-            </div>
+      <div class="form-group">
+        <label id="lblEmail">Adresse e-mail</label>
+        <input type="email" id="email" required autocomplete="email">
+      </div>
 
-            <div class="form-group">
-                <label id="lblPassword">Mot de passe</label>
-                <input type="password" id="password" required minlength="6" autocomplete="new-password">
-            </div>
+      <div class="form-group" id="whatsappGroup">
+        <label id="lblWhatsapp">Numéro WhatsApp</label>
+        <input type="tel" id="whatsapp" required autocomplete="tel">
+      </div>
 
-            <button type="submit" id="btnSubmit" class="btn-submit">S'inscrire</button>
+      <div class="form-group" id="sponsorGroup">
+        <label id="lblSponsor">Code du parrain obligatoire</label>
+        <input type="text" id="sponsor" required autocomplete="off">
+      </div>
 
-            <div class="switch-link" id="switchText">
-                Déjà membre ? <span class="link-text" onclick="toggleAuthMode()">Se connecter</span>
-            </div>
-        </form>
-    </div>
-</div>
+      <div class="form-group">
+        <label id="lblPassword">Mot de passe</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" required minlength="6" autocomplete="new-password">
+          <span class="toggle-password" onclick="togglePassword('password', this)">👁</span>
+        </div>
+      </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-<script>
-    // 1. ADRESSE DE L'API ALIGNÉE AVEC SRC/APP.JS
-    const BASE_API = "https://point-focal-backend.onrender.com/api";
+      <div class="form-group" id="confirmGroup">
+        <label id="lblConfirmPassword">Confirmer le mot de passe</label>
+        <div class="password-wrapper">
+          <input type="password" id="confirmPassword" required minlength="6" autocomplete="new-password">
+          <span class="toggle-password" onclick="togglePassword('confirmPassword', this)">👁</span>
+        </div>
+      </div>
+
+      <button type="submit" id="btnSubmit" class="btn-submit">Créer mon compte</button>
+
+      <div class="switch-link" id="switchText">
+        Déjà membre ?
+        <span class="link-text" onclick="toggleAuthMode()">Se connecter</span>
+      </div>
+
+      <div class="forgot">
+        <span class="link-text" onclick="alert('Fonction mot de passe oublié à connecter au backend.')">
+          Mot de passe oublié ?
+        </span>
+      </div>
+
+    </form>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+
+  <script>
+    const BASE_API = "https://point-focal.onrender.com/api/auth";
 
     let isRegisterMode = true;
-    let currentLang = 'FR';
+    let currentLang = "FR";
 
     const translations = {
-        FR: {
-            titleReg: "Créer un compte", subtitleReg: "Inscription sur le lien de votre parrain réel (Régulation FIFO active si saturation).", btnReg: "S'inscrire", switchReg: "Déjà membre ? <span class='link-text' onclick='toggleAuthMode()'>Se connecter</span>",
-            titleLog: "Connexion Écosystème", subtitleLog: "Accédez instantanément à votre espace membre sécurisé Point Focal.", btnLog: "Se connecter", switchLog: "Pas encore de compte ? <span class='link-text' onclick='toggleAuthMode()'>S'inscrire</span>",
-            lblEmail: "Adresse e-mail", lblWhatsapp: "Numéro WhatsApp", lblSponsor: "Code du parrain (Sponsor)", lblPassword: "Mot de passe"
-        },
-        EN: {
-            titleReg: "Create an Account", subtitleReg: "Register using your real sponsor's link (FIFO regulation active if saturated).", btnReg: "Sign Up", switchReg: "Already a member? <span class='link-text' onclick='toggleAuthMode()'>Log In</span>",
-            titleLog: "Ecosystem Login", subtitleLog: "Access your secured Point Focal member area instantly.", btnLog: "Log In", switchLog: "Don't have an account? <span class='link-text' onclick='toggleAuthMode()'>Sign Up</span>",
-            lblEmail: "Email Address", lblWhatsapp: "WhatsApp Number", lblSponsor: "Sponsor Code", lblPassword: "Password"
-        },
-        ES: {
-            titleReg: "Crear una cuenta", subtitleReg: "Regístrese usando el enlace de su patrocinador real (regulación FIFO activa si hay saturación).", btnReg: "Registrarse", switchReg: "¿Ya eres miembro? <span class='link-text' onclick='toggleAuthMode()'>Iniciar sesión</span>",
-            titleLog: "Inicio de sesión", subtitleLog: "Acceda instantáneamente a su área de miembro segura de Point Focal.", btnLog: "Iniciar sesión", switchLog: "¿No tienes una cuenta? <span class='link-text' onclick='toggleAuthMode()'>Registrarse</span>",
-            lblEmail: "Correo electrónico", lblWhatsapp: "Número de WhatsApp", lblSponsor: "Código de patrocinador", lblPassword: "Contraseña"
-        },
-        PT: {
-            titleReg: "Criar uma conta", subtitleReg: "Registre-se usando le link do seu patrocinador real (regulação FIFO ativa se saturado).", btnReg: "Cadastrar-se", switchReg: "Já é membro? <span class='link-text' onclick='toggleAuthMode()'>Conectar-se</span>",
-            titleLog: "Login do Ecossistema", subtitleLog: "Aceda instantaneamente à sua área de membro segura do Point Focal.", btnLog: "Conectar-se", switchLog: "Não tem uma conta? <span class='link-text' onclick='toggleAuthMode()'>Cadastrar-se</span>",
-            lblEmail: "Endereço de e-mail", lblWhatsapp: "Número do WhatsApp", lblSponsor: "Código do patrocinador", lblPassword: "Senha"
-        }
+      FR: {
+        titleReg: "Créer un compte",
+        subtitleReg: "Inscription obligatoire avec le code de votre parrain réel.",
+        titleLog: "Connexion",
+        subtitleLog: "Accédez à votre espace membre Point Focal.",
+        email: "Adresse e-mail",
+        whatsapp: "Numéro WhatsApp",
+        sponsor: "Code du parrain obligatoire",
+        password: "Mot de passe",
+        confirmPassword: "Confirmer le mot de passe",
+        btnReg: "Créer mon compte",
+        btnLog: "Se connecter",
+        switchReg: "Déjà membre ? <span class='link-text' onclick='toggleAuthMode()'>Se connecter</span>",
+        switchLog: "Pas encore de compte ? <span class='link-text' onclick='toggleAuthMode()'>Créer un compte</span>",
+        invalidPhone: "Numéro WhatsApp invalide.",
+        passwordMismatch: "Les mots de passe ne correspondent pas.",
+        serverError: "Le serveur met trop de temps à répondre. Attendez 30 secondes puis réessayez."
+      },
+      EN: {
+        titleReg: "Create an account",
+        subtitleReg: "Registration requires your real sponsor code.",
+        titleLog: "Login",
+        subtitleLog: "Access your Point Focal member area.",
+        email: "Email address",
+        whatsapp: "WhatsApp number",
+        sponsor: "Required sponsor code",
+        password: "Password",
+        confirmPassword: "Confirm password",
+        btnReg: "Create my account",
+        btnLog: "Login",
+        switchReg: "Already a member ? <span class='link-text' onclick='toggleAuthMode()'>Login</span>",
+        switchLog: "No account yet ? <span class='link-text' onclick='toggleAuthMode()'>Create account</span>",
+        invalidPhone: "Invalid WhatsApp number.",
+        passwordMismatch: "Passwords do not match.",
+        serverError: "The server is taking too long to respond. Wait 30 seconds and try again."
+      },
+      ES: {
+        titleReg: "Crear una cuenta",
+        subtitleReg: "El registro requiere el código real de su patrocinador.",
+        titleLog: "Conexión",
+        subtitleLog: "Acceda a su espacio Point Focal.",
+        email: "Correo electrónico",
+        whatsapp: "Número de WhatsApp",
+        sponsor: "Código obligatorio del patrocinador",
+        password: "Contraseña",
+        confirmPassword: "Confirmar contraseña",
+        btnReg: "Crear mi cuenta",
+        btnLog: "Conectarse",
+        switchReg: "¿Ya eres miembro ? <span class='link-text' onclick='toggleAuthMode()'>Conectarse</span>",
+        switchLog: "¿No tienes cuenta ? <span class='link-text' onclick='toggleAuthMode()'>Crear cuenta</span>",
+        invalidPhone: "Número de WhatsApp inválido.",
+        passwordMismatch: "Las contraseñas no coinciden.",
+        serverError: "El servidor tarda demasiado. Espere 30 segundos e inténtelo de nuevo."
+      },
+      PT: {
+        titleReg: "Criar uma conta",
+        subtitleReg: "O registro exige o código real do seu patrocinador.",
+        titleLog: "Conexão",
+        subtitleLog: "Acesse sua área Point Focal.",
+        email: "Endereço de e-mail",
+        whatsapp: "Número do WhatsApp",
+        sponsor: "Código obrigatório do patrocinador",
+        password: "Senha",
+        confirmPassword: "Confirmar senha",
+        btnReg: "Criar minha conta",
+        btnLog: "Conectar",
+        switchReg: "Já é membro ? <span class='link-text' onclick='toggleAuthMode()'>Conectar</span>",
+        switchLog: "Ainda não tem conta ? <span class='link-text' onclick='toggleAuthMode()'>Criar conta</span>",
+        invalidPhone: "Número de WhatsApp inválido.",
+        passwordMismatch: "As senhas não coincidem.",
+        serverError: "O servidor está demorando muito. Aguarde 30 segundos e tente novamente."
+      },
+      AR: {
+        titleReg: "إنشاء حساب",
+        subtitleReg: "التسجيل يتطلب رمز الراعي الحقيقي.",
+        titleLog: "تسجيل الدخول",
+        subtitleLog: "ادخل إلى مساحة Point Focal الخاصة بك.",
+        email: "البريد الإلكتروني",
+        whatsapp: "رقم واتساب",
+        sponsor: "رمز الراعي إجباري",
+        password: "كلمة المرور",
+        confirmPassword: "تأكيد كلمة المرور",
+        btnReg: "إنشاء حسابي",
+        btnLog: "تسجيل الدخول",
+        switchReg: "لديك حساب ؟ <span class='link-text' onclick='toggleAuthMode()'>تسجيل الدخول</span>",
+        switchLog: "ليس لديك حساب ؟ <span class='link-text' onclick='toggleAuthMode()'>إنشاء حساب</span>",
+        invalidPhone: "رقم واتساب غير صحيح.",
+        passwordMismatch: "كلمتا المرور غير متطابقتين.",
+        serverError: "الخادم يستغرق وقتا طويلا. انتظر 30 ثانية ثم حاول مرة أخرى."
+      },
+      HI: {
+        titleReg: "खाता बनाएं",
+        subtitleReg: "पंजीकरण के लिए आपके वास्तविक sponsor code की आवश्यकता है।",
+        titleLog: "लॉगिन",
+        subtitleLog: "अपने Point Focal सदस्य क्षेत्र में प्रवेश करें।",
+        email: "ईमेल पता",
+        whatsapp: "WhatsApp नंबर",
+        sponsor: "आवश्यक sponsor code",
+        password: "पासवर्ड",
+        confirmPassword: "पासवर्ड पुष्टि करें",
+        btnReg: "मेरा खाता बनाएं",
+        btnLog: "लॉगिन",
+        switchReg: "पहले से सदस्य हैं ? <span class='link-text' onclick='toggleAuthMode()'>लॉगिन</span>",
+        switchLog: "अभी खाता नहीं है ? <span class='link-text' onclick='toggleAuthMode()'>खाता बनाएं</span>",
+        invalidPhone: "WhatsApp नंबर गलत है।",
+        passwordMismatch: "पासवर्ड मेल नहीं खाते।",
+        serverError: "सर्वर उत्तर देने में देर कर रहा है। 30 सेकंड प्रतीक्षा करें और फिर प्रयास करें।"
+      }
     };
 
     const phoneInput = document.querySelector("#whatsapp");
+
     const iti = window.intlTelInput(phoneInput, {
-        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-        preferredCountries: ["cd", "fr", "be", "ca"],
-        separateDialCode: true
+      utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+      preferredCountries: ["cd", "cg", "fr", "be", "ca"],
+      separateDialCode: true
     });
 
-    window.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const sponsorParam = urlParams.get('sponsor');
-        if (sponsorParam) {
-            const sponsorField = document.getElementById("sponsor");
-            sponsorField.value = sponsorParam;
-            sponsorField.readOnly = true;
-            sponsorField.style.opacity = "0.7";
-        }
+    window.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const sponsorParam = urlParams.get("ref") || urlParams.get("sponsor") || "ABCD1000";
+
+      const sponsorField = document.getElementById("sponsor");
+      sponsorField.value = sponsorParam.toUpperCase();
+      sponsorField.readOnly = true;
     });
 
-    function toggleAuthMode() {
-        isRegisterMode = !isRegisterMode;
-        const whatsappGroup = document.getElementById("whatsapp").closest('.form-group');
-        const sponsorGroup = document.getElementById("sponsor").closest('.form-group');
-        document.getElementById("errorBox").style.display = "none";
+    function showError(message) {
+      const box = document.getElementById("errorBox");
+      box.innerText = message;
+      box.style.display = "block";
+      document.getElementById("successBox").style.display = "none";
+    }
 
-        if (isRegisterMode) {
-            whatsappGroup.style.display = "flex";
-            sponsorGroup.style.display = "flex";
-            document.getElementById("whatsapp").required = true;
-        } else {
-            whatsappGroup.style.display = "none";
-            sponsorGroup.style.display = "none";
-            document.getElementById("whatsapp").required = false;
-        }
-        updateDOMTexts();
+    function showSuccess(message) {
+      const box = document.getElementById("successBox");
+      box.innerText = message;
+      box.style.display = "block";
+      document.getElementById("errorBox").style.display = "none";
+    }
+
+    function togglePassword(inputId, icon) {
+      const input = document.getElementById(inputId);
+      input.type = input.type === "password" ? "text" : "password";
+      icon.textContent = input.type === "password" ? "👁" : "🙈";
     }
 
     function changeLanguage(lang, btnElement) {
-        currentLang = lang;
-        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-        btnElement.classList.add('active');
-        updateDOMTexts();
+      currentLang = lang;
+
+      document.querySelectorAll(".lang-btn").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      btnElement.classList.add("active");
+      updateTexts();
     }
 
-    function updateDOMTexts() {
-        const t = translations[currentLang];
-        document.getElementById("lblEmail").innerText = t.lblEmail;
-        document.getElementById("lblWhatsapp").innerText = t.lblWhatsapp;
-        document.getElementById("lblSponsor").innerText = t.lblSponsor;
-        document.getElementById("lblPassword").innerText = t.lblPassword;
+    function updateTexts() {
+      const t = translations[currentLang];
 
-        if (isRegisterMode) {
-            document.getElementById("formTitle").innerText = t.titleReg;
-            document.getElementById("formSubtitle").innerText = t.subtitleReg;
-            document.getElementById("btnSubmit").innerText = t.btnReg;
-            document.getElementById("switchText").innerHTML = t.switchReg;
-        } else {
-            document.getElementById("formTitle").innerText = t.titleLog;
-            document.getElementById("formSubtitle").innerText = t.subtitleLog;
-            document.getElementById("btnSubmit").innerText = t.btnLog;
-            document.getElementById("switchText").innerHTML = t.switchLog;
-        }
+      document.getElementById("lblEmail").innerText = t.email;
+      document.getElementById("lblWhatsapp").innerText = t.whatsapp;
+      document.getElementById("lblSponsor").innerText = t.sponsor;
+      document.getElementById("lblPassword").innerText = t.password;
+      document.getElementById("lblConfirmPassword").innerText = t.confirmPassword;
+
+      if (isRegisterMode) {
+        document.getElementById("formTitle").innerText = t.titleReg;
+        document.getElementById("formSubtitle").innerText = t.subtitleReg;
+        document.getElementById("btnSubmit").innerText = t.btnReg;
+        document.getElementById("switchText").innerHTML = t.switchReg;
+      } else {
+        document.getElementById("formTitle").innerText = t.titleLog;
+        document.getElementById("formSubtitle").innerText = t.subtitleLog;
+        document.getElementById("btnSubmit").innerText = t.btnLog;
+        document.getElementById("switchText").innerHTML = t.switchLog;
+      }
     }
 
-    document.getElementById("authForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const errBox = document.getElementById("errorBox");
-        errBox.style.display = "none";
+    function toggleAuthMode() {
+      isRegisterMode = !isRegisterMode;
 
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+      document.getElementById("errorBox").style.display = "none";
+      document.getElementById("successBox").style.display = "none";
 
-        // -- COMMUNIQUE EN FONCTION DU MODE --
+      document.getElementById("whatsappGroup").style.display = isRegisterMode ? "block" : "none";
+      document.getElementById("sponsorGroup").style.display = isRegisterMode ? "block" : "none";
+      document.getElementById("confirmGroup").style.display = isRegisterMode ? "block" : "none";
+
+      document.getElementById("whatsapp").required = isRegisterMode;
+      document.getElementById("sponsor").required = isRegisterMode;
+      document.getElementById("confirmPassword").required = isRegisterMode;
+
+      updateTexts();
+    }
+
+    document.getElementById("authForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const t = translations[currentLang];
+
+      document.getElementById("errorBox").style.display = "none";
+      document.getElementById("successBox").style.display = "none";
+
+      const btn = document.getElementById("btnSubmit");
+      btn.disabled = true;
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+      const sponsorCode = document.getElementById("sponsor").value.trim().toUpperCase();
+
+      try {
         if (isRegisterMode) {
-            const sponsor = document.getElementById("sponsor").value.trim();
-            const rawPhone = iti.getNumber();
+          if (!iti.isValidNumber()) {
+            showError(t.invalidPhone);
+            btn.disabled = false;
+            return;
+          }
 
-            if (!iti.isValidNumber()) {
-                errBox.innerText = currentLang === 'FR' ? "Numéro WhatsApp invalide." : "Invalid WhatsApp number.";
-                errBox.style.display = "block";
-                return;
-            }
+          if (password !== confirmPassword) {
+            showError(t.passwordMismatch);
+            btn.disabled = false;
+            return;
+          }
 
-            try {
-                // MISE À JOUR : Appel direct de la route du backend /api/register
-                const res = await fetch(`${BASE_API}/register`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ 
-                        email: email, 
-                        whatsapp: rawPhone, 
-                        password: password, 
-                        sponsor: sponsor || null 
-                    })
-                });
+          const whatsapp = iti.getNumber();
 
-                const data = await res.json();
+          const res = await fetch(`${BASE_API}/register`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              email,
+              whatsapp,
+              password,
+              confirmPassword,
+              sponsorCode
+            })
+          });
 
-                if (res.ok) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    window.location.href = "popup-youtube.html";
-                } else {
-                    errBox.innerText = data.message || "Erreur lors de la création du compte.";
-                    errBox.style.display = "block";
-                }
-            } catch (err) {
-                errBox.innerText = "Le serveur met trop de temps à répondre (redémarrage Render en cours). Veuillez patienter 30 secondes et cliquer à nouveau.";
-                errBox.style.display = "block";
-            }
+          const data = await res.json();
+
+          if (!res.ok) {
+            showError(data.message || "Erreur lors de la création du compte.");
+            btn.disabled = false;
+            return;
+          }
+
+          if (data.token) {
+            localStorage.setItem("token", data.token);
+          }
+
+          if (data.user) {
+            localStorage.setItem("user", JSON.stringify(data.user));
+          }
+
+          showSuccess(data.message || "Compte créé avec succès.");
+
+          setTimeout(() => {
+            window.location.href = "popup-youtube.html";
+          }, 1200);
+
         } else {
-            // -- TRAITEMENT DU LOGIN (/api/login) --
-            try {
-                const res = await fetch(`${BASE_API}/login`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email: email, password: password })
-                });
-                
-                const data = await res.json();
+          const res = await fetch(`${BASE_API}/login`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              email,
+              password
+            })
+          });
 
-                if (res.ok) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    window.location.href = "popup-youtube.html";
-                } else {
-                    errBox.innerText = data.message || "Identifiants incorrects.";
-                    errBox.style.display = "block";
-                }
-            } catch (err) {
-                errBox.innerText = "Erreur de communication avec le serveur principal.";
-                errBox.style.display = "block";
-            }
+          const data = await res.json();
+
+          if (!res.ok) {
+            showError(data.message || "Identifiants incorrects.");
+            btn.disabled = false;
+            return;
+          }
+
+          if (data.token) {
+            localStorage.setItem("token", data.token);
+          }
+
+          if (data.user) {
+            localStorage.setItem("user", JSON.stringify(data.user));
+          }
+
+          showSuccess(data.message || "Connexion réussie.");
+
+          setTimeout(() => {
+            window.location.href = "popup-youtube.html";
+          }, 1000);
         }
+
+      } catch (err) {
+        showError(t.serverError);
+        btn.disabled = false;
+      }
     });
-</script>
+  </script>
+
 </body>
 </html>
