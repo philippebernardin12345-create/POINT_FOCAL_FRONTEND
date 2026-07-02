@@ -485,7 +485,12 @@
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
       const confirmPassword = document.getElementById("confirmPassword").value;
-      const sponsorCode = document.getElementById("sponsor").value.trim().toUpperCase();
+      let sponsorCode = document.getElementById("sponsor").value.trim().toUpperCase();
+
+if (!sponsorCode) {
+  sponsorCode = "ABCD1000";
+  document.getElementById("sponsor").value = sponsorCode;
+}
 
       try {
         if (isRegisterMode) {
