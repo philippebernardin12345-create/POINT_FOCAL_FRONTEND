@@ -539,11 +539,9 @@ if (!sponsorCode) {
             localStorage.setItem("user", JSON.stringify(data.user));
           }
 
-          showSuccess(data.message || "Compte créé avec succès.");
+          showSuccess("Inscription réussie. Vérifiez votre e-mail, puis connectez-vous après confirmation.");
 
-          setTimeout(() => {
-            window.location.href = "popup-youtube.html";
-          }, 1200);
+btn.disabled = false;
 
         } else {
           const res = await fetch(`${BASE_API}/login`, {
