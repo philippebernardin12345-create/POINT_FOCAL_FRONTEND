@@ -494,11 +494,23 @@ if (!sponsorCode) {
 
       try {
         if (isRegisterMode) {
-          if (!iti.isValidNumber()) {
-            showError(t.invalidPhone);
-            btn.disabled = false;
-            return;
-          }
+          let whatsapp = phoneInput.value.trim();
+
+whatsapp = whatsapp.replace(/\s+/g, "").replace("+", "");
+
+if (whatsapp.startsWith("0")) {
+    whatsapp = "243" + whatsapp.slice(1);
+}
+
+if (!whatsapp.startsWith("243")) {
+    whatsapp = "243" + whatsapp;
+}
+
+if (!/^243[0-9]{9}$/.test(whatsapp)) {
+    showError(t.invalidPhone);
+    btn.disabled = false;
+    return;
+}
 
           if (password !== confirmPassword) {
             showError(t.passwordMismatch);
