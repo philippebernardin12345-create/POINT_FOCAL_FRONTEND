@@ -534,8 +534,10 @@ if (!/^243[0-9]{9}$/.test(whatsapp)) {
               language: currentLang.toLowerCase()
             })
           });
+const data = await res.json().catch(() => ({
+  message: "Réponse serveur invalide."
+}));
 
-          const data = await res.json();
 
           if (!res.ok) {
             showError(data.message || "Erreur lors de la création du compte.");
