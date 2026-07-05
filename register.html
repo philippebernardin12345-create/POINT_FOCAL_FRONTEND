@@ -553,11 +553,9 @@ const data = await res.json().catch(() => ({
             localStorage.setItem("user", JSON.stringify(data.user));
           }
 
-       showSuccess("Inscription réussie. Passage à l'étape communautaire...");
+      showSuccess("Inscription réussie. Vérifiez votre e-mail, puis connectez-vous après confirmation.");
 
-setTimeout(() => {
-  window.location.href = "popup-youtube.html";
-}, 1000);
+btn.disabled = false;
 
         } else {
           const res = await fetch(`${BASE_API}/login`, {
