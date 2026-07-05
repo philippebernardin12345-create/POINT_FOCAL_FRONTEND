@@ -7,7 +7,7 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: #000000; /* Fond noir strict */
+            background-color: #000000;
             color: #EAECEF;
             font-family: 'Segoe UI', Arial, sans-serif;
             display: flex;
@@ -18,7 +18,7 @@
         }
         .popup-box {
             background-color: #000000;
-            border: 4px solid #FFFFFF; /* Cadre blanc strict */
+            border: 4px solid #FFFFFF;
             padding: 40px 30px;
             max-width: 600px;
             width: 100%;
@@ -26,14 +26,14 @@
             box-shadow: 0px 0px 30px rgba(255, 255, 255, 0.1);
         }
         h1 {
-            color: #EA3943; /* Titre rouge réglementaire : IMPORTANT */
+            color: #EA3943;
             font-size: 32px;
             font-weight: 800;
             margin-bottom: 25px;
             letter-spacing: 3px;
         }
         .emotional-text {
-            color: #F0B90B; /* Texte jaune émotionnel (Style Jaune Binance) */
+            color: #F0B90B;
             font-size: 16px;
             line-height: 1.6;
             text-align: left;
@@ -76,7 +76,7 @@
 
 <div class="popup-box">
     <h1>IMPORTANT</h1>
-    
+
     <div class="emotional-text">
         <p>Les likes augmentent la visibilité de la vidéo.</p>
         <p>Les commentaires pertinents renforcent l'engagement.</p>
@@ -100,6 +100,7 @@
 
     const countdown = setInterval(() => {
         timeLeft--;
+
         if (timeLeft > 0) {
             timerDisplay.innerText = `Attente obligatoire : ${timeLeft}s`;
         } else {
@@ -112,9 +113,14 @@
         }
     }, 1000);
 
-    btnContinue.addEventListener('click', () => {
-        window.location.href = "video.html";
+    btnContinue.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        sessionStorage.setItem("popupYoutubeOk", "true");
+
+        window.location.href = "./video.html";
     });
 </script>
+
 </body>
 </html>
