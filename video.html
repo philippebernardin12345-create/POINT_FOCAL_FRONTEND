@@ -141,7 +141,7 @@
         
         // Appel de validation côté serveur (Règle 3 du cahier des charges)
         try {
-            const res = await fetch('https://point-focal-backend.onrender.com/api/video/verify', {
+     const res = await fetch('https://point-focal.onrender.com/api/video/verify', { {
                 method: 'POST',
                 headers: { 
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
