@@ -1,169 +1,93 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Point Focal - Étape Communautaire</title>
-    <style>
-        body { 
-            background-color: #0B0E11; 
-            color: #EAECEF; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 100vh; 
-            margin: 0;
-            padding: 20px; 
-        }
-        .container { 
-            background-color: #1E2329; 
-            padding: 40px; 
-            border-radius: 6px; 
-            max-width: 550px; 
-            width: 100%; 
-            text-align: center; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        h2 { 
-            color: #F0B90B; 
-            margin-bottom: 20px; 
-            font-size: 24px;
-        }
-        p {
-            line-height: 1.5;
-            color: #848E9C;
-        }
-        .btn-youtube { 
-            background-color: #EA3943; 
-            color: white; 
-            padding: 16px 25px; 
-            text-decoration: none; 
-            font-weight: bold; 
-            border-radius: 4px; 
-            display: inline-block; 
-            margin: 20px 0;
-            transition: background 0.2s;
-        }
-        .btn-youtube:hover {
-            background-color: #C5222B;
-        }
-        .aide-retour { 
-            display: none; 
-            margin: 20px 0; 
-            padding: 15px; 
-            background: rgba(240, 185, 11, 0.1); 
-            border-left: 4px solid #F0B90B; 
-            border-radius: 4px;
-            text-align: left;
-            font-size: 14px;
-            color: #F0B90B;
-        }
-        .btn-next { 
-            background-color: #2B3139; 
-            color: #848E9C; 
-            padding: 15px; 
-            width: 100%; 
-            border: none; 
-            border-radius: 4px; 
-            cursor: not-allowed; 
-            font-weight: bold; 
-            font-size: 16px;
-            margin-top: 10px;
-            transition: all 0.3s;
-        }
-        .btn-next.ready { 
-            background-color: #02C076; 
-            color: white; 
-            cursor: pointer; 
-        }
-        .btn-next.ready:hover {
-            background-color: #03A666;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Point Focal - Étape Communautaire</title>
 </head>
 <body>
 
 <div class="container">
-    <h2>🎯 Étape Communautaire</h2>
-    <p>Pour activer votre compte et débloquer vos accès, veuillez ouvrir la vidéo officielle, vous abonner à la chaîne et laisser un commentaire.</p>
-    
-    <!-- AJOUT N°1 : Lien externe ciblé (target="_blank") -->
-    <a href="https://www.youtube.com/watch?v=VOTRE_ID_VIDEO" target="_blank" class="btn-youtube" onclick="activerRetour()">
-        ▶️ OUVRIR DANS YOUTUBE
-    </a>
+  <h2>🎯 Étape Communautaire</h2>
 
-    <!-- AJOUT N°1 : Message dynamique d'aide au retour -->
-    <div id="aideRetour" class="aide-retour">
-        💡 <strong>Comment revenir ?</strong> Vos actions s'effectuent dans le nouvel onglet YouTube qui vient de s'ouvrir. Une fois terminé, revenez simplement sur cet écran pour valider.
-    </div>
+  <p>
+    Pour activer votre compte et débloquer vos accès, veuillez ouvrir la vidéo officielle,
+    vous abonner à la chaîne et laisser un commentaire.
+  </p>
 
-    <button id="btnValidation" class="btn-next" onclick="validerEtape()">J'ai visionné et interagi</button>
+  <a
+    href="https://youtu.be/9uPybhkqYw4"
+    target="_blank"
+    class="btn-youtube"
+    onclick="activerRetour()"
+  >
+    ▶️ OUVRIR DANS YOUTUBE
+  </a>
+
+  <div id="aideRetour" class="aide-retour">
+    💡 <strong>Comment revenir ?</strong>
+    Vos actions s'effectuent dans le nouvel onglet YouTube. Une fois terminé,
+    revenez simplement sur cet écran pour valider.
+  </div>
+
+  <button id="btnValidation" class="btn-next" onclick="validerEtape()">
+    J'ai visionné et interagi
+  </button>
 </div>
 
 <script>
-    // Vérification de sécurité au chargement : Sécurité Anti-boucle intégrée
-    window.addEventListener('DOMContentLoaded', () => {
-        const token = localStorage.getItem('token');
-        const user = JSON.parse(localStorage.getItem('user'));
+  window.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-        if (!token) {
-            window.location.href = "register.html";
-            return;
-        }
-
-        // AJOUT N°2 : Si l'utilisateur possède déjà son lien Victory, interdiction de rester ici
-        if (user && user.hasVictoryLink) {
-            if (user.isActivated) {
-                window.location.href = "dashboard.html";
-            } else {
-                window.location.href = "payment.html";
-            }
-        }
-    });
-
-    // Fonction déclenchée au clic sur le bouton YouTube
-    function activerRetour() {
-        // Affiche le bloc de guidage
-        document.getElementById('aideRetour').style.display = 'block';
-        
-        // Débloque le bouton de validation après un court instant
-        setTimeout(() => {
-            const btn = document.getElementById('btnValidation');
-            btn.classList.add('ready');
-            btn.innerText = "Valider mes interactions";
-        }, 3000); 
+    if (!token) {
+      window.location.href = "register.html";
+      return;
     }
 
-    async function validerEtape() {
-        const btn = document.getElementById('btnValidation');
-        if (!btn.classList.contains('ready')) return;
-        
-        // Appel de validation côté serveur (Règle 3 du cahier des charges)
-        try {
-     const res = await fetch('https://point-focal.onrender.com/api/video/verify', { {
-                method: 'POST',
-                headers: { 
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            if (res.ok) {
-                // Mise à jour locale du statut utilisateur avant redirection
-                const user = JSON.parse(localStorage.getItem('user')) || {};
-                user.hasVictoryLink = true;
-                localStorage.setItem('user', JSON.stringify(user));
-                
-                window.location.href = "victory-link.html";
-            } else {
-                alert("Veuillez interagir avec la vidéo sur YouTube avant de tenter la validation.");
-            }
-        } catch (error) {
-            console.error("Erreur de validation:", error);
-            alert("Une erreur est survenue, veuillez réessayer.");
-        }
+    if (user && user.hasVictoryLink) {
+      window.location.href = user.isActivated ? "dashboard.html" : "payment.html";
     }
+  });
+
+  function activerRetour() {
+    document.getElementById("aideRetour").style.display = "block";
+
+    setTimeout(() => {
+      const btn = document.getElementById("btnValidation");
+      btn.classList.add("ready");
+      btn.innerText = "Valider mes interactions";
+    }, 3000);
+  }
+
+  async function validerEtape() {
+    const btn = document.getElementById("btnValidation");
+    if (!btn.classList.contains("ready")) return;
+
+    try {
+      const res = await fetch("https://point-focal.onrender.com/api/video/verify", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (res.ok) {
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        user.hasVictoryLink = true;
+        localStorage.setItem("user", JSON.stringify(user));
+
+        window.location.href = "victory-link.html";
+      } else {
+        alert("Veuillez interagir avec la vidéo sur YouTube avant de tenter la validation.");
+      }
+    } catch (error) {
+      console.error("Erreur de validation:", error);
+      alert("Une erreur est survenue, veuillez réessayer.");
+    }
+  }
 </script>
+
 </body>
 </html>
