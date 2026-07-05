@@ -41,9 +41,10 @@
     const user = JSON.parse(localStorage.getItem("user") || "{}");
 
     if (!token) {
-      window.location.href = "register.html";
-      return;
-    }
+  alert("Session non trouvée. Connectez-vous d'abord.");
+  window.location.href = "login.html";
+  return;
+}
 
     if (user && user.hasVictoryLink) {
       window.location.href = user.isActivated ? "dashboard.html" : "payment.html";
