@@ -147,8 +147,9 @@ async function validerEtape() {
 
       window.location.href = "victory-link.html";
     } else {
-      alert("Validation impossible. Réessayez.");
-    }
+    const errorText = await res.text();
+    alert("Validation impossible : " + errorText);
+}
   } catch (error) {
     console.error("Erreur validation vidéo:", error);
     alert("Une erreur est survenue.");
