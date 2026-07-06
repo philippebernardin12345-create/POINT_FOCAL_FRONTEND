@@ -52,14 +52,19 @@
   });
 
   function activerRetour() {
-    document.getElementById("aideRetour").style.display = "block";
+  document.getElementById("aideRetour").style.display = "block";
 
-    setTimeout(() => {
-      const btn = document.getElementById("btnValidation");
-      btn.classList.add("ready");
-      btn.innerText = "Je retourne sur Point Focal";
-    }, 3000);
-  }
+  const btn = document.getElementById("btnValidation");
+  btn.disabled = true;
+  btn.innerText = "Retournez sur Point Focal après YouTube...";
+
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.classList.add("ready");
+    btn.innerText = "Je suis revenu sur Point Focal";
+  }, 3000);
+}
+  
 
   async function validerEtape() {
     const btn = document.getElementById("btnValidation");
