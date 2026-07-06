@@ -16,18 +16,19 @@
   </p>
 
   <a
-    href="https://youtu.be/9uPybhkqYw4"
+    href="https://www.youtube.com/watch?v=9uPybhkqYw4"
     target="_blank"
+    rel="noopener"
     class="btn-youtube"
-    onclick="activerRetour()"
+    onclick="preparerRetourMobile()"
   >
     ▶️ OUVRIR DANS YOUTUBE
   </a>
 
   <div id="aideRetour" class="aide-retour" style="display:none;">
-    💡 <strong>Comment revenir ?</strong><br>
-    Vos actions s'effectuent dans le nouvel onglet YouTube.
-    Une fois terminé, revenez simplement sur cet écran pour continuer.
+    💡 <strong>Comment continuer ?</strong><br>
+    Une fois vos actions terminées sur YouTube, revenez sur Point Focal.
+    Le bouton de validation sera prêt.
   </div>
 
   <button
@@ -58,6 +59,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  restaurerEtatRetour();
+
   await verifierVideoDejaVue();
 });
 
@@ -78,6 +81,7 @@ async function verifierVideoDejaVue() {
     const session = result.data;
 
     if (session && session.isCompleted === true) {
+      localStorage.removeItem("point_focal_attente_youtube");
       window.location.href = "victory-link.html";
     }
   } catch (error) {
@@ -85,19 +89,28 @@ async function verifierVideoDejaVue() {
   }
 }
 
-function activerRetour() {
-  document.getElementById("aideRetour").style.display = "block";
+function preparerRetourMobile() {
+  localStorage.setItem("point_focal_attente_youtube", "true");
+  activerBoutonValidation();
+}
 
+function restaurerEtatRetour() {
+  const enAttente = localStorage.getItem("point_focal_attente_youtube");
+
+  if (enAttente === "true") {
+    activerBoutonValidation();
+  }
+}
+
+function activerBoutonValidation() {
+  const aideRetour = document.getElementById("aideRetour");
   const btn = document.getElementById("btnValidation");
 
-  btn.disabled = true;
-  btn.innerText = "Retournez sur Point Focal après YouTube...";
+  aideRetour.style.display = "block";
 
-  setTimeout(() => {
-    btn.disabled = false;
-    btn.classList.add("ready");
-    btn.innerText = "Je suis revenu sur Point Focal";
-  }, 3000);
+  btn.disabled = false;
+  btn.classList.add("ready");
+  btn.innerText = "✅ Je suis revenu sur Point Focal";
 }
 
 async function validerEtape() {
@@ -120,6 +133,8 @@ async function validerEtape() {
     });
 
     if (res.ok) {
+      localStorage.removeItem("point_focal_attente_youtube");
+
       const user = JSON.parse(localStorage.getItem("user") || "{}");
       user.hasVictoryLink = true;
       localStorage.setItem("user", JSON.stringify(user));
