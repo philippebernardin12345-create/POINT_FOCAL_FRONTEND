@@ -37,6 +37,7 @@ input {
     background:#0d0d0d;
     border:1px solid #333;
     color:white;
+    box-sizing:border-box;
 }
 
 button {
@@ -47,6 +48,11 @@ button {
     border:none;
     font-weight:bold;
     cursor:pointer;
+}
+
+button:disabled {
+    opacity:0.6;
+    cursor:not-allowed;
 }
 
 .box {
@@ -65,6 +71,7 @@ button {
     color:#aaa;
     cursor:pointer;
 }
+
 .link span {
     color:#ffcc00;
 }
@@ -83,7 +90,7 @@ button {
 
         <input id="password" type="password" placeholder="Mot de passe" required>
 
-        <button type="submit">Se connecter</button>
+        <button id="loginBtn" type="submit">Se connecter</button>
 
         <div id="error" class="box"></div>
         <div id="success" class="box"></div>
@@ -97,7 +104,6 @@ button {
 </div>
 
 <script>
-
 const API_URL = "https://point-focal.onrender.com/api/auth";
 
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
@@ -105,53 +111,77 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
     const errorBox = document.getElementById("error");
     const successBox = document.getElementById("success");
+    const loginBtn = document.getElementById("loginBtn");
 
     errorBox.style.display = "none";
     successBox.style.display = "none";
 
-    const email = document.getElementById("email").value;
+    const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
 
+    if (!email || !password) {
+        errorBox.innerText = "Email et mot de passe obligatoires.";
+        errorBox.style.display = "block";
+        return;
+    }
+
+    loginBtn.disabled = true;
+    loginBtn.innerText = "Connexion...";
+
     try {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+
         const res = await fetch(`${API_URL}/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({
+                email,
+                password
+            })
         });
 
         const data = await res.json();
 
-        if (res.ok) {
-
-            // Sauvegarde session
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("user", JSON.stringify(data.user));
-
-            successBox.innerText = "Connexion réussie...";
-            successBox.style.display = "block";
-
-            // redirection vers dashboard / video
-            setTimeout(() => {
-                window.location.href = "video.html";
-            }, 800);
-
-        } else {
-            errorBox.innerText = data.message || "Erreur connexion";
+        if (!res.ok) {
+            errorBox.innerText = data.message || data.error || "Erreur de connexion.";
             errorBox.style.display = "block";
+            return;
         }
+
+        const token = data.token || data.data?.token;
+        const user = data.user || data.data?.user;
+
+        if (!token || !user) {
+            errorBox.innerText = "Réponse de connexion invalide.";
+            errorBox.style.display = "block";
+            return;
+        }
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        successBox.innerText = "Connexion réussie...";
+        successBox.style.display = "block";
+
+        setTimeout(() => {
+            window.location.href = "video.html";
+        }, 800);
 
     } catch (err) {
         errorBox.innerText = "Erreur réseau : " + err.message;
         errorBox.style.display = "block";
+    } finally {
+        loginBtn.disabled = false;
+        loginBtn.innerText = "Se connecter";
     }
 });
 
 function goRegister() {
     window.location.href = "register.html";
 }
-
 </script>
 
 </body>
