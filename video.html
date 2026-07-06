@@ -65,7 +65,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 function ouvrirYoutube() {
   localStorage.setItem(RETOUR_YOUTUBE_KEY, "true");
-  document.getElementById("aideRetour").style.display = "block";
+  afficherBoutonRetour();
 }
 
 window.addEventListener("focus", () => {
