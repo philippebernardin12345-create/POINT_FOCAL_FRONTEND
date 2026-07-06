@@ -11,7 +11,7 @@
   <h2>🎯 Étape Communautaire</h2>
 
   <p>
-    Pour activer votre compte et débloquer vos accès, ouvrez la vidéo officielle,
+    Pour activer votre compte, ouvrez la vidéo officielle sur YouTube,
     abonnez-vous à la chaîne et laissez un commentaire.
   </p>
 
@@ -20,29 +20,28 @@
     target="_blank"
     rel="noopener"
     class="btn-youtube"
-    onclick="preparerRetourMobile()"
+    onclick="ouvrirYoutube()"
   >
     ▶️ OUVRIR DANS YOUTUBE
   </a>
 
-  <div id="aideRetour" class="aide-retour" style="display:none;">
-    💡 <strong>Comment continuer ?</strong><br>
-    Une fois vos actions terminées sur YouTube, revenez sur Point Focal.
-    Le bouton de validation sera prêt.
+  <div id="aideRetour" style="display:none; margin-top:20px;">
+    💡 Revenez sur Point Focal après YouTube. Le bouton de continuation apparaîtra ici.
   </div>
 
   <button
     id="btnValidation"
-    class="btn-next"
     onclick="validerEtape()"
     disabled
+    style="display:none; margin-top:20px; width:100%; padding:16px; font-weight:bold;"
   >
-    Ouvrez d'abord YouTube
+    ✅ Continuer sur Point Focal
   </button>
 </div>
 
 <script>
 const API_BASE_URL = "https://point-focal.onrender.com/api";
+const RETOUR_YOUTUBE_KEY = "point_focal_retour_youtube";
 
 window.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
@@ -64,6 +63,41 @@ window.addEventListener("DOMContentLoaded", async () => {
   await verifierVideoDejaVue();
 });
 
+function ouvrirYoutube() {
+  localStorage.setItem(RETOUR_YOUTUBE_KEY, "true");
+  document.getElementById("aideRetour").style.display = "block";
+}
+
+window.addEventListener("focus", () => {
+  if (localStorage.getItem(RETOUR_YOUTUBE_KEY) === "true") {
+    afficherBoutonRetour();
+  }
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && localStorage.getItem(RETOUR_YOUTUBE_KEY) === "true") {
+    afficherBoutonRetour();
+  }
+});
+
+function restaurerEtatRetour() {
+  if (localStorage.getItem(RETOUR_YOUTUBE_KEY) === "true") {
+    afficherBoutonRetour();
+  }
+}
+
+function afficherBoutonRetour() {
+  const aideRetour = document.getElementById("aideRetour");
+  const btn = document.getElementById("btnValidation");
+
+  aideRetour.style.display = "block";
+
+  btn.style.display = "block";
+  btn.disabled = false;
+  btn.classList.add("ready");
+  btn.innerText = "✅ Continuer sur Point Focal";
+}
+
 async function verifierVideoDejaVue() {
   try {
     const res = await fetch(`${API_BASE_URL}/video/session`, {
@@ -73,15 +107,13 @@ async function verifierVideoDejaVue() {
       }
     });
 
-    if (!res.ok) {
-      return;
-    }
+    if (!res.ok) return;
 
     const result = await res.json();
     const session = result.data;
 
     if (session && session.isCompleted === true) {
-      localStorage.removeItem("point_focal_attente_youtube");
+      localStorage.removeItem(RETOUR_YOUTUBE_KEY);
       window.location.href = "victory-link.html";
     }
   } catch (error) {
@@ -89,36 +121,10 @@ async function verifierVideoDejaVue() {
   }
 }
 
-function preparerRetourMobile() {
-  localStorage.setItem("point_focal_attente_youtube", "true");
-  activerBoutonValidation();
-}
-
-function restaurerEtatRetour() {
-  const enAttente = localStorage.getItem("point_focal_attente_youtube");
-
-  if (enAttente === "true") {
-    activerBoutonValidation();
-  }
-}
-
-function activerBoutonValidation() {
-  const aideRetour = document.getElementById("aideRetour");
-  const btn = document.getElementById("btnValidation");
-
-  aideRetour.style.display = "block";
-
-  btn.disabled = false;
-  btn.classList.add("ready");
-  btn.innerText = "✅ Je suis revenu sur Point Focal";
-}
-
 async function validerEtape() {
   const btn = document.getElementById("btnValidation");
 
-  if (!btn.classList.contains("ready")) {
-    return;
-  }
+  if (!btn.classList.contains("ready")) return;
 
   try {
     const res = await fetch(`${API_BASE_URL}/video/progress`, {
@@ -133,7 +139,7 @@ async function validerEtape() {
     });
 
     if (res.ok) {
-      localStorage.removeItem("point_focal_attente_youtube");
+      localStorage.removeItem(RETOUR_YOUTUBE_KEY);
 
       const user = JSON.parse(localStorage.getItem("user") || "{}");
       user.hasVictoryLink = true;
