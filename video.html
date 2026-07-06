@@ -11,8 +11,8 @@
   <h2>🎯 Étape Communautaire</h2>
 
   <p>
-    Pour activer votre compte et débloquer vos accès, veuillez ouvrir la vidéo officielle,
-    vous abonner à la chaîne et laisser un commentaire.
+    Pour activer votre compte et débloquer vos accès, ouvrez la vidéo officielle,
+    abonnez-vous à la chaîne et laissez un commentaire.
   </p>
 
   <a
@@ -24,7 +24,7 @@
     ▶️ OUVRIR DANS YOUTUBE
   </a>
 
-  <div id="aideRetour" class="aide-retour">
+  <div id="aideRetour" class="aide-retour" style="display:none;">
     💡 <strong>Comment revenir ?</strong><br>
     Vos actions s'effectuent dans le nouvel onglet YouTube.
     Une fois terminé, revenez simplement sur cet écran pour continuer.
@@ -36,13 +36,14 @@
     onclick="validerEtape()"
     disabled
   >
-    J'ai visionné et interagi
+    Ouvrez d'abord YouTube
   </button>
-
 </div>
 
 <script>
-window.addEventListener("DOMContentLoaded", () => {
+const API_BASE_URL = "https://point-focal.onrender.com/api";
+
+window.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -53,11 +54,36 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   if (user && user.hasVictoryLink) {
-    window.location.href = user.isActivated
-      ? "dashboard.html"
-      : "payment.html";
+    window.location.href = user.isActivated ? "dashboard.html" : "payment.html";
+    return;
   }
+
+  await verifierVideoDejaVue();
 });
+
+async function verifierVideoDejaVue() {
+  try {
+    const res = await fetch(`${API_BASE_URL}/video/session`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    });
+
+    if (!res.ok) {
+      return;
+    }
+
+    const result = await res.json();
+    const session = result.data;
+
+    if (session && session.isCompleted === true) {
+      window.location.href = "victory-link.html";
+    }
+  } catch (error) {
+    console.error("Erreur vérification vidéo:", error);
+  }
+}
 
 function activerRetour() {
   document.getElementById("aideRetour").style.display = "block";
@@ -82,19 +108,16 @@ async function validerEtape() {
   }
 
   try {
-    const res = await fetch(
-      "https://point-focal.onrender.com/api/video/progress",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          watchedSeconds: 200
-        })
-      }
-    );
+    const res = await fetch(`${API_BASE_URL}/video/progress`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        watchedSeconds: 200
+      })
+    });
 
     if (res.ok) {
       const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -105,9 +128,8 @@ async function validerEtape() {
     } else {
       alert("Validation impossible. Réessayez.");
     }
-
   } catch (error) {
-    console.error(error);
+    console.error("Erreur validation vidéo:", error);
     alert("Une erreur est survenue.");
   }
 }
