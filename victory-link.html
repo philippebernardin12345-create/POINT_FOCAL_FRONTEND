@@ -1,125 +1,148 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Point Focal - Attribution du Lien Victory</title>
-    <style>
-        body { 
-            background-color: #0B0E11; 
-            color: #EAECEF; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 100vh; 
-            margin: 0;
-            padding: 20px;
-        }
-        .card { 
-            background-color: #1E2329; 
-            padding: 40px; 
-            border-radius: 6px; 
-            max-width: 500px; 
-            width: 100%; 
-            text-align: center; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        .timer-box { 
-            background: rgba(234, 57, 67, 0.1); 
-            border-left: 4px solid #EA3943; 
-            color: #EA3943; 
-            padding: 15px; 
-            margin-bottom: 25px; 
-            font-weight: bold; 
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .link-box { 
-            background: #2B3139; 
-            color: #F0B90B; 
-            padding: 18px; 
-            border-radius: 4px; 
-            margin-bottom: 25px; 
-            font-family: 'Courier New', Courier, monospace; 
-            font-weight: bold;
-            word-break: break-all;
-            border: 1px dashed #474D57;
-        }
-        .btn-ready { 
-            background: #02C076; 
-            color: white; 
-            padding: 16px; 
-            border: none; 
-            width: 100%; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            font-weight: bold;
-            font-size: 16px;
-            transition: background 0.2s;
-        }
-        .btn-ready:hover {
-            background: #03A666;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Point Focal - Attribution du Lien Victory</title>
+
+<style>
+body {
+  background-color: #0B0E11;
+  color: #EAECEF;
+  font-family: Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+.card {
+  background-color: #1E2329;
+  padding: 40px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+}
+
+.timer-box {
+  background: rgba(234, 57, 67, 0.1);
+  border-left: 4px solid #EA3943;
+  color: #EA3943;
+  padding: 15px;
+  margin-bottom: 25px;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.link-box {
+  background: #2B3139;
+  color: #F0B90B;
+  padding: 18px;
+  border-radius: 4px;
+  margin-bottom: 25px;
+  font-family: Courier, monospace;
+  font-weight: bold;
+  word-break: break-all;
+  border: 1px dashed #474D57;
+}
+
+.btn-ready {
+  display: block;
+  background: #02C076;
+  color: white;
+  padding: 16px;
+  border: none;
+  width: 100%;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  text-decoration: none;
+  margin-bottom: 15px;
+}
+
+.btn-ready:hover {
+  background: #03A666;
+}
+</style>
 </head>
+
 <body>
 
 <div class="card">
-    <!-- Règle de la matrice : Chronomètre d'activation de 24 heures -->
-    <div class="timer-box">⏳ CHRONOMÈTRE DE MATRICE (24H) : Votre lien expire dans 24 heures sans activation.</div>
-    
-    <p style="color: #848E9C; font-size: 15px; margin-bottom: 15px;">Voici votre Lien Victory Automatic attribué (Système FIFO) :</p>
-    <div id="linkDisplay" class="link-box">Génération de votre lien en cours...</div>
-    
-     <a id="victoryBtn" href="#" target="_blank" class="btn-ready" style="display:block;text-decoration:none;margin-bottom:15px;">
-  Créer mon compte Victory Automatic
-</a>
+  <div class="timer-box">
+    ⏳ CHRONOMÈTRE DE MATRICE (24H) : Votre lien expire dans 24 heures sans activation.
+  </div>
 
-<button id="btnNext" class="btn-ready" onclick="window.location.href='payment.html'">
-  J’ai créé mon compte Victory Automatic
-</button>
+  <p style="color:#848E9C;">
+    Voici votre Lien Victory Automatic attribué :
+  </p>
+
+  <div id="linkDisplay" class="link-box">
+    Génération de votre lien en cours...
+  </div>
+
+  <a id="victoryBtn" href="#" target="_blank" class="btn-ready">
+    Créer mon compte Victory Automatic
+  </a>
+
+  <button id="btnNext" class="btn-ready" type="button">
+    J’ai créé mon compte Victory Automatic
+  </button>
 </div>
 
 <script>
-    window.onload = async () => {
-        const token = localStorage.getItem('token');
-        const user = JSON.parse(localStorage.getItem('user'));
+window.onload = async () => {
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-        if (!token) {
-            window.location.href = "register.html";
-            return;
-        }
+  if (!token) {
+    window.location.href = "register.html";
+    return;
+  }
 
-        // AJOUT N°2 : Sécurité en cas d'utilisateur déjà activé
-        if (user && user.isActivated) {
-            window.location.href = "dashboard.html";
-            return;
-        }
+  if (user && user.isActivated) {
+    window.location.href = "dashboard.html";
+    return;
+  }
 
-        // Appel API automatique pour charger ou assigner le lien (FIFO / Parrain réel)
-        try {
-            const res = await fetch('https://point-focal.onrender.com/api/victory-link/assign', {
-                method: 'POST',
-                headers: { 
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            const data = await res.json();
-            
-            if (res.ok && data.url) {
-                document.getElementById('linkDisplay').innerText = data.url;
-            } else {
-                document.getElementById('linkDisplay').innerText = "Erreur d'attribution. Contactez le support.";
-                document.getElementById('linkDisplay').style.color = "#EA3943";
-            }
-        } catch (error) {
-            console.error("Erreur serveur :", error);
-            document.getElementById('linkDisplay').innerText = "Erreur de connexion avec le serveur.";
-        }
+  try {
+    const res = await fetch("https://point-focal.onrender.com/api/victory-link/assign", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (res.ok && data.url) {
+      document.getElementById("linkDisplay").innerText = data.url;
+      document.getElementById("victoryBtn").href = data.url;
+    } else {
+      document.getElementById("linkDisplay").innerText =
+        data.message || "Erreur d'attribution. Contactez le support.";
+      document.getElementById("linkDisplay").style.color = "#EA3943";
+      document.getElementById("victoryBtn").style.display = "none";
     }
+
+  } catch (error) {
+    console.error("Erreur serveur :", error);
+    document.getElementById("linkDisplay").innerText =
+      "Erreur de connexion avec le serveur.";
+    document.getElementById("linkDisplay").style.color = "#EA3943";
+    document.getElementById("victoryBtn").style.display = "none";
+  }
+};
+
+document.getElementById("btnNext").addEventListener("click", () => {
+  window.location.href = "payment.html";
+});
 </script>
+
 </body>
 </html>
