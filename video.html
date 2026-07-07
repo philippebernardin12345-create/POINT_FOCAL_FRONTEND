@@ -112,10 +112,9 @@ async function verifierVideoDejaVue() {
     const result = await res.json();
     const session = result.data;
 
-    🇨🇩if (session && session.isCompleted === true) {
-      localStorage.removeItem(RETOUR_YOUTUBE_KEY);
-      window.location.href = "victory-link.html🇨🇩";
-    }
+    if (session && session.isCompleted === true) {
+  console.log("Vidéo déjà validée, mais redirection désactivée en mode test.");
+}
   } catch (error) {
     console.error("Erreur vérification vidéo:", error);
   }
