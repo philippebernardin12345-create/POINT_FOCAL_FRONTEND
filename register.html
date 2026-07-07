@@ -553,7 +553,21 @@ const data = await res.json().catch(() => ({
             localStorage.setItem("user", JSON.stringify(data.user));
           }
 
-     🇨🇩 showSuccess("Inscription réussie. Vérifiez votre e-mail, puis connectez-vous après confirmation.");
+    localStorage.setItem("pendingEmail", email);
+
+showSuccess("Inscription réussie. Un code OTP a été envoyé à votre adresse e-mail.");
+
+setTimeout(() => {
+    window.location.href = "confirm-otp.html";
+}, 1000);
+
+btn.disabled = false;
+
+return;
+
+btn.disabled = false;
+
+return;
 
 btn.disabled = false;
 
