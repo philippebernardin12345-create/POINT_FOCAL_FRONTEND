@@ -53,10 +53,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  if (user && user.hasVictoryLink) {
-    window.location.href = user.isActivated ? "dashboard.html" : "payment.html";
-    return;
-  }
+  if (user && user.isActivated) {
+  window.location.href = "dashboard.html";
+  return;
+}
 
   restaurerEtatRetour();
 
