@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Point Focal - Paiement Test</title>
+<title>Point Focal - Validation</title>
 
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,17 +27,14 @@ body {
   width: 100%;
 }
 
-h2 {
-  color: #F0B90B;
-  margin-bottom: 12px;
+h2 { color: #F0B90B; margin-bottom: 12px; }
+
+.subtitle, label {
+  color: #B7BDC6;
+  font-size: 14px;
 }
 
-.subtitle {
-  color: #848E9C;
-  font-size: 14px;
-  margin-bottom: 25px;
-  line-height: 1.5;
-}
+.subtitle { margin-bottom: 25px; line-height: 1.5; }
 
 .test-box {
   background: rgba(240,185,11,0.12);
@@ -49,15 +46,11 @@ h2 {
   line-height: 1.5;
 }
 
-.form-group {
-  margin-bottom: 18px;
-}
+.form-group { margin-bottom: 18px; }
 
 label {
   display: block;
   margin-bottom: 8px;
-  font-size: 13px;
-  color: #B7BDC6;
   font-weight: bold;
 }
 
@@ -76,7 +69,7 @@ input:focus {
   outline: none;
 }
 
-button {
+button, .next-btn {
   width: 100%;
   padding: 15px;
   background: #F0B90B;
@@ -86,6 +79,16 @@ button {
   font-weight: bold;
   font-size: 16px;
   cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  margin-top: 15px;
+}
+
+.next-btn {
+  background: #02C076;
+  color: white;
+  display: none;
 }
 
 .status-box {
@@ -108,64 +111,77 @@ button {
   border-left: 4px solid #EA3943;
   color: #EA3943;
 }
+
+.link-box {
+  background: #2B3139;
+  color: #F0B90B;
+  padding: 14px;
+  border-radius: 6px;
+  margin-top: 15px;
+  word-break: break-all;
+  display: none;
+}
 </style>
 </head>
 
 <body>
 
 <div class="payment-container">
-  <h2>💳 Paiement sécurisé - Mode Test</h2>
+  <h2>💳 Validation Victory Automatic</h2>
 
   <p class="subtitle">
-    Cette page est en mode test pour vérifier le cheminement complet de Point Focal.
+    Collez les informations dans l’ordre demandé pour générer votre lien Point Focal.
   </p>
 
   <div class="test-box">
-    Pour tester, utilisez :<br>
+    Mode test :<br>
     Adresse cible : <strong>0x1111111111111111111111111111111111111111</strong><br>
     Hash test : <strong>TEST123456</strong>
   </div>
 
   <div class="form-group">
-    <label>1. Lien Victory Automatic</label>
-    <input type="text" id="victoryLink" placeholder="Collez votre lien Victory Automatic">
-  </div>
-
-  <div class="form-group">
-    <label>2. Adresse cible</label>
+    <label>1. Adresse cible</label>
     <input type="text" id="adresseCible" placeholder="0x1111111111111111111111111111111111111111">
   </div>
 
   <div class="form-group">
-    <label>3. Hash de transaction</label>
+    <label>2. Hash de transaction</label>
     <input type="text" id="txHash" placeholder="TEST123456">
   </div>
 
-  <button type="button" onclick="validerPaiementTest()">
-    Valider le paiement test
+  <div class="form-group">
+    <label>3. Lien Victory Automatic personnel</label>
+    <input type="text" id="victoryLink" placeholder="Collez votre lien Victory Automatic">
+  </div>
+
+  <button id="validateBtn" type="button" onclick="validerPaiementTest()">
+    Valider et générer mon lien Point Focal
   </button>
 
   <div id="statusBox" class="status-box"></div>
+
+  <div id="publicLinkBox" class="link-box"></div>
+
+  <a id="nextOpportunityBtn" href="victory-world.html" class="next-btn">
+    Je rejoins l’opportunité suivante
+  </a>
 </div>
 
 <script>
 function validerPaiementTest() {
-  const victoryLink = document.getElementById("victoryLink").value.trim();
   const adresseCible = document.getElementById("adresseCible").value.trim();
   const txHash = document.getElementById("txHash").value.trim();
+  const victoryLink = document.getElementById("victoryLink").value.trim();
+
   const statusBox = document.getElementById("statusBox");
+  const publicLinkBox = document.getElementById("publicLinkBox");
+  const nextOpportunityBtn = document.getElementById("nextOpportunityBtn");
 
   statusBox.style.display = "block";
 
   if (!localStorage.getItem("token")) {
     statusBox.className = "status-box status-error";
     statusBox.innerText = "Session expirée. Veuillez vous reconnecter.";
-    return;
-  }
-
-  if (victoryLink.length < 10) {
-    statusBox.className = "status-box status-error";
-    statusBox.innerText = "Lien Victory Automatic obligatoire.";
     return;
   }
 
@@ -181,14 +197,23 @@ function validerPaiementTest() {
     return;
   }
 
-  localStorage.setItem("publicLink", "https://pointfocalapp.com/register.html?ref=TESTUSER");
+  if (victoryLink.length < 10) {
+    statusBox.className = "status-box status-error";
+    statusBox.innerText = "Lien Victory Automatic obligatoire.";
+    return;
+  }
+
+  const publicLink = "https://pointfocalapp.com/register.html?ref=TESTUSER";
+  localStorage.setItem("publicLink", publicLink);
+  localStorage.setItem("victoryAutomaticLink", victoryLink);
 
   statusBox.className = "status-box status-success";
-  statusBox.innerText = "Paiement test validé. Redirection vers le tableau de bord...";
+  statusBox.innerText = "Validation réussie. Votre lien Point Focal est généré.";
 
-  setTimeout(() => {
-    window.location.href = "dashboard.html";
-  }, 1500);
+  publicLinkBox.style.display = "block";
+  publicLinkBox.innerText = publicLink;
+
+  nextOpportunityBtn.style.display = "block";
 }
 </script>
 
