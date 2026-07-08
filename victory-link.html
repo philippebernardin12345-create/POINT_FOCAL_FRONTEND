@@ -73,8 +73,9 @@ body {
 <body>
 
 <div class="card">
-  🇨🇩<div class="timer-box">🇨🇩
-    ⏳ CHRONOMÈTRE DE MATRICE (24H) : Votre lien expire dans 24 heures sans activation.
+
+  <div id="timerBox" class="timer-box">
+    ⏳ CHRONOMÈTRE DE MATRICE : calcul en cours...
   </div>
 
   <p style="color:#848E9C;">
@@ -92,10 +93,47 @@ body {
   <button id="btnNext" class="btn-ready" type="button">
     J’ai créé mon compte Victory Automatic
   </button>
+
 </div>
 
 <script>
+function demarrerChrono24h() {
+  const key = "point_focal_victory_started_at";
+  let startedAt = localStorage.getItem(key);
+
+  if (!startedAt) {
+    startedAt = Date.now().toString();
+    localStorage.setItem(key, startedAt);
+  }
+
+  const duration = 24 * 60 * 60 * 1000;
+  const timerBox = document.getElementById("timerBox");
+
+  function updateTimer() {
+    const now = Date.now();
+    const elapsed = now - Number(startedAt);
+    const remaining = duration - elapsed;
+
+    if (remaining <= 0) {
+      timerBox.innerText = "⛔ CHRONOMÈTRE EXPIRÉ : délai de 24h dépassé.";
+      return;
+    }
+
+    const hours = Math.floor(remaining / (1000 * 60 * 60));
+    const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+    timerBox.innerText =
+      `⏳ CHRONOMÈTRE DE MATRICE : ${hours}h ${minutes}m ${seconds}s restantes`;
+  }
+
+  updateTimer();
+  setInterval(updateTimer, 1000);
+}
+
 window.onload = async () => {
+  demarrerChrono24h();
+
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -131,7 +169,6 @@ window.onload = async () => {
     }
 
   } catch (error) {
-    console.error("Erreur serveur :", error);
     document.getElementById("linkDisplay").innerText =
       "Erreur de connexion avec le serveur.";
     document.getElementById("linkDisplay").style.color = "#EA3943";
