@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Point Focal - Victory World</title>
+
+<style>
+body {
+  background:#0B0E11;
+  color:#EAECEF;
+  font-family:Arial, sans-serif;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  margin:0;
+  padding:20px;
+}
+
+.card {
+  background:#1E2329;
+  padding:35px 25px;
+  border-radius:10px;
+  max-width:550px;
+  width:100%;
+  text-align:center;
+}
+
+h2 {
+  color:#F0B90B;
+  margin-bottom:15px;
+}
+
+p {
+  color:#B7BDC6;
+  line-height:1.5;
+}
+
+.link-box {
+  background:#2B3139;
+  color:#F0B90B;
+  padding:16px;
+  border-radius:6px;
+  margin:20px 0;
+  word-break:break-all;
+  font-weight:bold;
+}
+
+.btn {
+  display:block;
+  width:100%;
+  background:#02C076;
+  color:white;
+  padding:15px;
+  border-radius:6px;
+  text-decoration:none;
+  font-weight:bold;
+  margin-top:15px;
+}
+
+.btn-secondary {
+  background:#F0B90B;
+  color:#000;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>🌍 Victory World</h2>
+
+  <p>
+    Vous avez généré votre lien Point Focal.  
+    L’étape suivante est maintenant de rejoindre Victory World.
+  </p>
+
+  <div id="linkDisplay" class="link-box">
+    Chargement du lien Victory World...
+  </div>
+
+  <a id="victoryWorldBtn" href="#" target="_blank" class="btn">
+    Rejoindre Victory World
+  </a>
+
+  <a href="dashboard.html" class="btn btn-secondary">
+    Continuer vers mon tableau de bord
+  </a>
+</div>
+
+<script>
+window.onload = async () => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    window.location.href = "register.html";
+    return;
+  }
+
+  try {
+    const res = await fetch("https://point-focal.onrender.com/api/victory-world", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    const defaultLink = "https://victoryworld.example.com";
+
+    document.getElementById("linkDisplay").innerText =
+      data.url || defaultLink;
+
+    document.getElementById("victoryWorldBtn").href =
+      data.url || defaultLink;
+
+  } catch (error) {
+    document.getElementById("linkDisplay").innerText =
+      "Lien Victory World momentanément indisponible.";
+    document.getElementById("victoryWorldBtn").style.display = "none";
+  }
+};
+</script>
+
+</body>
+</html>
