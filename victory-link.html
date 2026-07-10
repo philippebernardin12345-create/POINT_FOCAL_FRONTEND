@@ -6,6 +6,10 @@
 <title>Point Focal - Attribution du Lien Victory</title>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   background-color: #0B0E11;
   color: #EAECEF;
@@ -20,28 +24,52 @@ body {
 
 .card {
   background-color: #1E2329;
-  padding: 40px;
-  border-radius: 8px;
-  max-width: 500px;
+  padding: 40px 25px;
+  border-radius: 10px;
+  max-width: 520px;
   width: 100%;
   text-align: center;
 }
 
+.warning-box {
+  background: rgba(240, 185, 11, 0.12);
+  border-left: 5px solid #F0B90B;
+  color: #F0B90B;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: bold;
+  text-align: left;
+}
+
 .timer-box {
-  background: rgba(234, 57, 67, 0.1);
-  border-left: 4px solid #EA3943;
+  background: rgba(234, 57, 67, 0.12);
+  border: 2px solid #EA3943;
+  border-left: 6px solid #EA3943;
   color: #EA3943;
-  padding: 15px;
+  padding: 28px 18px;
   margin-bottom: 25px;
   font-weight: bold;
-  border-radius: 4px;
+  border-radius: 10px;
+  font-size: 28px;
+  text-align: center;
+  line-height: 1.5;
+  box-shadow: 0 0 15px rgba(234, 57, 67, 0.15);
+}
+
+.description {
+  color: #848E9C;
+  line-height: 1.5;
+  margin-bottom: 15px;
 }
 
 .link-box {
   background: #2B3139;
   color: #F0B90B;
   padding: 18px;
-  border-radius: 4px;
+  border-radius: 6px;
   margin-bottom: 25px;
   font-family: Courier, monospace;
   font-weight: bold;
@@ -56,7 +84,7 @@ body {
   padding: 16px;
   border: none;
   width: 100%;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
   font-size: 16px;
@@ -67,6 +95,30 @@ body {
 .btn-ready:hover {
   background: #03A666;
 }
+
+.btn-secondary {
+  background: #F0B90B;
+  color: #000000;
+}
+
+.btn-secondary:hover {
+  background: #D9A700;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 28px 18px;
+  }
+
+  .timer-box {
+    font-size: 23px;
+    padding: 24px 14px;
+  }
+
+  .warning-box {
+    font-size: 14px;
+  }
+}
 </style>
 </head>
 
@@ -74,23 +126,39 @@ body {
 
 <div class="card">
 
+  <div class="warning-box">
+    ⚠️ Vous disposez de 24 heures pour créer votre compte Victory Automatic,
+    effectuer votre don et générer votre lien Point Focal.
+    Passé ce délai, votre compte pourra être supprimé automatiquement.
+  </div>
+
   <div id="timerBox" class="timer-box">
     ⏳ CHRONOMÈTRE DE MATRICE : calcul en cours...
   </div>
 
-  <p style="color:#848E9C;">
-    Voici votre Lien Victory Automatic attribué :
+  <p class="description">
+    Voici votre lien Victory Automatic attribué :
   </p>
 
   <div id="linkDisplay" class="link-box">
     Génération de votre lien en cours...
   </div>
 
-  <a id="victoryBtn" href="#" target="_blank" class="btn-ready">
+  <a
+    id="victoryBtn"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="btn-ready"
+  >
     Créer mon compte Victory Automatic
   </a>
 
-  <button id="btnNext" class="btn-ready" type="button">
+  <button
+    id="btnNext"
+    class="btn-ready btn-secondary"
+    type="button"
+  >
     J’ai créé mon compte Victory Automatic
   </button>
 
@@ -115,16 +183,26 @@ function demarrerChrono24h() {
     const remaining = duration - elapsed;
 
     if (remaining <= 0) {
-      timerBox.innerText = "⛔ CHRONOMÈTRE EXPIRÉ : délai de 24h dépassé.";
+      timerBox.innerText =
+        "⛔ CHRONOMÈTRE EXPIRÉ : délai de 24 heures dépassé.";
       return;
     }
 
-    const hours = Math.floor(remaining / (1000 * 60 * 60));
-    const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+    const hours = Math.floor(
+      remaining / (1000 * 60 * 60)
+    );
+
+    const minutes = Math.floor(
+      (remaining % (1000 * 60 * 60)) /
+      (1000 * 60)
+    );
+
+    const seconds = Math.floor(
+      (remaining % (1000 * 60)) / 1000
+    );
 
     timerBox.innerText =
-      `⏳ CHRONOMÈTRE DE MATRICE : ${hours}h ${minutes}m ${seconds}s restantes`;
+      `⏳ ${hours}h ${minutes}m ${seconds}s restantes`;
   }
 
   updateTimer();
@@ -135,7 +213,9 @@ window.onload = async () => {
   demarrerChrono24h();
 
   const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(
+    localStorage.getItem("user") || "{}"
+  );
 
   if (!token) {
     window.location.href = "register.html";
@@ -147,38 +227,52 @@ window.onload = async () => {
     return;
   }
 
+  const linkDisplay =
+    document.getElementById("linkDisplay");
+
+  const victoryBtn =
+    document.getElementById("victoryBtn");
+
   try {
-    const res = await fetch("https://point-focal.onrender.com/api/victory-link/assign", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
+    const res = await fetch(
+      "https://point-focal.onrender.com/api/victory-link/assign",
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
       }
-    });
+    );
 
     const data = await res.json().catch(() => ({}));
 
     if (res.ok && data.url) {
-      document.getElementById("linkDisplay").innerText = data.url;
-      document.getElementById("victoryBtn").href = data.url;
+      linkDisplay.innerText = data.url;
+      victoryBtn.href = data.url;
     } else {
-      document.getElementById("linkDisplay").innerText =
-        data.message || "Erreur d'attribution. Contactez le support.";
-      document.getElementById("linkDisplay").style.color = "#EA3943";
-      document.getElementById("victoryBtn").style.display = "none";
+      linkDisplay.innerText =
+        data.message ||
+        "Erreur d’attribution. Contactez le support.";
+
+      linkDisplay.style.color = "#EA3943";
+      victoryBtn.style.display = "none";
     }
 
   } catch (error) {
-    document.getElementById("linkDisplay").innerText =
+    linkDisplay.innerText =
       "Erreur de connexion avec le serveur.";
-    document.getElementById("linkDisplay").style.color = "#EA3943";
-    document.getElementById("victoryBtn").style.display = "none";
+
+    linkDisplay.style.color = "#EA3943";
+    victoryBtn.style.display = "none";
   }
 };
 
-document.getElementById("btnNext").addEventListener("click", () => {
-  window.location.href = "payment.html";
-});
+document
+  .getElementById("btnNext")
+  .addEventListener("click", () => {
+    window.location.href = "payment.html";
+  });
 </script>
 
 </body>
