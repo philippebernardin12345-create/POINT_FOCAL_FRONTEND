@@ -6,127 +6,143 @@
 <title>Point Focal - Validation Paiement</title>
 
 <style>
-* { box-sizing:border-box; margin:0; padding:0; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
-  background:#0B0E11;
-  color:#EAECEF;
-  font-family:Arial, sans-serif;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:100vh;
-  padding:20px;
+  background: #0B0E11;
+  color: #EAECEF;
+  font-family: Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
 }
 
 .payment-container {
-  background:#1E2329;
-  padding:35px 25px;
-  border-radius:10px;
-  max-width:550px;
-  width:100%;
+  background: #1E2329;
+  padding: 35px 25px;
+  border-radius: 10px;
+  max-width: 550px;
+  width: 100%;
 }
 
 h2 {
-  color:#F0B90B;
-  margin-bottom:12px;
+  color: #F0B90B;
+  margin-bottom: 12px;
 }
 
 .subtitle {
-  color:#B7BDC6;
-  font-size:14px;
-  margin-bottom:25px;
-  line-height:1.5;
+  color: #B7BDC6;
+  font-size: 14px;
+  margin-bottom: 25px;
+  line-height: 1.5;
 }
 
 .info-box {
-  background:rgba(240,185,11,0.12);
-  border-left:4px solid #F0B90B;
-  padding:14px;
-  margin-bottom:25px;
-  color:#F0B90B;
-  font-size:14px;
-  line-height:1.5;
+  background: rgba(240, 185, 11, 0.12);
+  border-left: 4px solid #F0B90B;
+  padding: 14px;
+  margin-bottom: 25px;
+  color: #F0B90B;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .form-group {
-  margin-bottom:18px;
+  margin-bottom: 18px;
 }
 
 label {
-  display:block;
-  margin-bottom:8px;
-  font-size:14px;
-  color:#B7BDC6;
-  font-weight:bold;
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #B7BDC6;
+  font-weight: bold;
 }
 
 input {
-  width:100%;
-  padding:13px;
-  background:#2B3139;
-  border:1px solid #2B3139;
-  color:#EAECEF;
-  border-radius:6px;
-  font-size:14px;
+  width: 100%;
+  padding: 13px;
+  background: #2B3139;
+  border: 1px solid #2B3139;
+  color: #EAECEF;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
 input:focus {
-  border-color:#F0B90B;
-  outline:none;
+  border-color: #F0B90B;
+  outline: none;
 }
 
-button, .next-btn {
-  width:100%;
-  padding:15px;
-  background:#F0B90B;
-  color:#000;
-  border:none;
-  border-radius:6px;
-  font-weight:bold;
-  font-size:16px;
-  cursor:pointer;
-  text-align:center;
-  text-decoration:none;
-  display:block;
-  margin-top:15px;
+button,
+.next-btn {
+  width: 100%;
+  padding: 15px;
+  background: #F0B90B;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  margin-top: 15px;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .next-btn {
-  background:#02C076;
-  color:white;
-  display:none;
+  background: #02C076;
+  color: #FFFFFF;
+  display: none;
+}
+
+.reactivate-btn {
+  background: #EA3943;
+  color: #FFFFFF;
+  display: none;
 }
 
 .status-box {
-  padding:15px;
-  border-radius:6px;
-  margin-top:20px;
-  font-size:14px;
-  display:none;
-  line-height:1.5;
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 20px;
+  font-size: 14px;
+  display: none;
+  line-height: 1.5;
 }
 
 .status-success {
-  background:rgba(2,192,118,0.1);
-  border-left:4px solid #02C076;
-  color:#02C076;
+  background: rgba(2, 192, 118, 0.1);
+  border-left: 4px solid #02C076;
+  color: #02C076;
 }
 
 .status-error {
-  background:rgba(234,57,67,0.1);
-  border-left:4px solid #EA3943;
-  color:#EA3943;
+  background: rgba(234, 57, 67, 0.1);
+  border-left: 4px solid #EA3943;
+  color: #EA3943;
 }
 
 .link-box {
-  background:#2B3139;
-  color:#F0B90B;
-  padding:14px;
-  border-radius:6px;
-  margin-top:15px;
-  word-break:break-all;
-  display:none;
+  background: #2B3139;
+  color: #F0B90B;
+  padding: 14px;
+  border-radius: 6px;
+  margin-top: 15px;
+  word-break: break-all;
+  display: none;
 }
 </style>
 </head>
@@ -137,138 +153,67 @@ button, .next-btn {
   <h2>💳 Validation Victory Automatic</h2>
 
   <p class="subtitle">
-    Collez les informations dans l’ordre demandé. Point Focal vérifiera automatiquement la transaction USDT BEP-20 sur la BNB Chain.
+    Collez les informations dans l’ordre demandé. Point Focal vérifiera
+    automatiquement la transaction USDT BEP-20 sur la BNB Chain.
   </p>
 
   <div class="info-box">
-    Montant minimum requis : <strong>2,03 USDT BEP-20</strong><br>
-    Réseau : <strong>BNB Chain</strong><br>
+    Montant minimum requis :
+    <strong>2,03 USDT BEP-20</strong><br>
+
+    Réseau :
+    <strong>BNB Chain</strong><br>
+
     L’adresse cible est celle affichée par Victory Automatic.
   </div>
 
   <div class="form-group">
     <label>1. Adresse cible donnée par Victory Automatic</label>
-    <input type="text" id="adresseCible" placeholder="Collez l’adresse cible du don">
+
+    <input
+      type="text"
+      id="adresseCible"
+      placeholder="Collez l’adresse cible du don"
+    >
   </div>
 
   <div class="form-group">
     <label>2. Hash de transaction</label>
-    <input type="text" id="txHash" placeholder="Collez le hash de transaction">
+
+    <input
+      type="text"
+      id="txHash"
+      placeholder="Collez le hash de transaction"
+    >
   </div>
 
   <div class="form-group">
     <label>3. Lien Victory Automatic personnel</label>
-    <input type="text" id="victoryLink" placeholder="Collez votre lien Victory Automatic">
+
+    <input
+      type="text"
+      id="victoryLink"
+      placeholder="Collez votre lien Victory Automatic"
+    >
   </div>
 
-  <button id="validateBtn" type="button" onclick="validerPaiement()">
+  <button
+    id="validateBtn"
+    type="button"
+    onclick="validerPaiement()"
+  >
     Valider et générer mon lien Point Focal
   </button>
 
   <div id="statusBox" class="status-box"></div>
-  <div id="publicLinkBox" class="link-box"></div>
 
-  <a id="nextOpportunityBtn" href="victory-world.html" class="next-btn">
-    Je rejoins l’opportunité suivante
-  </a>
-</div>
+  <button
+    id="reactivateBtn"
+    type="button"
+    class="reactivate-btn"
+    onclick="reactiverCompte()"
+  >
+    🔄 Réactiver mon compte et obtenir un nouveau délai de 24 heures
+  </button>
 
-<script>
-const API_PAYMENT_URL = "https://point-focal.onrender.com/api/payment/auto-trigger";
-
-window.addEventListener("load", () => {
-  if (!localStorage.getItem("paymentStartedAt")) {
-    localStorage.setItem("paymentStartedAt", new Date().toISOString());
-  }
-});
-
-async function validerPaiement() {
-  const adresseCible = document.getElementById("adresseCible").value.trim();
-  const txHash = document.getElementById("txHash").value.trim();
-  const victoryLink = document.getElementById("victoryLink").value.trim();
-
-  const token = localStorage.getItem("token");
-  const paymentStartedAt = localStorage.getItem("paymentStartedAt");
-
-  const statusBox = document.getElementById("statusBox");
-  const publicLinkBox = document.getElementById("publicLinkBox");
-  const nextOpportunityBtn = document.getElementById("nextOpportunityBtn");
-  const validateBtn = document.getElementById("validateBtn");
-
-  statusBox.style.display = "block";
-  publicLinkBox.style.display = "none";
-  nextOpportunityBtn.style.display = "none";
-
-  if (!token) {
-    statusBox.className = "status-box status-error";
-    statusBox.innerText = "Session expirée. Veuillez vous reconnecter.";
-    return;
-  }
-
-  if (!adresseCible) {
-    statusBox.className = "status-box status-error";
-    statusBox.innerText = "Adresse cible obligatoire.";
-    return;
-  }
-
-  if (!txHash) {
-    statusBox.className = "status-box status-error";
-    statusBox.innerText = "Hash de transaction obligatoire.";
-    return;
-  }
-
-  if (!victoryLink || victoryLink.length < 10) {
-    statusBox.className = "status-box status-error";
-    statusBox.innerText = "Lien Victory Automatic obligatoire.";
-    return;
-  }
-
-  try {
-    validateBtn.disabled = true;
-    validateBtn.innerText = "Vérification blockchain en cours...";
-
-    const res = await fetch(API_PAYMENT_URL, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        adresseCible,
-        txHash,
-        victoryLink,
-        paymentStartedAt
-      })
-    });
-
-    const data = await res.json().catch(() => ({}));
-
-    if (!res.ok) {
-      throw new Error(data.message || data.error || "Paiement non validé.");
-    }
-
-    const publicLink = data.publicLink;
-
-    localStorage.setItem("publicLink", publicLink);
-    localStorage.setItem("victoryAutomaticLink", victoryLink);
-
-    statusBox.className = "status-box status-success";
-    statusBox.innerText = "Validation réussie. Votre lien Point Focal est généré.";
-
-    publicLinkBox.style.display = "block";
-    publicLinkBox.innerText = publicLink;
-
-    nextOpportunityBtn.style.display = "block";
-
-  } catch (error) {
-    statusBox.className = "status-box status-error";
-    statusBox.innerText = error.message || "Erreur de vérification du paiement.";
-  } finally {
-    validateBtn.disabled = false;
-    validateBtn.innerText = "Valider et générer mon lien Point Focal";
-  }
-}
-</script>
-
-</body>
-</html>
+  <div id="publicLinkBox" class="
