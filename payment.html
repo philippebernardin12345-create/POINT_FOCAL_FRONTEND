@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Point Focal - Validation Paiement</title>
 
 <style>
@@ -13,22 +14,22 @@
 }
 
 body {
+  min-height: 100vh;
+  padding: 20px;
   background: #0B0E11;
   color: #EAECEF;
   font-family: Arial, sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 20px;
 }
 
 .payment-container {
-  background: #1E2329;
-  padding: 35px 25px;
-  border-radius: 10px;
-  max-width: 550px;
   width: 100%;
+  max-width: 550px;
+  padding: 35px 25px;
+  background: #1E2329;
+  border-radius: 10px;
 }
 
 h2 {
@@ -37,20 +38,20 @@ h2 {
 }
 
 .subtitle {
+  margin-bottom: 25px;
   color: #B7BDC6;
   font-size: 14px;
-  margin-bottom: 25px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .info-box {
+  margin-bottom: 25px;
+  padding: 14px;
   background: rgba(240, 185, 11, 0.12);
   border-left: 4px solid #F0B90B;
-  padding: 14px;
-  margin-bottom: 25px;
   color: #F0B90B;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .form-group {
@@ -60,18 +61,19 @@ h2 {
 label {
   display: block;
   margin-bottom: 8px;
-  font-size: 14px;
   color: #B7BDC6;
+  font-size: 14px;
   font-weight: bold;
+  line-height: 1.4;
 }
 
 input {
   width: 100%;
   padding: 13px;
   background: #2B3139;
-  border: 1px solid #2B3139;
-  color: #EAECEF;
+  border: 1px solid #474D57;
   border-radius: 6px;
+  color: #EAECEF;
   font-size: 14px;
 }
 
@@ -80,69 +82,107 @@ input:focus {
   outline: none;
 }
 
+.input-help {
+  display: block;
+  margin-top: 6px;
+  color: #848E9C;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 button,
 .next-btn {
+  display: block;
   width: 100%;
+  margin-top: 15px;
   padding: 15px;
-  background: #F0B90B;
-  color: #000;
   border: none;
   border-radius: 6px;
-  font-weight: bold;
   font-size: 16px;
-  cursor: pointer;
+  font-weight: bold;
   text-align: center;
   text-decoration: none;
-  display: block;
-  margin-top: 15px;
+  cursor: pointer;
+}
+
+#validateBtn {
+  background: #F0B90B;
+  color: #000000;
 }
 
 button:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
 .next-btn {
+  display: none;
   background: #02C076;
   color: #FFFFFF;
-  display: none;
 }
 
 .reactivate-btn {
+  display: none;
   background: #EA3943;
   color: #FFFFFF;
-  display: none;
 }
 
 .status-box {
+  display: none;
+  margin-top: 20px;
   padding: 15px;
   border-radius: 6px;
-  margin-top: 20px;
   font-size: 14px;
-  display: none;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .status-success {
+  display: block;
   background: rgba(2, 192, 118, 0.1);
   border-left: 4px solid #02C076;
   color: #02C076;
 }
 
 .status-error {
+  display: block;
   background: rgba(234, 57, 67, 0.1);
   border-left: 4px solid #EA3943;
   color: #EA3943;
 }
 
-.link-box {
-  background: #2B3139;
+.status-info {
+  display: block;
+  background: rgba(240, 185, 11, 0.1);
+  border-left: 4px solid #F0B90B;
   color: #F0B90B;
-  padding: 14px;
-  border-radius: 6px;
-  margin-top: 15px;
-  word-break: break-all;
+}
+
+.link-section {
   display: none;
+  margin-top: 20px;
+}
+
+.link-title {
+  margin-bottom: 8px;
+  color: #B7BDC6;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.link-box {
+  padding: 14px;
+  background: #2B3139;
+  border: 1px dashed #F0B90B;
+  border-radius: 6px;
+  color: #F0B90B;
+  font-size: 14px;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.copy-btn {
+  background: #474D57;
+  color: #FFFFFF;
 }
 </style>
 </head>
@@ -150,15 +190,16 @@ button:disabled {
 <body>
 
 <div class="payment-container">
+
   <h2>💳 Validation Victory Automatic</h2>
 
   <p class="subtitle">
-    Collez les informations dans l’ordre demandé. Point Focal vérifiera
-    automatiquement la transaction USDT BEP-20 sur la BNB Chain.
+    Remplissez les trois champs. Point Focal vérifiera automatiquement
+    votre transaction USDT BEP-20 avant de générer votre lien personnel.
   </p>
 
   <div class="info-box">
-    Montant minimum requis :
+    Montant minimum :
     <strong>2,03 USDT BEP-20</strong><br>
 
     Réseau :
@@ -168,52 +209,561 @@ button:disabled {
   </div>
 
   <div class="form-group">
-    <label>1. Adresse cible donnée par Victory Automatic</label>
+    <label for="adresseCible">
+      1. Adresse cible donnée par Victory Automatic
+    </label>
 
     <input
       type="text"
       id="adresseCible"
-      placeholder="Collez l’adresse cible du don"
+      placeholder="0x..."
+      maxlength="42"
+      autocomplete="off"
+      spellcheck="false"
     >
+
+    <span class="input-help">
+      Exactement 42 caractères, commençant par 0x.
+    </span>
   </div>
 
   <div class="form-group">
-    <label>2. Hash de transaction</label>
+    <label for="txHash">
+      2. Hash de transaction
+    </label>
 
     <input
       type="text"
       id="txHash"
-      placeholder="Collez le hash de transaction"
+      placeholder="0x..."
+      maxlength="66"
+      autocomplete="off"
+      spellcheck="false"
     >
+
+    <span class="input-help">
+      Exactement 66 caractères, commençant par 0x.
+    </span>
   </div>
 
   <div class="form-group">
-    <label>3. Lien Victory Automatic personnel</label>
+    <label for="victoryLink">
+      3. Lien Victory Automatic personnel
+    </label>
 
     <input
-      type="text"
+      type="url"
       id="victoryLink"
-      placeholder="Collez votre lien Victory Automatic"
+      placeholder="https://victoryautomatic.com/user/register/votre-identifiant"
+      autocomplete="off"
+      spellcheck="false"
     >
+
+    <span class="input-help">
+      Le lien doit commencer par
+      https://victoryautomatic.com/user/register/
+    </span>
   </div>
 
   <button
     id="validateBtn"
     type="button"
-    onclick="validerPaiement()"
+    disabled
   >
-    Valider et générer mon lien Point Focal
+    Complétez les trois champs
   </button>
 
-  <div id="statusBox" class="status-box"></div>
+  <div
+    id="statusBox"
+    class="status-box"
+  ></div>
 
   <button
     id="reactivateBtn"
     type="button"
     class="reactivate-btn"
-    onclick="reactiverCompte()"
   >
-    🔄 Réactiver mon compte et obtenir un nouveau délai de 24 heures
+    🔄 Réactiver mon compte pour 24 heures
   </button>
 
-  <div id="publicLinkBox" class="
+  <div
+    id="linkSection"
+    class="link-section"
+  >
+    <div class="link-title">
+      Votre lien Point Focal :
+    </div>
+
+    <div
+      id="publicLinkBox"
+      class="link-box"
+    ></div>
+
+    <button
+      id="copyBtn"
+      type="button"
+      class="copy-btn"
+    >
+      Copier mon lien Point Focal
+    </button>
+  </div>
+
+  <a
+    id="nextOpportunityBtn"
+    href="victory-world.html"
+    class="next-btn"
+  >
+    Je rejoins l’opportunité suivante
+  </a>
+
+</div>
+
+<script>
+const API_BASE_URL =
+  "https://point-focal.onrender.com/api";
+
+const PAYMENT_URL =
+  `${API_BASE_URL}/payment/auto-trigger`;
+
+const REACTIVATE_URL =
+  `${API_BASE_URL}/victory-link/reactivate`;
+
+const adresseCibleInput =
+  document.getElementById("adresseCible");
+
+const txHashInput =
+  document.getElementById("txHash");
+
+const victoryLinkInput =
+  document.getElementById("victoryLink");
+
+const validateBtn =
+  document.getElementById("validateBtn");
+
+const statusBox =
+  document.getElementById("statusBox");
+
+const reactivateBtn =
+  document.getElementById("reactivateBtn");
+
+const linkSection =
+  document.getElementById("linkSection");
+
+const publicLinkBox =
+  document.getElementById("publicLinkBox");
+
+const copyBtn =
+  document.getElementById("copyBtn");
+
+const nextOpportunityBtn =
+  document.getElementById(
+    "nextOpportunityBtn"
+  );
+
+function showStatus(message, type = "error") {
+  if (type === "success") {
+    statusBox.className =
+      "status-box status-success";
+  } else if (type === "info") {
+    statusBox.className =
+      "status-box status-info";
+  } else {
+    statusBox.className =
+      "status-box status-error";
+  }
+
+  statusBox.innerText = message;
+}
+
+function clearStatus() {
+  statusBox.className = "status-box";
+  statusBox.innerText = "";
+}
+
+function isValidAddress(value) {
+  return /^0x[a-fA-F0-9]{40}$/.test(value);
+}
+
+function isValidHash(value) {
+  return /^0x[a-fA-F0-9]{64}$/.test(value);
+}
+
+function isValidVictoryLink(value) {
+  try {
+    const url = new URL(value);
+
+    const parts =
+      url.pathname
+        .split("/")
+        .filter(Boolean);
+
+    return (
+      url.protocol === "https:" &&
+      url.hostname.toLowerCase() ===
+        "victoryautomatic.com" &&
+      parts.length === 3 &&
+      parts[0] === "user" &&
+      parts[1] === "register" &&
+      /^[a-zA-Z0-9._-]+$/.test(parts[2])
+    );
+  } catch {
+    return false;
+  }
+}
+
+function updateButtonState() {
+  const adresseCible =
+    adresseCibleInput.value.trim();
+
+  const txHash =
+    txHashInput.value.trim();
+
+  const victoryLink =
+    victoryLinkInput.value.trim();
+
+  const allFilled =
+    adresseCible &&
+    txHash &&
+    victoryLink;
+
+  validateBtn.disabled = !allFilled;
+
+  validateBtn.innerText = allFilled
+    ? "Valider le paiement et générer mon lien Point Focal"
+    : "Complétez les trois champs";
+}
+
+function resetResultDisplay() {
+  linkSection.style.display = "none";
+  nextOpportunityBtn.style.display = "none";
+  reactivateBtn.style.display = "none";
+  publicLinkBox.innerText = "";
+}
+
+function expirationError(message) {
+  const text =
+    String(message || "").toLowerCase();
+
+  return (
+    text.includes("expir") ||
+    text.includes("24 heures") ||
+    text.includes("place a été libérée")
+  );
+}
+
+async function validerPaiement() {
+  clearStatus();
+  resetResultDisplay();
+
+  const token =
+    localStorage.getItem("token");
+
+  if (!token) {
+    showStatus(
+      "Votre session a expiré. Veuillez vous reconnecter."
+    );
+
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1500);
+
+    return;
+  }
+
+  const adresseCible =
+    adresseCibleInput.value.trim();
+
+  const txHash =
+    txHashInput.value.trim();
+
+  const victoryLink =
+    victoryLinkInput.value.trim();
+
+  if (!isValidAddress(adresseCible)) {
+    showStatus(
+      "L’adresse cible doit contenir exactement 42 caractères, commencer par 0x et contenir uniquement des caractères hexadécimaux."
+    );
+
+    adresseCibleInput.focus();
+    return;
+  }
+
+  if (!isValidHash(txHash)) {
+    showStatus(
+      "Le hash doit contenir exactement 66 caractères, commencer par 0x et contenir uniquement des caractères hexadécimaux."
+    );
+
+    txHashInput.focus();
+    return;
+  }
+
+  if (!isValidVictoryLink(victoryLink)) {
+    showStatus(
+      "Le lien doit respecter exactement le format https://victoryautomatic.com/user/register/identifiant."
+    );
+
+    victoryLinkInput.focus();
+    return;
+  }
+
+  validateBtn.disabled = true;
+  validateBtn.innerText =
+    "Vérification blockchain en cours...";
+
+  showStatus(
+    "Vérification de la transaction en cours. Ne fermez pas cette page.",
+    "info"
+  );
+
+  try {
+    const response = await fetch(
+      PAYMENT_URL,
+      {
+        method: "POST",
+
+        headers: {
+          "Authorization":
+            `Bearer ${token}`,
+
+          "Content-Type":
+            "application/json"
+        },
+
+        body: JSON.stringify({
+          adresseCible,
+          txHash,
+          victoryLink
+        })
+      }
+    );
+
+    const data =
+      await response
+        .json()
+        .catch(() => ({}));
+
+    if (!response.ok) {
+      const message =
+        data.message ||
+        data.error ||
+        "Le paiement n’a pas été validé.";
+
+      if (expirationError(message)) {
+        reactivateBtn.style.display =
+          "block";
+      }
+
+      throw new Error(message);
+    }
+
+    if (!data.publicLink) {
+      throw new Error(
+        "Le paiement a été traité, mais le serveur n’a pas renvoyé le lien Point Focal."
+      );
+    }
+
+    localStorage.setItem(
+      "publicLink",
+      data.publicLink
+    );
+
+    localStorage.setItem(
+      "victoryAutomaticLink",
+      data.victoryLink || victoryLink
+    );
+
+    localStorage.setItem(
+      "victoryPaymentValidated",
+      "true"
+    );
+
+    publicLinkBox.innerText =
+      data.publicLink;
+
+    linkSection.style.display =
+      "block";
+
+    nextOpportunityBtn.style.display =
+      "block";
+
+    showStatus(
+      data.alreadyValidated
+        ? "Votre paiement avait déjà été validé. Votre lien Point Focal a été récupéré."
+        : "Paiement validé. Votre lien Point Focal a été généré automatiquement.",
+      "success"
+    );
+
+  } catch (error) {
+    console.error(
+      "Erreur de validation :",
+      error
+    );
+
+    showStatus(
+      error.message ||
+      "Une erreur est survenue pendant la validation."
+    );
+
+  } finally {
+    updateButtonState();
+  }
+}
+
+async function reactiverCompte() {
+  const token =
+    localStorage.getItem("token");
+
+  if (!token) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  reactivateBtn.disabled = true;
+  reactivateBtn.innerText =
+    "Réactivation en cours...";
+
+  try {
+    const response = await fetch(
+      REACTIVATE_URL,
+      {
+        method: "POST",
+
+        headers: {
+          "Authorization":
+            `Bearer ${token}`,
+
+          "Content-Type":
+            "application/json"
+        }
+      }
+    );
+
+    const data =
+      await response
+        .json()
+        .catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+        "Réactivation impossible."
+      );
+    }
+
+    reactivateBtn.style.display =
+      "none";
+
+    showStatus(
+      data.message ||
+      "Votre compte a été réactivé pour 24 heures.",
+      "success"
+    );
+
+  } catch (error) {
+    showStatus(
+      error.message ||
+      "Erreur pendant la réactivation."
+    );
+
+  } finally {
+    reactivateBtn.disabled = false;
+    reactivateBtn.innerText =
+      "🔄 Réactiver mon compte pour 24 heures";
+  }
+}
+
+async function copierLien() {
+  const publicLink =
+    publicLinkBox.innerText.trim();
+
+  if (!publicLink) {
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(
+      publicLink
+    );
+
+    copyBtn.innerText =
+      "Lien copié ✅";
+
+    setTimeout(() => {
+      copyBtn.innerText =
+        "Copier mon lien Point Focal";
+    }, 2000);
+
+  } catch {
+    showStatus(
+      "Impossible de copier automatiquement le lien. Maintenez votre doigt sur le lien pour le copier."
+    );
+  }
+}
+
+adresseCibleInput.addEventListener(
+  "input",
+  updateButtonState
+);
+
+txHashInput.addEventListener(
+  "input",
+  updateButtonState
+);
+
+victoryLinkInput.addEventListener(
+  "input",
+  updateButtonState
+);
+
+validateBtn.addEventListener(
+  "click",
+  validerPaiement
+);
+
+reactivateBtn.addEventListener(
+  "click",
+  reactiverCompte
+);
+
+copyBtn.addEventListener(
+  "click",
+  copierLien
+);
+
+window.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    updateButtonState();
+
+    const existingPublicLink =
+      localStorage.getItem("publicLink");
+
+    const alreadyValidated =
+      localStorage.getItem(
+        "victoryPaymentValidated"
+      ) === "true";
+
+    if (
+      alreadyValidated &&
+      existingPublicLink
+    ) {
+      publicLinkBox.innerText =
+        existingPublicLink;
+
+      linkSection.style.display =
+        "block";
+
+      nextOpportunityBtn.style.display =
+        "block";
+
+      showStatus(
+        "Votre lien Point Focal est déjà actif.",
+        "success"
+      );
+    }
+  }
+);
+</script>
+
+</body>
+</html>
