@@ -26,7 +26,7 @@ body {
 
 .card {
   width: 100%;
-  max-width: 520px;
+  max-width: 540px;
   padding: 35px 25px;
   background: #1E2329;
   border: 1px solid #2B3139;
@@ -43,13 +43,13 @@ h2 {
 .subtitle {
   color: #B7BDC6;
   font-size: 14px;
-  line-height: 1.5;
-  margin-bottom: 24px;
+  line-height: 1.6;
+  margin-bottom: 22px;
 }
 
 .timer-box {
   padding: 15px;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
   border-left: 4px solid #EA3943;
   border-radius: 6px;
   background: rgba(234, 57, 67, 0.1);
@@ -58,10 +58,11 @@ h2 {
   line-height: 1.5;
 }
 
-.timer-box.success {
-  border-left-color: #02C076;
-  background: rgba(2, 192, 118, 0.1);
-  color: #02C076;
+.link-title {
+  color: #B7BDC6;
+  font-size: 14px;
+  margin-bottom: 8px;
+  text-align: left;
 }
 
 .link-box {
@@ -75,6 +76,84 @@ h2 {
   font-weight: bold;
   word-break: break-all;
   line-height: 1.5;
+}
+
+.provision-box {
+  padding: 16px;
+  margin-bottom: 18px;
+  background: rgba(240, 185, 11, 0.1);
+  border: 1px solid rgba(240, 185, 11, 0.45);
+  border-radius: 6px;
+  text-align: left;
+}
+
+.provision-title {
+  color: #F0B90B;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.provision-text {
+  color: #EAECEF;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.checkbox-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #EAECEF;
+  font-size: 14px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.checkbox-line input {
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  accent-color: #F0B90B;
+  flex-shrink: 0;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  margin-top: 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  text-align: center;
+}
+
+.btn:disabled,
+.btn.locked {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-victory {
+  background: #02C076;
+  color: #FFFFFF;
+}
+
+.btn-next {
+  background: #F0B90B;
+  color: #000000;
+  display: none;
+}
+
+.btn-reactivate {
+  display: none;
+  background: #EA3943;
+  color: #FFFFFF;
 }
 
 .status-box {
@@ -101,38 +180,11 @@ h2 {
   color: #EA3943;
 }
 
-.btn {
+.status-info {
   display: block;
-  width: 100%;
-  padding: 15px;
-  margin-top: 14px;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: bold;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-victory {
-  background: #02C076;
-  color: #FFFFFF;
-}
-
-.btn-next {
-  background: #F0B90B;
-  color: #000000;
-}
-
-.btn-reactivate {
-  display: none;
-  background: #EA3943;
-  color: #FFFFFF;
+  background: rgba(240, 185, 11, 0.1);
+  border-left: 4px solid #F0B90B;
+  color: #F0B90B;
 }
 </style>
 </head>
@@ -144,16 +196,47 @@ h2 {
   <h2>Victory Automatic</h2>
 
   <p class="subtitle">
-    Utilisez le lien attribué ci-dessous pour créer votre compte Victory Automatic.
-    Vous disposez de 24 heures pour terminer cette étape et valider le paiement.
+    Point Focal vous attribue le lien Victory Automatic correspondant à votre
+    parrain. Avant d’ouvrir Victory Automatic, confirmez que vous pouvez
+    effectuer immédiatement le don demandé.
   </p>
 
   <div id="timerBox" class="timer-box">
     ⏳ Chargement du délai serveur...
   </div>
 
+  <p class="link-title">
+    Lien Victory Automatic attribué :
+  </p>
+
   <div id="linkDisplay" class="link-box">
-    Attribution de votre lien Victory Automatic en cours...
+    Attribution du lien en cours...
+  </div>
+
+  <div id="provisionBox" class="provision-box">
+    <div class="provision-title">
+      Confirmation obligatoire avant de continuer
+    </div>
+
+    <p class="provision-text">
+      Pour éviter de commencer le parcours sans pouvoir le terminer, assurez-vous
+      de disposer immédiatement d’au moins
+      <strong>2,03 USDT BEP-20</strong>, ainsi que d’une petite quantité de
+      <strong>BNB</strong> pour les frais du réseau.
+    </p>
+
+    <label class="checkbox-line" for="provisionCheckbox">
+      <input
+        type="checkbox"
+        id="provisionCheckbox"
+      >
+
+      <span>
+        Je confirme disposer immédiatement d’au moins
+        <strong>2,03 USDT BEP-20</strong> et des frais BNB nécessaires
+        pour effectuer la transaction.
+      </span>
+    </label>
   </div>
 
   <a
@@ -161,17 +244,16 @@ h2 {
     href="#"
     target="_blank"
     rel="noopener"
-    class="btn btn-victory"
-    style="display:none;"
+    class="btn btn-victory locked"
+    aria-disabled="true"
   >
-    Créer mon compte Victory Automatic
+    🔒 Confirmez d’abord votre provision
   </a>
 
   <button
     id="nextBtn"
     type="button"
     class="btn btn-next"
-    style="display:none;"
   >
     J’ai créé mon compte Victory Automatic
   </button>
@@ -199,16 +281,23 @@ const REACTIVATE_URL =
   `${API_BASE_URL}/victory-link/reactivate`;
 
 let countdownInterval = null;
-let currentExpiresAt = null;
+let assignedVictoryLink = null;
+let accountExpired = false;
 
 function showStatus(message, type = "error") {
   const statusBox =
     document.getElementById("statusBox");
 
-  statusBox.className =
-    type === "success"
-      ? "status-box status-success"
-      : "status-box status-error";
+  if (type === "success") {
+    statusBox.className =
+      "status-box status-success";
+  } else if (type === "info") {
+    statusBox.className =
+      "status-box status-info";
+  } else {
+    statusBox.className =
+      "status-box status-error";
+  }
 
   statusBox.innerText = message;
 }
@@ -217,19 +306,24 @@ function clearStatus() {
   const statusBox =
     document.getElementById("statusBox");
 
-  statusBox.style.display = "none";
+  statusBox.className = "status-box";
   statusBox.innerText = "";
 }
 
 function formatRemainingTime(milliseconds) {
   const totalSeconds =
-    Math.max(0, Math.floor(milliseconds / 1000));
+    Math.max(
+      0,
+      Math.floor(milliseconds / 1000)
+    );
 
   const hours =
     Math.floor(totalSeconds / 3600);
 
   const minutes =
-    Math.floor((totalSeconds % 3600) / 60);
+    Math.floor(
+      (totalSeconds % 3600) / 60
+    );
 
   const seconds =
     totalSeconds % 60;
@@ -241,9 +335,81 @@ function formatRemainingTime(milliseconds) {
   };
 }
 
+function lockVictoryButton() {
+  const victoryBtn =
+    document.getElementById("victoryBtn");
+
+  victoryBtn.classList.add("locked");
+  victoryBtn.setAttribute(
+    "aria-disabled",
+    "true"
+  );
+
+  victoryBtn.innerText =
+    "🔒 Confirmez d’abord votre provision";
+}
+
+function unlockVictoryButton() {
+  const victoryBtn =
+    document.getElementById("victoryBtn");
+
+  if (!assignedVictoryLink || accountExpired) {
+    lockVictoryButton();
+    return;
+  }
+
+  victoryBtn.href =
+    assignedVictoryLink;
+
+  victoryBtn.classList.remove("locked");
+  victoryBtn.setAttribute(
+    "aria-disabled",
+    "false"
+  );
+
+  victoryBtn.innerText =
+    "Créer mon compte Victory Automatic";
+
+  showStatus(
+    "Provision confirmée. Vous pouvez maintenant ouvrir Victory Automatic et effectuer votre inscription.",
+    "success"
+  );
+}
+
+function updateProvisionState() {
+  const checkbox =
+    document.getElementById(
+      "provisionCheckbox"
+    );
+
+  if (
+    checkbox.checked &&
+    assignedVictoryLink &&
+    !accountExpired
+  ) {
+    localStorage.setItem(
+      "victoryProvisionConfirmed",
+      "true"
+    );
+
+    unlockVictoryButton();
+  } else {
+    localStorage.removeItem(
+      "victoryProvisionConfirmed"
+    );
+
+    lockVictoryButton();
+  }
+}
+
 function showExpiredState() {
+  accountExpired = true;
+
   const timerBox =
     document.getElementById("timerBox");
+
+  const provisionBox =
+    document.getElementById("provisionBox");
 
   const victoryBtn =
     document.getElementById("victoryBtn");
@@ -252,19 +418,27 @@ function showExpiredState() {
     document.getElementById("nextBtn");
 
   const reactivateBtn =
-    document.getElementById("reactivateBtn");
-
-  timerBox.classList.remove("success");
+    document.getElementById(
+      "reactivateBtn"
+    );
 
   timerBox.innerText =
     "⛔ Délai expiré. Votre place a été libérée.";
 
-  victoryBtn.style.display = "none";
-  nextBtn.style.display = "none";
-  reactivateBtn.style.display = "block";
+  provisionBox.style.display =
+    "none";
+
+  victoryBtn.style.display =
+    "none";
+
+  nextBtn.style.display =
+    "none";
+
+  reactivateBtn.style.display =
+    "block";
 
   showStatus(
-    "Votre délai de 24 heures a expiré. Réactivez votre compte pour obtenir un nouveau délai et revenir dans la course.",
+    "Votre délai de 24 heures a expiré. Réactivez votre compte pour obtenir un nouveau délai.",
     "error"
   );
 }
@@ -273,12 +447,12 @@ function startCountdown(expiresAt) {
   const timerBox =
     document.getElementById("timerBox");
 
-  currentExpiresAt =
+  const expirationDate =
     new Date(expiresAt);
 
   if (
     Number.isNaN(
-      currentExpiresAt.getTime()
+      expirationDate.getTime()
     )
   ) {
     timerBox.innerText =
@@ -298,7 +472,7 @@ function startCountdown(expiresAt) {
 
   function updateTimer() {
     const remaining =
-      currentExpiresAt.getTime() -
+      expirationDate.getTime() -
       Date.now();
 
     if (remaining <= 0) {
@@ -312,8 +486,6 @@ function startCountdown(expiresAt) {
     const time =
       formatRemainingTime(remaining);
 
-    timerBox.classList.remove("success");
-
     timerBox.innerText =
       `⏳ Temps restant : ${time.hours}h ${time.minutes}m ${time.seconds}s`;
   }
@@ -326,7 +498,8 @@ function startCountdown(expiresAt) {
 
 function isExpirationMessage(message) {
   const text =
-    String(message || "").toLowerCase();
+    String(message || "")
+      .toLowerCase();
 
   return (
     text.includes("expir") ||
@@ -341,32 +514,58 @@ async function assignVictoryLink() {
     localStorage.getItem("token");
 
   const linkDisplay =
-    document.getElementById("linkDisplay");
+    document.getElementById(
+      "linkDisplay"
+    );
 
   const victoryBtn =
-    document.getElementById("victoryBtn");
+    document.getElementById(
+      "victoryBtn"
+    );
 
   const nextBtn =
-    document.getElementById("nextBtn");
+    document.getElementById(
+      "nextBtn"
+    );
 
   const reactivateBtn =
-    document.getElementById("reactivateBtn");
+    document.getElementById(
+      "reactivateBtn"
+    );
+
+  const provisionBox =
+    document.getElementById(
+      "provisionBox"
+    );
 
   if (!token) {
     window.location.href =
-      "register.html";
+      "login.html";
 
     return;
   }
 
   clearStatus();
 
-  victoryBtn.style.display = "none";
-  nextBtn.style.display = "none";
-  reactivateBtn.style.display = "none";
+  accountExpired = false;
+  assignedVictoryLink = null;
 
   linkDisplay.innerText =
-    "Attribution de votre lien Victory Automatic en cours...";
+    "Attribution du lien Victory Automatic en cours...";
+
+  victoryBtn.style.display =
+    "block";
+
+  nextBtn.style.display =
+    "none";
+
+  reactivateBtn.style.display =
+    "none";
+
+  provisionBox.style.display =
+    "block";
+
+  lockVictoryButton();
 
   try {
     const response = await fetch(
@@ -375,14 +574,19 @@ async function assignVictoryLink() {
         method: "POST",
 
         headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
+          "Authorization":
+            `Bearer ${token}`,
+
+          "Content-Type":
+            "application/json"
         }
       }
     );
 
     const data =
-      await response.json().catch(() => ({}));
+      await response
+        .json()
+        .catch(() => ({}));
 
     if (!response.ok) {
       const message =
@@ -406,21 +610,18 @@ async function assignVictoryLink() {
       );
     }
 
-    linkDisplay.innerText =
+    assignedVictoryLink =
       data.url;
+
+    linkDisplay.innerText =
+      assignedVictoryLink;
 
     victoryBtn.href =
-      data.url;
-
-    victoryBtn.style.display =
-      "block";
-
-    nextBtn.style.display =
-      "block";
+      assignedVictoryLink;
 
     localStorage.setItem(
       "victoryAssignedLink",
-      data.url
+      assignedVictoryLink
     );
 
     if (data.expiresAt) {
@@ -433,11 +634,25 @@ async function assignVictoryLink() {
         data.expiresAt
       );
     } else {
-      document.getElementById(
-        "timerBox"
-      ).innerText =
+      document
+        .getElementById("timerBox")
+        .innerText =
         "Le serveur n’a pas renvoyé le délai de 24 heures.";
     }
+
+    const provisionConfirmed =
+      localStorage.getItem(
+        "victoryProvisionConfirmed"
+      ) === "true";
+
+    document
+      .getElementById(
+        "provisionCheckbox"
+      )
+      .checked =
+      provisionConfirmed;
+
+    updateProvisionState();
 
   } catch (error) {
     console.error(
@@ -447,6 +662,12 @@ async function assignVictoryLink() {
 
     linkDisplay.innerText =
       "Erreur d’attribution du lien.";
+
+    victoryBtn.style.display =
+      "none";
+
+    provisionBox.style.display =
+      "none";
 
     showStatus(
       error.message ||
@@ -461,11 +682,13 @@ async function reactivateAccount() {
     localStorage.getItem("token");
 
   const reactivateBtn =
-    document.getElementById("reactivateBtn");
+    document.getElementById(
+      "reactivateBtn"
+    );
 
   if (!token) {
     window.location.href =
-      "register.html";
+      "login.html";
 
     return;
   }
@@ -482,14 +705,19 @@ async function reactivateAccount() {
         method: "POST",
 
         headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
+          "Authorization":
+            `Bearer ${token}`,
+
+          "Content-Type":
+            "application/json"
         }
       }
     );
 
     const data =
-      await response.json().catch(() => ({}));
+      await response
+        .json()
+        .catch(() => ({}));
 
     if (!response.ok) {
       throw new Error(
@@ -499,22 +727,24 @@ async function reactivateAccount() {
     }
 
     localStorage.removeItem(
-      "point_focal_victory_started_at"
+      "victoryProvisionConfirmed"
     );
 
-    localStorage.setItem(
-      "victoryExpiresAt",
-      data.expiresAt || ""
+    localStorage.removeItem(
+      "victoryExpiresAt"
     );
+
+    document
+      .getElementById(
+        "provisionCheckbox"
+      )
+      .checked = false;
 
     showStatus(
       data.message ||
       "Votre compte a été réactivé avec succès.",
       "success"
     );
-
-    reactivateBtn.style.display =
-      "none";
 
     setTimeout(() => {
       assignVictoryLink();
@@ -536,6 +766,59 @@ async function reactivateAccount() {
 }
 
 document
+  .getElementById(
+    "provisionCheckbox"
+  )
+  .addEventListener(
+    "change",
+    updateProvisionState
+  );
+
+document
+  .getElementById(
+    "victoryBtn"
+  )
+  .addEventListener(
+    "click",
+    (event) => {
+      const checkbox =
+        document.getElementById(
+          "provisionCheckbox"
+        );
+
+      if (
+        !checkbox.checked ||
+        !assignedVictoryLink ||
+        accountExpired
+      ) {
+        event.preventDefault();
+
+        showStatus(
+          "Vous devez confirmer votre provision avant d’ouvrir Victory Automatic.",
+          "error"
+        );
+
+        return;
+      }
+
+      localStorage.setItem(
+        "victoryAccountOpeningStarted",
+        "true"
+      );
+
+      document
+        .getElementById("nextBtn")
+        .style.display =
+        "block";
+
+      showStatus(
+        "Victory Automatic a été ouvert. Après votre inscription et votre don, revenez sur Point Focal pour continuer.",
+        "info"
+      );
+    }
+  );
+
+document
   .getElementById("nextBtn")
   .addEventListener(
     "click",
@@ -546,7 +829,9 @@ document
   );
 
 document
-  .getElementById("reactivateBtn")
+  .getElementById(
+    "reactivateBtn"
+  )
   .addEventListener(
     "click",
     reactivateAccount
