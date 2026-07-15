@@ -3,8 +3,94 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Point Focal - Étape Communautaire</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      background: #0b0e11;
+      color: #eaecef;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 550px;
+      padding: 35px 25px;
+      background: #1e2329;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #f0b90b;
+    }
+
+    p {
+      color: #b7bdc6;
+      line-height: 1.6;
+    }
+
+    .btn-youtube,
+    #btnValidation {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      padding: 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-youtube {
+      background: #ff0000;
+      color: #ffffff;
+    }
+
+    #btnValidation {
+      background: #f0b90b;
+      color: #0b0e11;
+    }
+
+    #btnValidation:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #aideRetour {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(240, 185, 11, 0.1);
+      border-left: 4px solid #f0b90b;
+      color: #eaecef;
+      text-align: left;
+      line-height: 1.5;
+    }
+
+    #messageChargement {
+      margin-top: 20px;
+      color: #f0b90b;
+      font-size: 14px;
+    }
+  </style>
 </head>
+
 <body>
 
 <div class="container">
@@ -15,148 +101,291 @@
     abonnez-vous à la chaîne et laissez un commentaire.
   </p>
 
+  <div id="messageChargement">
+    Vérification de votre progression...
+  </div>
+
   <a
+    id="btnYoutube"
     href="https://www.youtube.com/watch?v=9uPybhkqYw4"
     target="_blank"
-    rel="noopener"
+    rel="noopener noreferrer"
     class="btn-youtube"
     onclick="ouvrirYoutube()"
+    style="display:none;"
   >
     ▶️ OUVRIR DANS YOUTUBE
   </a>
 
-  <div id="aideRetour" style="display:none; margin-top:20px;">
-    💡 Revenez sur Point Focal après YouTube. Le bouton de continuation apparaîtra ici.
+  <div id="aideRetour">
+    💡 Revenez sur Point Focal après YouTube.
+    Le bouton de continuation apparaîtra ici.
   </div>
 
   <button
     id="btnValidation"
+    type="button"
     onclick="validerEtape()"
     disabled
-    style="display:none; margin-top:20px; width:100%; padding:16px; font-weight:bold;"
+    style="display:none;"
   >
     ✅ Continuer sur Point Focal
   </button>
 </div>
 
 <script>
-const API_BASE_URL = "https://point-focal.onrender.com/api";
-const RETOUR_YOUTUBE_KEY = "point_focal_retour_youtube";
+  const API_BASE_URL = "https://point-focal.onrender.com/api";
+  const RETOUR_YOUTUBE_KEY = "point_focal_retour_youtube";
 
-window.addEventListener("DOMContentLoaded", async () => {
-  const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  let verificationEnCours = false;
+  let validationEnCours = false;
 
-  if (!token) {
-    alert("Session non trouvée. Connectez-vous d'abord.");
-    window.location.href = "login.html";
-    return;
+  window.addEventListener("DOMContentLoaded", initialiserPage);
+
+  async function initialiserPage() {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Session non trouvée. Connectez-vous d'abord.");
+      window.location.replace("login.html");
+      return;
+    }
+
+    const videoDejaValidee = await verifierVideoDejaVue();
+
+    if (videoDejaValidee) {
+      return;
+    }
+
+    document.getElementById("messageChargement").style.display = "none";
+    document.getElementById("btnYoutube").style.display = "block";
+
+    restaurerEtatRetour();
   }
 
-  if (user && user.isActivated) {
-  window.location.href = "dashboard.html";
-  return;
-}
-
-  restaurerEtatRetour();
-
-  await verifierVideoDejaVue();
-});
-
-function ouvrirYoutube() {
-  localStorage.setItem(RETOUR_YOUTUBE_KEY, "true");
-  afficherBoutonRetour();
-}
-
-window.addEventListener("focus", () => {
-  if (localStorage.getItem(RETOUR_YOUTUBE_KEY) === "true") {
+  function ouvrirYoutube() {
+    localStorage.setItem(RETOUR_YOUTUBE_KEY, "true");
     afficherBoutonRetour();
   }
-});
 
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden && localStorage.getItem(RETOUR_YOUTUBE_KEY) === "true") {
-    afficherBoutonRetour();
+  window.addEventListener("focus", () => {
+    const retourYoutube =
+      localStorage.getItem(RETOUR_YOUTUBE_KEY) === "true";
+
+    if (retourYoutube) {
+      afficherBoutonRetour();
+    }
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    const retourYoutube =
+      localStorage.getItem(RETOUR_YOUTUBE_KEY) === "true";
+
+    if (!document.hidden && retourYoutube) {
+      afficherBoutonRetour();
+    }
+  });
+
+  function restaurerEtatRetour() {
+    const retourYoutube =
+      localStorage.getItem(RETOUR_YOUTUBE_KEY) === "true";
+
+    if (retourYoutube) {
+      afficherBoutonRetour();
+    }
   }
-});
 
-function restaurerEtatRetour() {
-  if (localStorage.getItem(RETOUR_YOUTUBE_KEY) === "true") {
-    afficherBoutonRetour();
+  function afficherBoutonRetour() {
+    const aideRetour = document.getElementById("aideRetour");
+    const btnValidation = document.getElementById("btnValidation");
+
+    aideRetour.style.display = "block";
+    btnValidation.style.display = "block";
+    btnValidation.disabled = false;
+    btnValidation.classList.add("ready");
+    btnValidation.innerText = "✅ Continuer sur Point Focal";
   }
-}
 
-function afficherBoutonRetour() {
-  const aideRetour = document.getElementById("aideRetour");
-  const btn = document.getElementById("btnValidation");
+  async function verifierVideoDejaVue() {
+    if (verificationEnCours) {
+      return false;
+    }
 
-  aideRetour.style.display = "block";
+    verificationEnCours = true;
 
-  btn.style.display = "block";
-  btn.disabled = false;
-  btn.classList.add("ready");
-  btn.innerText = "✅ Continuer sur Point Focal";
-}
+    try {
+      const token = localStorage.getItem("token");
 
-async function verifierVideoDejaVue() {
-  try {
-    const res = await fetch(`${API_BASE_URL}/video/session`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`
+      const res = await fetch(`${API_BASE_URL}/video/session`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json"
+        }
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+
+        alert("Votre session a expiré. Veuillez vous reconnecter.");
+        window.location.replace("login.html");
+        return true;
       }
-    });
 
-    if (!res.ok) return;
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error(
+          "Erreur vérification vidéo :",
+          res.status,
+          errorText
+        );
 
-    const result = await res.json();
-    const session = result.data;
+        return false;
+      }
 
-    if (session && session.isCompleted === true) {
-  console.log("Vidéo déjà validée, mais redirection désactivée en mode test.");
-}
-  } catch (error) {
-    console.error("Erreur vérification vidéo:", error);
+      const result = await res.json();
+
+      const session =
+        result.data ||
+        result.session ||
+        result.videoSession ||
+        result;
+
+      const videoCompletee =
+        session?.isCompleted === true ||
+        session?.completed === true ||
+        session?.videoCompleted === true ||
+        session?.video_completed === true ||
+        session?.watchedSeconds >= 200 ||
+        session?.watched_seconds >= 200;
+
+      if (videoCompletee) {
+        enregistrerVideoCompleteeLocalement();
+
+        localStorage.removeItem(RETOUR_YOUTUBE_KEY);
+
+        window.location.replace("victory-link.html");
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error("Erreur vérification vidéo :", error);
+      return false;
+    } finally {
+      verificationEnCours = false;
+    }
   }
-}
 
-async function validerEtape() {
-  const btn = document.getElementById("btnValidation");
+  async function validerEtape() {
+    const btnValidation =
+      document.getElementById("btnValidation");
 
-  if (!btn.classList.contains("ready")) return;
+    if (!btnValidation.classList.contains("ready")) {
+      return;
+    }
 
-  try {
-    const res = await fetch(`${API_BASE_URL}/video/progress`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        watchedSeconds: 200
-      })
-    });
+    if (validationEnCours) {
+      return;
+    }
 
-    if (res.ok) {
+    validationEnCours = true;
+    btnValidation.disabled = true;
+    btnValidation.innerText = "Validation en cours...";
+
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Session non trouvée. Reconnectez-vous.");
+        window.location.replace("login.html");
+        return;
+      }
+
+      const res = await fetch(`${API_BASE_URL}/video/progress`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify({
+          watchedSeconds: 200
+        })
+      });
+
+      const responseText = await res.text();
+
+      let result = {};
+
+      try {
+        result = responseText
+          ? JSON.parse(responseText)
+          : {};
+      } catch {
+        result = {
+          message: responseText
+        };
+      }
+
+      if (res.status === 401 || res.status === 403) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+
+        alert("Votre session a expiré. Veuillez vous reconnecter.");
+        window.location.replace("login.html");
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error(
+          result.message ||
+          result.error ||
+          "La validation de la vidéo a échoué."
+        );
+      }
+
+      enregistrerVideoCompleteeLocalement();
+
       localStorage.removeItem(RETOUR_YOUTUBE_KEY);
 
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
-      user.hasVictoryLink = true;
-      localStorage.setItem("user", JSON.stringify(user));
+      window.location.replace("victory-link.html");
+    } catch (error) {
+      console.error("Erreur validation vidéo :", error);
 
-      window.location.href = "victory-link.html";
-    } else {
-    const errorText = await res.text();
-    alert("Validation impossible : " + errorText);
-}
-  } catch (error) {
-    console.error("Erreur validation vidéo:", error);
-    alert("Une erreur est survenue.");
+      alert(
+        "Validation impossible : " +
+        (error.message || "Une erreur est survenue.")
+      );
+
+      btnValidation.disabled = false;
+      btnValidation.innerText = "✅ Continuer sur Point Focal";
+    } finally {
+      validationEnCours = false;
+    }
   }
-}
+
+  function enregistrerVideoCompleteeLocalement() {
+    let user = {};
+
+    try {
+      user = JSON.parse(
+        localStorage.getItem("user") || "{}"
+      );
+    } catch {
+      user = {};
+    }
+
+    user.videoCompleted = true;
+    user.video_completed = true;
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify(user)
+    );
+  }
 </script>
 
 </body>
 </html>
-
-
