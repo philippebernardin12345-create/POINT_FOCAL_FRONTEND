@@ -166,14 +166,49 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
         successBox.innerText = "Connexion réussie...";
         successBox.style.display = "block";
 
-       setTimeout(() => {
-    if (user.link_active === true) {
-        window.location.href = "dashboard.html";
-    } else {
-        window.location.href = "popup-youtube.html";
+       
+setTimeout(async () => {
+    try {
+        if (user.link_active === true) {
+            window.location.replace("dashboard.html");
+            return;
+        }
+
+        const videoRes = await fetch(
+            "https://point-focal.onrender.com/api/video/session",
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json"
+                }
+            }
+        );
+
+        if (!videoRes.ok) {
+            console.error(
+                "Erreur vérification vidéo :",
+                videoRes.status,
+                await videoRes.text()
+            );
+
+            window.location.replace("popup-youtube.html");
+            return;
+        }
+
+        const videoResult = await videoRes.json();
+        const session = videoResult.data;
+
+        if (session && session.isCompleted === true) {
+            window.location.replace("victory-link.html");
+        } else {
+            window.location.replace("popup-youtube.html");
+        }
+    } catch (error) {
+        console.error("Erreur de redirection :", error);
+        window.location.replace("popup-youtube.html");
     }
 }, 800);
-
     } catch (err) {
         errorBox.innerText = "Erreur réseau : " + err.message;
         errorBox.style.display = "block";
