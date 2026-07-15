@@ -384,7 +384,7 @@ async function handleRegister(event) {
             render();
         }, 2000);
     } else {
-        const msg = result.data?.message || result.error || t('errorRegister');
+        const msg = result.message || result.error || t('errorRegister');
         showMessage('authMessage', msg, 'error');
     }
 
@@ -413,16 +413,16 @@ async function handleLogin(event) {
     const result = await apiCall('/auth/login', 'POST', { email, password });
 
     if (result.ok) {
-        localStorage.setItem('token', result.data.token);
-        localStorage.setItem('user', JSON.stringify(result.data.user));
-        STATE.user = result.data.user;
+    localStorage.setItem('token', result.token);
+    localStorage.setItem('user', JSON.stringify(result.user));
+    STATE.user = result.user;
         showMessage('authMessage', t('successLogin'), 'success');
         setTimeout(() => {
             STATE.step = 'dashboard';
             render();
         }, 500);
     } else {
-        const msg = result.data?.message || result.error || t('errorLogin');
+    const msg = result.message || result.error || t('errorLogin');
         showMessage('authMessage', msg, 'error');
     }
 
