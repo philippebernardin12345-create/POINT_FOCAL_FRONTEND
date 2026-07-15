@@ -166,9 +166,13 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
         successBox.innerText = "Connexion réussie...";
         successBox.style.display = "block";
 
-        setTimeout(() => {
-            window.location.href = "video.html";
-        }, 800);
+       setTimeout(() => {
+    if (user.link_active === true) {
+        window.location.href = "dashboard.html";
+    } else {
+        window.location.href = "popup-youtube.html";
+    }
+}, 800);
 
     } catch (err) {
         errorBox.innerText = "Erreur réseau : " + err.message;
