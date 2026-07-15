@@ -207,76 +207,57 @@ function hideMessage(elementId) {
 
 // API
 async function apiCall(endpoint, method = "GET", body = null) {
-  const options = {
-    method,
-    headers: {
-      "Content-Type": "application/json"
-    }
-  };
-
-  if (body !== null) {
-    options.body = JSON.stringify(body);
-  }
-
-  const token = localStorage.getItem("token");
-
-  if (token) {
-    options.headers.Authorization = `Bearer ${token}`;
-  }
-
-  try {
-    const response = await fetch(
-      `${CONFIG.API_URL}${endpoint}`,
-      options
-    );
-
-    let data = null;
-
-    try {
-      data = await response.json();
-    } catch (error) {
-      data = null;
-    }
-
-    const result =
-      data && typeof data === "object" && !Array.isArray(data)
-        ? { ...data }
-        : { data };
-
-    result.ok = response.ok;
-    result.status = response.status;
-
-    return result;
-  } catch (error) {
-    console.error("API Error:", error);
-
-    return {
-      ok: false,
-      status: 0,
-      error: error.message || "Erreur de connexion au serveur"
-    };
-  }
-}
+    const options = {
         method,
-        headers: { 'Content-Type': 'application/json' }
+        headers: {
+            "Content-Type": "application/json"
+        }
+    };
+
+    if (body !== null) {
+        options.body = JSON.stringify(body);
     }
-    
-    if (body) options.body = JSON.stringify(body);
-    
-    const token = localStorage.getItem('token');
+
+    const token = localStorage.getItem("token");
+
     if (token) {
-        options.headers['Authorization'] = `Bearer ${token}`;
+        options.headers.Authorization = `Bearer ${token}`;
     }
 
     try {
-        const response = await fetch(`${CONFIG.API_URL}${endpoint}`, options);
-        const data = await response.json();
-        return { ok: response.ok, data, status: response.status };
+        const response = await fetch(
+            `${CONFIG.API_URL}${endpoint}`,
+            options
+        );
+
+        let data = null;
+
+        try {
+            data = await response.json();
+        } catch (error) {
+            data = null;
+        }
+
+        const result =
+            data && typeof data === "object" && !Array.isArray(data)
+                ? { ...data }
+                : { data };
+
+        result.ok = response.ok;
+        result.status = response.status;
+
+        return result;
     } catch (error) {
-        console.error('API Error:', error);
-        return { ok: false, error: error.message };
+        console.error("API Error:", error);
+
+        return {
+            ok: false,
+            status: 0,
+            error: error.message || "Erreur de connexion au serveur"
+        };
     }
 }
+      
 
 // Copier dans le presse-papiers
 function copyToClipboard(text) {
