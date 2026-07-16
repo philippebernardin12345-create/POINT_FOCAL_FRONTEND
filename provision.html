@@ -1,1 +1,279 @@
-ok
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>POINT FOCAL - Confirmation de provision</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 20px;
+            background: #0b0e11;
+            color: #eaecef;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 520px;
+            padding: 30px 24px;
+            background: #1e2329;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            margin: 0 0 15px;
+            color: #f0b90b;
+            font-size: 25px;
+            text-align: center;
+        }
+
+        .subtitle {
+            margin-bottom: 22px;
+            color: #b7bdc6;
+            font-size: 15px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .information {
+            margin-bottom: 22px;
+            padding: 16px;
+            background: rgba(240, 185, 11, 0.1);
+            border-left: 4px solid #f0b90b;
+            border-radius: 5px;
+            line-height: 1.6;
+        }
+
+        .information strong {
+            color: #f0b90b;
+        }
+
+        .confirmation-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 18px;
+            padding: 15px;
+            background: #0b0e11;
+            border: 1px solid #363c45;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .confirmation-box input {
+            width: 21px;
+            height: 21px;
+            margin: 1px 0 0;
+            accent-color: #f0b90b;
+            flex-shrink: 0;
+        }
+
+        .confirmation-box label {
+            color: #eaecef;
+            font-size: 14px;
+            line-height: 1.5;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #f0b90b;
+            color: #0b0e11;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .message {
+            display: none;
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message.error {
+            display: block;
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.35);
+        }
+
+        .message.success {
+            display: block;
+            color: #67e480;
+            background: rgba(103, 228, 128, 0.1);
+            border: 1px solid rgba(103, 228, 128, 0.35);
+        }
+
+        .notice {
+            margin-top: 20px;
+            color: #848e9c;
+            font-size: 12px;
+            line-height: 1.5;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Confirmation de provision</h1>
+
+    <p class="subtitle">
+        Avant d’accéder à Victory Automatic, confirmez que vous
+        disposez des fonds nécessaires pour effectuer votre don.
+    </p>
+
+    <div class="information">
+        <strong>Important :</strong><br>
+
+        POINT FOCAL ne reçoit pas votre argent, ne contrôle pas votre
+        portefeuille et n’effectue aucune transaction à votre place.
+        Le don sera réalisé directement par vous, en dehors de
+        POINT FOCAL.
+    </div>
+
+    <div class="confirmation-box">
+        <input
+            id="provisionCheckbox"
+            type="checkbox"
+        >
+
+        <label for="provisionCheckbox">
+            Je confirme disposer des fonds nécessaires, y compris les
+            éventuels frais du réseau, pour effectuer le don demandé
+            après mon inscription sur Victory Automatic.
+        </label>
+    </div>
+
+    <button
+        id="confirmButton"
+        type="button"
+        disabled
+    >
+        Je confirme ma provision
+    </button>
+
+    <div id="message" class="message"></div>
+
+    <p class="notice">
+        Cette confirmation ne débite aucun fonds et ne constitue pas
+        une vérification automatique de votre portefeuille.
+    </p>
+</div>
+
+<script>
+    const provisionCheckbox =
+        document.getElementById("provisionCheckbox");
+
+    const confirmButton =
+        document.getElementById("confirmButton");
+
+    const messageBox =
+        document.getElementById("message");
+
+    function showMessage(text, type) {
+        messageBox.textContent = text;
+        messageBox.className = `message ${type}`;
+    }
+
+    function verifyAccess() {
+        const token = localStorage.getItem("token");
+        const savedUser = localStorage.getItem("user");
+
+        if (!token || !savedUser) {
+            window.location.replace("login.html");
+            return false;
+        }
+
+        try {
+            const user = JSON.parse(savedUser);
+
+            if (
+                user.link_active === true ||
+                user.linkActive === true ||
+                user.point_focal_link ||
+                user.pointFocalLink ||
+                user.public_link ||
+                user.publicLink
+            ) {
+                window.location.replace("dashboard.html");
+                return false;
+            }
+
+            return true;
+        } catch (error) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.replace("login.html");
+            return false;
+        }
+    }
+
+    provisionCheckbox.addEventListener("change", () => {
+        confirmButton.disabled = !provisionCheckbox.checked;
+    });
+
+    confirmButton.addEventListener("click", () => {
+        if (!provisionCheckbox.checked) {
+            showMessage(
+                "Vous devez confirmer votre provision pour continuer.",
+                "error"
+            );
+            return;
+        }
+
+        confirmButton.disabled = true;
+        confirmButton.textContent = "Confirmation...";
+
+        localStorage.setItem(
+            "point_focal_provision_confirmed",
+            "true"
+        );
+
+        localStorage.setItem(
+            "point_focal_provision_confirmed_at",
+            new Date().toISOString()
+        );
+
+        showMessage(
+            "Provision confirmée. Ouverture de Victory Automatic...",
+            "success"
+        );
+
+        setTimeout(() => {
+            window.location.replace("victory-link.html");
+        }, 1000);
+    });
+
+    verifyAccess();
+</script>
+
+</body>
+</html>
