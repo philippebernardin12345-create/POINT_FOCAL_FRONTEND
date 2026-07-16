@@ -204,20 +204,22 @@
             || null;
     }
 
-    🇨🇩🇨🇩🇨🇩🇨🇩🇨🇩🇨🇩function userHasPointFocalLink(user) {
-        if (!user) {
-            return false;
-        }
-
-        return (
-            user.link_active === true
-            || user.linkActive === true
-            || Boolean(user.point_focal_link)
-            || Boolean(user.pointFocalLink)
-            || Boolean(user.public_link)
-            || Boolean(user.publicLink)
-        );
+    function userHasPointFocalLink(user) {
+    if (!user) {
+        return false;
     }
+
+    return (
+        user.linkActive === true ||
+        user.link_active === true ||
+        Boolean(user.pointFocalLink) ||
+        Boolean(user.point_focal_link) ||
+        Boolean(user.publicLink) ||
+        Boolean(user.public_link) ||
+        Boolean(user.victoryPersonalLink) ||
+        Boolean(user.victory_personal_link)
+    );
+}
 
     function videoIsCompleted(videoResult) {
         const session =
