@@ -2,9 +2,12 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
 
-<title>Point Focal - Attribution du lien Victory</title>
+<title>Point Focal - Lien Victory Automatic</title>
 
 <style>
 * {
@@ -16,8 +19,8 @@
 body {
   min-height: 100vh;
   padding: 20px;
-  background: #0B0E11;
-  color: #EAECEF;
+  background: #0b0e11;
+  color: #eaecef;
   font-family: Arial, sans-serif;
   display: flex;
   align-items: center;
@@ -28,20 +31,20 @@ body {
   width: 100%;
   max-width: 540px;
   padding: 35px 25px;
-  background: #1E2329;
-  border: 1px solid #2B3139;
+  background: #1e2329;
+  border: 1px solid #2b3139;
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
 h2 {
-  color: #F0B90B;
+  color: #f0b90b;
   margin-bottom: 12px;
 }
 
 .subtitle {
-  color: #B7BDC6;
+  color: #b7bdc6;
   font-size: 14px;
   line-height: 1.6;
   margin-bottom: 22px;
@@ -50,16 +53,16 @@ h2 {
 .timer-box {
   padding: 15px;
   margin-bottom: 20px;
-  border-left: 4px solid #EA3943;
+  border-left: 4px solid #ea3943;
   border-radius: 6px;
   background: rgba(234, 57, 67, 0.1);
-  color: #EA3943;
+  color: #ea3943;
   font-weight: bold;
   line-height: 1.5;
 }
 
 .link-title {
-  color: #B7BDC6;
+  color: #b7bdc6;
   font-size: 14px;
   margin-bottom: 8px;
   text-align: left;
@@ -68,54 +71,30 @@ h2 {
 .link-box {
   padding: 16px;
   margin-bottom: 20px;
-  border: 1px dashed #474D57;
+  border: 1px dashed #474d57;
   border-radius: 6px;
-  background: #2B3139;
-  color: #F0B90B;
+  background: #2b3139;
+  color: #f0b90b;
   font-family: monospace;
   font-weight: bold;
   word-break: break-all;
   line-height: 1.5;
 }
 
-.provision-box {
+.information-box {
   padding: 16px;
   margin-bottom: 18px;
   background: rgba(240, 185, 11, 0.1);
-  border: 1px solid rgba(240, 185, 11, 0.45);
+  border: 1px solid rgba(240, 185, 11, 0.4);
   border-radius: 6px;
+  color: #eaecef;
+  font-size: 14px;
+  line-height: 1.6;
   text-align: left;
 }
 
-.provision-title {
-  color: #F0B90B;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.provision-text {
-  color: #EAECEF;
-  font-size: 14px;
-  line-height: 1.6;
-  margin-bottom: 14px;
-}
-
-.checkbox-line {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  color: #EAECEF;
-  font-size: 14px;
-  line-height: 1.5;
-  cursor: pointer;
-}
-
-.checkbox-line input {
-  width: 20px;
-  height: 20px;
-  margin-top: 1px;
-  accent-color: #F0B90B;
-  flex-shrink: 0;
+.information-box strong {
+  color: #f0b90b;
 }
 
 .btn {
@@ -140,20 +119,20 @@ h2 {
 }
 
 .btn-victory {
-  background: #02C076;
-  color: #FFFFFF;
+  background: #02c076;
+  color: #ffffff;
 }
 
 .btn-next {
-  background: #F0B90B;
-  color: #000000;
   display: none;
+  background: #f0b90b;
+  color: #000000;
 }
 
 .btn-reactivate {
   display: none;
-  background: #EA3943;
-  color: #FFFFFF;
+  background: #ea3943;
+  color: #ffffff;
 }
 
 .status-box {
@@ -169,22 +148,22 @@ h2 {
 .status-success {
   display: block;
   background: rgba(2, 192, 118, 0.1);
-  border-left: 4px solid #02C076;
-  color: #02C076;
+  border-left: 4px solid #02c076;
+  color: #02c076;
 }
 
 .status-error {
   display: block;
   background: rgba(234, 57, 67, 0.1);
-  border-left: 4px solid #EA3943;
-  color: #EA3943;
+  border-left: 4px solid #ea3943;
+  color: #ea3943;
 }
 
 .status-info {
   display: block;
   background: rgba(240, 185, 11, 0.1);
-  border-left: 4px solid #F0B90B;
-  color: #F0B90B;
+  border-left: 4px solid #f0b90b;
+  color: #f0b90b;
 }
 </style>
 </head>
@@ -192,13 +171,12 @@ h2 {
 <body>
 
 <div class="card">
-
   <h2>Victory Automatic</h2>
 
   <p class="subtitle">
-    Point Focal vous attribue le lien Victory Automatic correspondant à votre
-    parrain. Avant d’ouvrir Victory Automatic, confirmez que vous pouvez
-    effectuer immédiatement le don demandé.
+    Point Focal vous attribue automatiquement le lien Victory Automatic
+    de votre parrain réel. En l’absence de sponsor attitré, le système
+    utilise l’attribution FIFO puis la racine en dernier recours.
   </p>
 
   <div id="timerBox" class="timer-box">
@@ -213,41 +191,25 @@ h2 {
     Attribution du lien en cours...
   </div>
 
-  <div id="provisionBox" class="provision-box">
-    <div class="provision-title">
-      Confirmation obligatoire avant de continuer
-    </div>
+  <div class="information-box">
+    <strong>Étapes à suivre :</strong><br><br>
 
-    <p class="provision-text">
-      Pour éviter de commencer le parcours sans pouvoir le terminer, assurez-vous
-      de disposer immédiatement d’au moins
-      <strong>2,03 USDT BEP-20</strong>, ainsi que d’une petite quantité de
-      <strong>BNB</strong> pour les frais du réseau.
-    </p>
-
-    <label class="checkbox-line" for="provisionCheckbox">
-      <input
-        type="checkbox"
-        id="provisionCheckbox"
-      >
-
-      <span>
-        Je confirme disposer immédiatement d’au moins
-        <strong>2,03 USDT BEP-20</strong> et des frais BNB nécessaires
-        pour effectuer la transaction.
-      </span>
-    </label>
+    1. Ouvrez Victory Automatic avec le bouton ci-dessous.<br>
+    2. Créez votre compte avec le lien attribué.<br>
+    3. Effectuez votre don directement sur la blockchain.<br>
+    4. Revenez ensuite sur Point Focal.<br>
+    5. Cliquez sur « J’ai créé mon compte et effectué mon don ».
   </div>
 
   <a
     id="victoryBtn"
     href="#"
     target="_blank"
-    rel="noopener"
+    rel="noopener noreferrer"
     class="btn btn-victory locked"
     aria-disabled="true"
   >
-    🔒 Confirmez d’abord votre provision
+    Chargement du lien...
   </a>
 
   <button
@@ -255,7 +217,7 @@ h2 {
     type="button"
     class="btn btn-next"
   >
-    J’ai créé mon compte Victory Automatic
+    J’ai créé mon compte et effectué mon don
   </button>
 
   <button
@@ -267,7 +229,6 @@ h2 {
   </button>
 
   <div id="statusBox" class="status-box"></div>
-
 </div>
 
 <script>
@@ -284,10 +245,25 @@ let countdownInterval = null;
 let assignedVictoryLink = null;
 let accountExpired = false;
 
-function showStatus(message, type = "error") {
-  const statusBox =
-    document.getElementById("statusBox");
+const timerBox =
+  document.getElementById("timerBox");
 
+const linkDisplay =
+  document.getElementById("linkDisplay");
+
+const victoryBtn =
+  document.getElementById("victoryBtn");
+
+const nextBtn =
+  document.getElementById("nextBtn");
+
+const reactivateBtn =
+  document.getElementById("reactivateBtn");
+
+const statusBox =
+  document.getElementById("statusBox");
+
+function showStatus(message, type = "error") {
   if (type === "success") {
     statusBox.className =
       "status-box status-success";
@@ -299,15 +275,63 @@ function showStatus(message, type = "error") {
       "status-box status-error";
   }
 
-  statusBox.innerText = message;
+  statusBox.textContent = message;
 }
 
 function clearStatus() {
-  const statusBox =
-    document.getElementById("statusBox");
-
   statusBox.className = "status-box";
-  statusBox.innerText = "";
+  statusBox.textContent = "";
+}
+
+function getToken() {
+  return localStorage.getItem("token");
+}
+
+function verifyAccess() {
+  const token = getToken();
+
+  const savedUser =
+    localStorage.getItem("user");
+
+  if (!token || !savedUser) {
+    window.location.replace("login.html");
+    return false;
+  }
+
+  const provisionConfirmed =
+    localStorage.getItem(
+      "point_focal_provision_confirmed"
+    ) === "true";
+
+  if (!provisionConfirmed) {
+    window.location.replace("provision.html");
+    return false;
+  }
+
+  try {
+    const user = JSON.parse(savedUser);
+
+    const hasPointFocalLink =
+      user.link_active === true ||
+      user.linkActive === true ||
+      Boolean(user.point_focal_link) ||
+      Boolean(user.pointFocalLink) ||
+      Boolean(user.public_link) ||
+      Boolean(user.publicLink);
+
+    if (hasPointFocalLink) {
+      window.location.replace("dashboard.html");
+      return false;
+    }
+  } catch (error) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    window.location.replace("login.html");
+    return false;
+  }
+
+  return true;
 }
 
 function formatRemainingTime(milliseconds) {
@@ -335,25 +359,24 @@ function formatRemainingTime(milliseconds) {
   };
 }
 
-function lockVictoryButton() {
-  const victoryBtn =
-    document.getElementById("victoryBtn");
-
+function lockVictoryButton(message) {
+  victoryBtn.href = "#";
   victoryBtn.classList.add("locked");
+
   victoryBtn.setAttribute(
     "aria-disabled",
     "true"
   );
 
-  victoryBtn.innerText =
-    "🔒 Confirmez d’abord votre provision";
+  victoryBtn.textContent =
+    message || "Lien indisponible";
 }
 
 function unlockVictoryButton() {
-  const victoryBtn =
-    document.getElementById("victoryBtn");
-
-  if (!assignedVictoryLink || accountExpired) {
+  if (
+    !assignedVictoryLink ||
+    accountExpired
+  ) {
     lockVictoryButton();
     return;
   }
@@ -362,71 +385,25 @@ function unlockVictoryButton() {
     assignedVictoryLink;
 
   victoryBtn.classList.remove("locked");
+
   victoryBtn.setAttribute(
     "aria-disabled",
     "false"
   );
 
-  victoryBtn.innerText =
+  victoryBtn.textContent =
     "Créer mon compte Victory Automatic";
-
-  showStatus(
-    "Provision confirmée. Vous pouvez maintenant ouvrir Victory Automatic et effectuer votre inscription.",
-    "success"
-  );
-}
-
-function updateProvisionState() {
-  const checkbox =
-    document.getElementById(
-      "provisionCheckbox"
-    );
-
-  if (
-    checkbox.checked &&
-    assignedVictoryLink &&
-    !accountExpired
-  ) {
-    localStorage.setItem(
-      "victoryProvisionConfirmed",
-      "true"
-    );
-
-    unlockVictoryButton();
-  } else {
-    localStorage.removeItem(
-      "victoryProvisionConfirmed"
-    );
-
-    lockVictoryButton();
-  }
 }
 
 function showExpiredState() {
   accountExpired = true;
+  assignedVictoryLink = null;
 
-  const timerBox =
-    document.getElementById("timerBox");
-
-  const provisionBox =
-    document.getElementById("provisionBox");
-
-  const victoryBtn =
-    document.getElementById("victoryBtn");
-
-  const nextBtn =
-    document.getElementById("nextBtn");
-
-  const reactivateBtn =
-    document.getElementById(
-      "reactivateBtn"
-    );
-
-  timerBox.innerText =
+  timerBox.textContent =
     "⛔ Délai expiré. Votre place a été libérée.";
 
-  provisionBox.style.display =
-    "none";
+  linkDisplay.textContent =
+    "Lien temporairement indisponible.";
 
   victoryBtn.style.display =
     "none";
@@ -444,9 +421,6 @@ function showExpiredState() {
 }
 
 function startCountdown(expiresAt) {
-  const timerBox =
-    document.getElementById("timerBox");
-
   const expirationDate =
     new Date(expiresAt);
 
@@ -455,7 +429,7 @@ function startCountdown(expiresAt) {
       expirationDate.getTime()
     )
   ) {
-    timerBox.innerText =
+    timerBox.textContent =
       "Date d’expiration invalide.";
 
     showStatus(
@@ -486,7 +460,7 @@ function startCountdown(expiresAt) {
     const time =
       formatRemainingTime(remaining);
 
-    timerBox.innerText =
+    timerBox.textContent =
       `⏳ Temps restant : ${time.hours}h ${time.minutes}m ${time.seconds}s`;
   }
 
@@ -509,48 +483,41 @@ function isExpirationMessage(message) {
   );
 }
 
+function extractAssignedLink(data) {
+  return (
+    data?.url ||
+    data?.victoryLink ||
+    data?.victory_link ||
+    data?.data?.url ||
+    data?.data?.victoryLink ||
+    data?.data?.victory_link ||
+    null
+  );
+}
+
+function extractExpiration(data) {
+  return (
+    data?.expiresAt ||
+    data?.expires_at ||
+    data?.data?.expiresAt ||
+    data?.data?.expires_at ||
+    null
+  );
+}
+
 async function assignVictoryLink() {
-  const token =
-    localStorage.getItem("token");
-
-  const linkDisplay =
-    document.getElementById(
-      "linkDisplay"
-    );
-
-  const victoryBtn =
-    document.getElementById(
-      "victoryBtn"
-    );
-
-  const nextBtn =
-    document.getElementById(
-      "nextBtn"
-    );
-
-  const reactivateBtn =
-    document.getElementById(
-      "reactivateBtn"
-    );
-
-  const provisionBox =
-    document.getElementById(
-      "provisionBox"
-    );
-
-  if (!token) {
-    window.location.href =
-      "login.html";
-
+  if (!verifyAccess()) {
     return;
   }
+
+  const token = getToken();
 
   clearStatus();
 
   accountExpired = false;
   assignedVictoryLink = null;
 
-  linkDisplay.innerText =
+  linkDisplay.textContent =
     "Attribution du lien Victory Automatic en cours...";
 
   victoryBtn.style.display =
@@ -562,22 +529,21 @@ async function assignVictoryLink() {
   reactivateBtn.style.display =
     "none";
 
-  provisionBox.style.display =
-    "block";
-
-  lockVictoryButton();
+  lockVictoryButton(
+    "Attribution du lien..."
+  );
 
   try {
     const response = await fetch(
       ASSIGN_URL,
       {
         method: "POST",
-
         headers: {
-          "Authorization":
+          Authorization:
             `Bearer ${token}`,
-
           "Content-Type":
+            "application/json",
+          Accept:
             "application/json"
         }
       }
@@ -588,15 +554,24 @@ async function assignVictoryLink() {
         .json()
         .catch(() => ({}));
 
+    if (
+      response.status === 401 ||
+      response.status === 403
+    ) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      window.location.replace("login.html");
+      return;
+    }
+
     if (!response.ok) {
       const message =
         data.message ||
+        data.error ||
         "Impossible d’attribuer le lien Victory Automatic.";
 
       if (isExpirationMessage(message)) {
-        linkDisplay.innerText =
-          "Lien temporairement indisponible.";
-
         showExpiredState();
         return;
       }
@@ -604,19 +579,26 @@ async function assignVictoryLink() {
       throw new Error(message);
     }
 
-    if (!data.url) {
+    assignedVictoryLink =
+      extractAssignedLink(data);
+
+    if (!assignedVictoryLink) {
       throw new Error(
         "Le serveur n’a pas renvoyé le lien Victory Automatic."
       );
     }
 
-    assignedVictoryLink =
-      data.url;
+    if (
+      !assignedVictoryLink.startsWith(
+        "https://victoryautomatic.com/user/register/"
+      )
+    ) {
+      throw new Error(
+        "Le serveur a renvoyé un lien Victory Automatic invalide."
+      );
+    }
 
-    linkDisplay.innerText =
-      assignedVictoryLink;
-
-    victoryBtn.href =
+    linkDisplay.textContent =
       assignedVictoryLink;
 
     localStorage.setItem(
@@ -624,50 +606,41 @@ async function assignVictoryLink() {
       assignedVictoryLink
     );
 
-    if (data.expiresAt) {
+    const expiresAt =
+      extractExpiration(data);
+
+    if (expiresAt) {
       localStorage.setItem(
         "victoryExpiresAt",
-        data.expiresAt
+        expiresAt
       );
 
-      startCountdown(
-        data.expiresAt
-      );
+      startCountdown(expiresAt);
     } else {
-      document
-        .getElementById("timerBox")
-        .innerText =
-        "Le serveur n’a pas renvoyé le délai de 24 heures.";
+      timerBox.textContent =
+        "Délai de 24 heures actif.";
     }
 
-    const provisionConfirmed =
-      localStorage.getItem(
-        "victoryProvisionConfirmed"
-      ) === "true";
+    unlockVictoryButton();
 
-    document
-      .getElementById(
-        "provisionCheckbox"
-      )
-      .checked =
-      provisionConfirmed;
-
-    updateProvisionState();
-
+    showStatus(
+      "Lien attribué avec succès. Ouvrez Victory Automatic pour créer votre compte.",
+      "success"
+    );
   } catch (error) {
     console.error(
       "Erreur attribution Victory :",
       error
     );
 
-    linkDisplay.innerText =
+    assignedVictoryLink = null;
+
+    linkDisplay.textContent =
       "Erreur d’attribution du lien.";
 
-    victoryBtn.style.display =
-      "none";
-
-    provisionBox.style.display =
-      "none";
+    lockVictoryButton(
+      "Lien indisponible"
+    );
 
     showStatus(
       error.message ||
@@ -678,37 +651,29 @@ async function assignVictoryLink() {
 }
 
 async function reactivateAccount() {
-  const token =
-    localStorage.getItem("token");
-
-  const reactivateBtn =
-    document.getElementById(
-      "reactivateBtn"
-    );
+  const token = getToken();
 
   if (!token) {
-    window.location.href =
-      "login.html";
-
+    window.location.replace("login.html");
     return;
   }
 
+  reactivateBtn.disabled = true;
+
+  reactivateBtn.textContent =
+    "Réactivation en cours...";
+
   try {
-    reactivateBtn.disabled = true;
-
-    reactivateBtn.innerText =
-      "Réactivation en cours...";
-
     const response = await fetch(
       REACTIVATE_URL,
       {
         method: "POST",
-
         headers: {
-          "Authorization":
+          Authorization:
             `Bearer ${token}`,
-
           "Content-Type":
+            "application/json",
+          Accept:
             "application/json"
         }
       }
@@ -722,23 +687,22 @@ async function reactivateAccount() {
     if (!response.ok) {
       throw new Error(
         data.message ||
+        data.error ||
         "Réactivation impossible."
       );
     }
 
     localStorage.removeItem(
-      "victoryProvisionConfirmed"
+      "victoryAssignedLink"
     );
 
     localStorage.removeItem(
       "victoryExpiresAt"
     );
 
-    document
-      .getElementById(
-        "provisionCheckbox"
-      )
-      .checked = false;
+    localStorage.removeItem(
+      "victoryAccountOpeningStarted"
+    );
 
     showStatus(
       data.message ||
@@ -746,96 +710,100 @@ async function reactivateAccount() {
       "success"
     );
 
-    setTimeout(() => {
-      assignVictoryLink();
-    }, 1000);
-
+    setTimeout(
+      assignVictoryLink,
+      800
+    );
   } catch (error) {
     showStatus(
       error.message ||
       "Erreur pendant la réactivation.",
       "error"
     );
-
   } finally {
     reactivateBtn.disabled = false;
 
-    reactivateBtn.innerText =
+    reactivateBtn.textContent =
       "🔄 Réactiver mon compte pour 24 heures";
   }
 }
 
-document
-  .getElementById(
-    "provisionCheckbox"
-  )
-  .addEventListener(
-    "change",
-    updateProvisionState
-  );
-
-document
-  .getElementById(
-    "victoryBtn"
-  )
-  .addEventListener(
-    "click",
-    (event) => {
-      const checkbox =
-        document.getElementById(
-          "provisionCheckbox"
-        );
-
-      if (
-        !checkbox.checked ||
-        !assignedVictoryLink ||
-        accountExpired
-      ) {
-        event.preventDefault();
-
-        showStatus(
-          "Vous devez confirmer votre provision avant d’ouvrir Victory Automatic.",
-          "error"
-        );
-
-        return;
-      }
-
-      localStorage.setItem(
-        "victoryAccountOpeningStarted",
-        "true"
-      );
-
-      document
-        .getElementById("nextBtn")
-        .style.display =
-        "block";
+victoryBtn.addEventListener(
+  "click",
+  (event) => {
+    if (
+      !assignedVictoryLink ||
+      accountExpired
+    ) {
+      event.preventDefault();
 
       showStatus(
-        "Victory Automatic a été ouvert. Après votre inscription et votre don, revenez sur Point Focal pour continuer.",
-        "info"
+        "Le lien Victory Automatic n’est pas disponible.",
+        "error"
       );
-    }
-  );
 
-document
-  .getElementById("nextBtn")
-  .addEventListener(
-    "click",
-    () => {
-      window.location.href =
-        "payment.html";
+      return;
     }
-  );
 
-document
-  .getElementById(
-    "reactivateBtn"
-  )
-  .addEventListener(
-    "click",
-    reactivateAccount
-  );
+    localStorage.setItem(
+      "victoryAccountOpeningStarted",
+      "true"
+    );
+
+    nextBtn.style.display =
+      "block";
+
+    showStatus(
+      "Victory Automatic a été ouvert. Après votre inscription et votre don, revenez sur cette page puis continuez.",
+      "info"
+    );
+  }
+);
+
+nextBtn.addEventListener(
+  "click",
+  () => {
+    const openingStarted =
+      localStorage.getItem(
+        "victoryAccountOpeningStarted"
+      ) === "true";
+
+    if (!openingStarted) {
+      showStatus(
+        "Vous devez d’abord ouvrir Victory Automatic.",
+        "error"
+      );
+
+      return;
+    }
+
+    window.location.href =
+      "payment.html";
+  }
+);
+
+reactivateBtn.addEventListener(
+  "click",
+  reactivateAccount
+);
+
+window.addEventListener(
+  "pageshow",
+  () => {
+    const openingStarted =
+      localStorage.getItem(
+        "victoryAccountOpeningStarted"
+      ) === "true";
+
+    if (
+      openingStarted &&
+      !accountExpired
+    ) {
+      nextBtn.style.display =
+        "block";
+    }
+  }
+);
 
 window.addEventListener(
   "DOMContentLoaded",
