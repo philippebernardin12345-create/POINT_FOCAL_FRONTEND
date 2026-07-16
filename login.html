@@ -1,228 +1,449 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>POINT FOCAL - Connexion</title>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<style>
-body {
-    background:#121212;
-    color:white;
-    font-family:Arial;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-    margin:0;
-}
+    <title>POINT FOCAL - Connexion</title>
 
-.container {
-    background:#1e1e1e;
-    padding:25px;
-    border-radius:10px;
-    width:100%;
-    max-width:400px;
-}
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-h2 {
-    color:#ffcc00;
-    text-align:center;
-}
+        body {
+            background: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
 
-input {
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    background:#0d0d0d;
-    border:1px solid #333;
-    color:white;
-    box-sizing:border-box;
-}
+        .container {
+            background: #1e1e1e;
+            padding: 25px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        }
 
-button {
-    width:100%;
-    padding:12px;
-    margin-top:15px;
-    background:#ffcc00;
-    border:none;
-    font-weight:bold;
-    cursor:pointer;
-}
+        h2 {
+            color: #ffcc00;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 22px;
+        }
 
-button:disabled {
-    opacity:0.6;
-    cursor:not-allowed;
-}
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background: #0d0d0d;
+            border: 1px solid #333333;
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 15px;
+        }
 
-.box {
-    display:none;
-    margin-top:10px;
-    padding:10px;
-}
+        input:focus {
+            outline: none;
+            border-color: #ffcc00;
+        }
 
-#error { color:red; }
-#success { color:green; }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: #ffcc00;
+            border: none;
+            border-radius: 4px;
+            color: #121212;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-.link {
-    text-align:center;
-    margin-top:10px;
-    font-size:14px;
-    color:#aaa;
-    cursor:pointer;
-}
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
 
-.link span {
-    color:#ffcc00;
-}
-</style>
+        .box {
+            display: none;
+            margin-top: 15px;
+            padding: 11px;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        #error {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.35);
+        }
+
+        #success {
+            color: #5ee07a;
+            background: rgba(94, 224, 122, 0.1);
+            border: 1px solid rgba(94, 224, 122, 0.35);
+        }
+
+        .link {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 14px;
+            color: #aaaaaa;
+        }
+
+        .link span {
+            color: #ffcc00;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="container">
-
     <h2>Connexion Point Focal</h2>
 
     <form id="loginForm">
+        <input
+            id="email"
+            type="email"
+            placeholder="Email"
+            autocomplete="email"
+            required
+        >
 
-        <input id="email" type="email" placeholder="Email" required>
+        <input
+            id="password"
+            type="password"
+            placeholder="Mot de passe"
+            autocomplete="current-password"
+            required
+        >
 
-        <input id="password" type="password" placeholder="Mot de passe" required>
-
-        <button id="loginBtn" type="submit">Se connecter</button>
+        <button id="loginBtn" type="submit">
+            Se connecter
+        </button>
 
         <div id="error" class="box"></div>
         <div id="success" class="box"></div>
-
     </form>
 
-    <div class="link" onclick="goRegister()">
-        Pas de compte ? <span>Inscrivez-vous</span>
+    <div class="link">
+        Pas de compte ?
+        <span onclick="goRegister()">Inscrivez-vous</span>
     </div>
-
 </div>
 
 <script>
-const API_URL = "https://point-focal.onrender.com/api/auth";
+    const BASE_API_URL = "https://point-focal.onrender.com/api";
 
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
+    const loginForm = document.getElementById("loginForm");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const loginBtn = document.getElementById("loginBtn");
     const errorBox = document.getElementById("error");
     const successBox = document.getElementById("success");
-    const loginBtn = document.getElementById("loginBtn");
 
-    errorBox.style.display = "none";
-    successBox.style.display = "none";
+    function showError(message) {
+        successBox.style.display = "none";
+        successBox.textContent = "";
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-
-    if (!email || !password) {
-        errorBox.innerText = "Email et mot de passe obligatoires.";
+        errorBox.textContent = message;
         errorBox.style.display = "block";
-        return;
     }
 
-    loginBtn.disabled = true;
-    loginBtn.innerText = "Connexion...";
+    function showSuccess(message) {
+        errorBox.style.display = "none";
+        errorBox.textContent = "";
 
-    try {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-
-        const res = await fetch(`${API_URL}/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email,
-                password
-            })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            errorBox.innerText = data.message || data.error || "Erreur de connexion.";
-            errorBox.style.display = "block";
-            return;
-        }
-
-        const token = data.token || data.data?.token;
-        const user = data.user || data.data?.user;
-
-        if (!token || !user) {
-            errorBox.innerText = "Réponse de connexion invalide.";
-            errorBox.style.display = "block";
-            return;
-        }
-
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
-
-        successBox.innerText = "Connexion réussie...";
+        successBox.textContent = message;
         successBox.style.display = "block";
+    }
 
-       
-setTimeout(async () => {
-    try {
-        if (user.link_active === true) {
+    function clearMessages() {
+        errorBox.style.display = "none";
+        successBox.style.display = "none";
+
+        errorBox.textContent = "";
+        successBox.textContent = "";
+    }
+
+    function setLoading(isLoading) {
+        loginBtn.disabled = isLoading;
+        loginBtn.textContent = isLoading
+            ? "Connexion..."
+            : "Se connecter";
+    }
+
+    async function readJsonSafely(response) {
+        try {
+            return await response.json();
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function getUserFromResponse(data) {
+        return data?.user
+            || data?.data?.user
+            || data?.data
+            || null;
+    }
+
+    function userHasPointFocalLink(user) {
+        if (!user) {
+            return false;
+        }
+
+        return (
+            user.link_active === true
+            || user.linkActive === true
+            || Boolean(user.point_focal_link)
+            || Boolean(user.pointFocalLink)
+            || Boolean(user.public_link)
+            || Boolean(user.publicLink)
+        );
+    }
+
+    function videoIsCompleted(videoResult) {
+        const session =
+            videoResult?.data
+            || videoResult?.session
+            || videoResult;
+
+        return (
+            session?.isCompleted === true
+            || session?.is_completed === true
+            || session?.completed === true
+            || Number(session?.watchedSeconds) >= 200
+            || Number(session?.watched_seconds) >= 200
+        );
+    }
+
+    async function fetchCurrentUser(token, fallbackUser) {
+        try {
+            const response = await fetch(
+                `${BASE_API_URL}/auth/me`,
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json"
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                console.error(
+                    "Impossible de récupérer /auth/me :",
+                    response.status,
+                    await response.text()
+                );
+
+                return fallbackUser;
+            }
+
+            const data = await readJsonSafely(response);
+            const currentUser = getUserFromResponse(data);
+
+            return currentUser || fallbackUser;
+        } catch (error) {
+            console.error(
+                "Erreur pendant la récupération du profil :",
+                error
+            );
+
+            return fallbackUser;
+        }
+    }
+
+    async function redirectUser(token, loginUser) {
+        /*
+         * Ordre obligatoire :
+         *
+         * 1. Lien Point Focal déjà créé :
+         *    dashboard.html
+         *
+         * 2. Vidéo déjà terminée :
+         *    provision.html
+         *
+         * 3. Vidéo non terminée :
+         *    popup-youtube.html
+         */
+
+        const currentUser = await fetchCurrentUser(
+            token,
+            loginUser
+        );
+
+        localStorage.setItem(
+            "user",
+            JSON.stringify(currentUser)
+        );
+
+        if (userHasPointFocalLink(currentUser)) {
             window.location.replace("dashboard.html");
             return;
         }
 
-        const videoRes = await fetch(
-            "https://point-focal.onrender.com/api/video/session",
-            {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: "application/json"
+        try {
+            const videoResponse = await fetch(
+                `${BASE_API_URL}/video/session`,
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json"
+                    }
                 }
-            }
-        );
+            );
 
-        if (!videoRes.ok) {
+            if (!videoResponse.ok) {
+                console.error(
+                    "Erreur de vérification vidéo :",
+                    videoResponse.status,
+                    await videoResponse.text()
+                );
+
+                window.location.replace(
+                    "popup-youtube.html"
+                );
+                return;
+            }
+
+            const videoResult = await readJsonSafely(
+                videoResponse
+            );
+
+            if (videoIsCompleted(videoResult)) {
+                window.location.replace("provision.html");
+                return;
+            }
+
+            window.location.replace("popup-youtube.html");
+        } catch (error) {
             console.error(
-                "Erreur vérification vidéo :",
-                videoRes.status,
-                await videoRes.text()
+                "Erreur de redirection :",
+                error
             );
 
             window.location.replace("popup-youtube.html");
-            return;
         }
+    }
 
-        const videoResult = await videoRes.json();
-        const session = videoResult.data;
+    loginForm.addEventListener(
+        "submit",
+        async function (event) {
+            event.preventDefault();
 
-        if (session && session.isCompleted === true) {
-            window.location.replace("victory-link.html");
-        } else {
-            window.location.replace("popup-youtube.html");
+            clearMessages();
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                showError(
+                    "Email et mot de passe obligatoires."
+                );
+                return;
+            }
+
+            setLoading(true);
+
+            try {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+
+                const response = await fetch(
+                    `${BASE_API_URL}/auth/login`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Accept: "application/json"
+                        },
+                        body: JSON.stringify({
+                            email,
+                            password
+                        })
+                    }
+                );
+
+                const data = await readJsonSafely(response);
+
+                if (!response.ok) {
+                    showError(
+                        data?.message
+                        || data?.error
+                        || "Email ou mot de passe incorrect."
+                    );
+                    return;
+                }
+
+                const token =
+                    data?.token
+                    || data?.data?.token;
+
+                const user =
+                    data?.user
+                    || data?.data?.user;
+
+                if (!token || !user) {
+                    console.error(
+                        "Réponse complète reçue :",
+                        data
+                    );
+
+                    showError(
+                        "Réponse de connexion invalide."
+                    );
+                    return;
+                }
+
+                localStorage.setItem("token", token);
+                localStorage.setItem(
+                    "user",
+                    JSON.stringify(user)
+                );
+
+                showSuccess(
+                    "Connexion réussie. Vérification de votre parcours..."
+                );
+
+                await redirectUser(token, user);
+            } catch (error) {
+                console.error(
+                    "Erreur de connexion :",
+                    error
+                );
+
+                showError(
+                    "Erreur réseau : " + error.message
+                );
+            } finally {
+                setLoading(false);
+            }
         }
-    } catch (error) {
-        console.error("Erreur de redirection :", error);
-        window.location.replace("popup-youtube.html");
-    }
-}, 800);
-    } catch (err) {
-        errorBox.innerText = "Erreur réseau : " + err.message;
-        errorBox.style.display = "block";
-    } finally {
-        loginBtn.disabled = false;
-        loginBtn.innerText = "Se connecter";
-    }
-});
+    );
 
-function goRegister() {
-    window.location.href = "register.html";
-}
+    function goRegister() {
+        window.location.href = "register.html";
+    }
 </script>
 
 </body>
 </html>
-
