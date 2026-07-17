@@ -287,13 +287,15 @@
          *    popup-youtube.html
          */
 
-        const currentUser = await fetchCurrentUser(
-            token,
-            loginUser
-        );
+       const currentUser = await fetchCurrentUser(
+    token,
+    loginUser
+);
 
-        localStorage.setItem(
-            "user",
+alert(JSON.stringify(currentUser, null, 2));
+
+localStorage.setItem(
+    "user",
             JSON.stringify(currentUser)
         );
 
