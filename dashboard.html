@@ -1155,7 +1155,14 @@ function getPointFocalLink(currentUser) {
             window.location.replace("login.html");
         }
     );
-
+document
+    .getElementById("victoryWorldStatus")
+    .addEventListener(
+        "click",
+        function () {
+            window.location.href = "victory-world.html";
+        }
+    );
     renderDashboard();
 </script>
 
