@@ -1,130 +1,413 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Point Focal - Victory World</title>
+    <meta charset="UTF-8">
 
-<style>
-body {
-  background:#0B0E11;
-  color:#EAECEF;
-  font-family:Arial, sans-serif;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:100vh;
-  margin:0;
-  padding:20px;
-}
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-.card {
-  background:#1E2329;
-  padding:35px 25px;
-  border-radius:10px;
-  max-width:550px;
-  width:100%;
-  text-align:center;
-}
+    <title>Point Focal - Victory World</title>
 
-h2 {
-  color:#F0B90B;
-  margin-bottom:15px;
-}
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-p {
-  color:#B7BDC6;
-  line-height:1.5;
-}
+        body {
+            background: #0b0e11;
+            color: #eaecef;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
 
-.link-box {
-  background:#2B3139;
-  color:#F0B90B;
-  padding:16px;
-  border-radius:6px;
-  margin:20px 0;
-  word-break:break-all;
-  font-weight:bold;
-}
+        .card {
+            background: #1e2329;
+            padding: 35px 25px;
+            border-radius: 10px;
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+        }
 
-.btn {
-  display:block;
-  width:100%;
-  background:#02C076;
-  color:white;
-  padding:15px;
-  border-radius:6px;
-  text-decoration:none;
-  font-weight:bold;
-  margin-top:15px;
-}
+        h2 {
+            color: #f0b90b;
+            margin: 0 0 15px;
+        }
 
-.btn-secondary {
-  background:#F0B90B;
-  color:#000;
-}
-</style>
+        p {
+            color: #b7bdc6;
+            line-height: 1.5;
+        }
+
+        .info-box {
+            background: rgba(240, 185, 11, 0.12);
+            border-left: 4px solid #f0b90b;
+            padding: 14px;
+            margin: 20px 0;
+            text-align: left;
+            border-radius: 6px;
+        }
+
+        .link-box {
+            background: #2b3139;
+            color: #f0b90b;
+            padding: 16px;
+            border-radius: 6px;
+            margin: 20px 0;
+            word-break: break-all;
+            font-weight: bold;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-top: 24px;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #eaecef;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 6px;
+            border: 1px solid #474d57;
+            background: #0b0e11;
+            color: #eaecef;
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #f0b90b;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 15px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        .btn-green {
+            background: #02c076;
+            color: #ffffff;
+        }
+
+        .btn-yellow {
+            background: #f0b90b;
+            color: #000000;
+        }
+
+        .btn-secondary {
+            background: #2b3139;
+            color: #eaecef;
+            border: 1px solid #474d57;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .message {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            line-height: 1.4;
+        }
+
+        .message-success {
+            display: block;
+            background: rgba(2, 192, 118, 0.15);
+            color: #58d6a5;
+            border: 1px solid rgba(2, 192, 118, 0.4);
+        }
+
+        .message-error {
+            display: block;
+            background: rgba(246, 70, 93, 0.15);
+            color: #ff7588;
+            border: 1px solid rgba(246, 70, 93, 0.4);
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="card">
-  <h2>🌍 Victory World</h2>
+    <h2>🌍 Victory World</h2>
 
-  <p>
-    Vous avez généré votre lien Point Focal.  
-    L’étape suivante est maintenant de rejoindre Victory World.
-  </p>
+    <p>
+        Rejoignez Victory World avec le lien attribué par Point Focal.
+        Après votre inscription, revenez sur cette page pour enregistrer
+        votre propre lien Victory World.
+    </p>
 
-  <div id="linkDisplay" class="link-box">
-    Chargement du lien Victory World...
-  </div>
+    <div class="info-box">
+        <strong>Fonctionnement Follow Me :</strong>
 
-  <a id="victoryWorldBtn" href="#" target="_blank" class="btn">
-    Rejoindre Victory World
-  </a>
+        <p>
+            Votre propre lien sera enregistré dans Point Focal.
+            Il pourra ensuite être attribué à vos futurs filleuls.
+        </p>
+    </div>
 
-  <a href="dashboard.html" class="btn btn-secondary">
-    Continuer vers mon tableau de bord
-  </a>
+    <div
+        id="linkDisplay"
+        class="link-box"
+    >
+        Chargement du lien Victory World...
+    </div>
+
+    <a
+        id="victoryWorldBtn"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-green"
+    >
+        Rejoindre Victory World
+    </a>
+
+    <label for="personalVictoryWorldLink">
+        Mon lien personnel Victory World
+    </label>
+
+    <input
+        id="personalVictoryWorldLink"
+        type="url"
+        placeholder="Exemple : https://victoryworld.club/monidentifiant"
+        autocomplete="off"
+    >
+
+    <button
+        id="saveVictoryWorldLinkBtn"
+        class="btn btn-yellow"
+        type="button"
+    >
+        Enregistrer mon lien Victory World
+    </button>
+
+    <div
+        id="messageBox"
+        class="message"
+    ></div>
+
+    <a
+        href="dashboard.html"
+        class="btn btn-secondary"
+    >
+        Retour au tableau de bord
+    </a>
 </div>
 
 <script>
-window.onload = async () => {
-  const token = localStorage.getItem("token");
+    const API_URL =
+        "https://point-focal.onrender.com/api";
 
-  if (!token) {
-    window.location.href = "register.html";
-    return;
-  }
+    const ROOT_VICTORY_WORLD_LINK =
+        "https://victoryworld.club/longa01";
 
-  try {
-    const res = await fetch("https://point-focal.onrender.com/api/victory-world", {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    });
+    const token =
+        localStorage.getItem("token");
 
-    const data = await res.json().catch(() => ({}));
+    const linkDisplay =
+        document.getElementById("linkDisplay");
 
-    const defaultLink = "https://victoryworld.example.com";
+    const victoryWorldBtn =
+        document.getElementById("victoryWorldBtn");
 
-    document.getElementById("linkDisplay").innerText =
-      data.url || defaultLink;
+    const personalVictoryWorldLink =
+        document.getElementById("personalVictoryWorldLink");
 
-    document.getElementById("victoryWorldBtn").href =
-      data.url || defaultLink;
+    const saveVictoryWorldLinkBtn =
+        document.getElementById("saveVictoryWorldLinkBtn");
 
-  } catch (error) {
-    document.getElementById("linkDisplay").innerText =
-      "Lien Victory World momentanément indisponible.";
-    document.getElementById("victoryWorldBtn").style.display = "none";
-  }
-};
+    const messageBox =
+        document.getElementById("messageBox");
+
+    function showMessage(message, type) {
+        messageBox.textContent = message;
+
+        messageBox.className =
+            type === "success"
+                ? "message message-success"
+                : "message message-error";
+    }
+
+    function normalizeVictoryWorldLink(value) {
+        return String(value || "").trim();
+    }
+
+    function isValidVictoryWorldLink(value) {
+        try {
+            const url = new URL(value);
+
+            return (
+                url.protocol === "https:"
+                && url.hostname === "victoryworld.club"
+                && url.pathname.length > 1
+            );
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async function loadSponsorVictoryWorldLink() {
+        if (!token) {
+            window.location.replace("login.html");
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `${API_URL}/victory-world`,
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            const data =
+                await response.json().catch(() => ({}));
+
+            const assignedLink =
+                data.url
+                || data.sponsorVictoryWorldLink
+                || data.sponsor_victory_world_link
+                || ROOT_VICTORY_WORLD_LINK;
+
+            linkDisplay.textContent =
+                assignedLink;
+
+            victoryWorldBtn.href =
+                assignedLink;
+
+            const personalLink =
+                data.personalVictoryWorldLink
+                || data.personal_victory_world_link
+                || data.victoryWorldLink
+                || data.victory_world_link
+                || "";
+
+            if (personalLink) {
+                personalVictoryWorldLink.value =
+                    personalLink;
+
+                showMessage(
+                    "Votre lien Victory World est déjà enregistré.",
+                    "success"
+                );
+            }
+        } catch (error) {
+            console.error(
+                "Erreur de chargement Victory World :",
+                error
+            );
+
+            linkDisplay.textContent =
+                ROOT_VICTORY_WORLD_LINK;
+
+            victoryWorldBtn.href =
+                ROOT_VICTORY_WORLD_LINK;
+        }
+    }
+
+    saveVictoryWorldLinkBtn.addEventListener(
+        "click",
+        async function () {
+            const link =
+                normalizeVictoryWorldLink(
+                    personalVictoryWorldLink.value
+                );
+
+            if (!link) {
+                showMessage(
+                    "Collez votre lien personnel Victory World.",
+                    "error"
+                );
+                return;
+            }
+
+            if (!isValidVictoryWorldLink(link)) {
+                showMessage(
+                    "Le lien doit commencer par https://victoryworld.club/ suivi de votre identifiant.",
+                    "error"
+                );
+                return;
+            }
+
+            saveVictoryWorldLinkBtn.disabled = true;
+            saveVictoryWorldLinkBtn.textContent =
+                "Enregistrement...";
+
+            try {
+                const response = await fetch(
+                    `${API_URL}/victory-world/link`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            victoryWorldLink: link
+                        })
+                    }
+                );
+
+                const data =
+                    await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message
+                        || "Impossible d’enregistrer le lien."
+                    );
+                }
+
+                showMessage(
+                    "Votre lien Victory World a été enregistré. Il peut maintenant alimenter le système Follow Me.",
+                    "success"
+                );
+            } catch (error) {
+                console.error(
+                    "Erreur d’enregistrement :",
+                    error
+                );
+
+                showMessage(
+                    error.message
+                    || "Une erreur est survenue.",
+                    "error"
+                );
+            } finally {
+                saveVictoryWorldLinkBtn.disabled = false;
+                saveVictoryWorldLinkBtn.textContent =
+                    "Enregistrer mon lien Victory World";
+            }
+        }
+    );
+
+    loadSponsorVictoryWorldLink();
 </script>
 
 </body>
 </html>
-
-
