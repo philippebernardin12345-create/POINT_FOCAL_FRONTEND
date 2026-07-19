@@ -964,16 +964,26 @@
     const continueJourneyBtn =
         document.getElementById("continueJourneyBtn");
 
-    🇨🇩function getPointFocalLink(currentUser) {
-        return (
-            currentUser?.pointFocalLink
-            || currentUser?.point_focal_link
-            || currentUser?.publicLink
-            || currentUser?.public_link
-            || ""
-        );
-    }🇨🇩
+   
+function getPointFocalLink(currentUser) {
+    if (!currentUser) {
+        return "";
+    }
 
+    const code =
+        currentUser.invitationCodeSeries1
+        || currentUser.invitation_code_series_1
+        || "";
+
+    if (!code) {
+        return "";
+    }
+
+    return (
+        "https://pointfocalapp.com/register.html?ref="
+        + encodeURIComponent(code)
+    );
+}
     function formatLanguage(language) {
         const labels = {
             fr: "Français",
