@@ -55,13 +55,18 @@
             border-radius: 6px;
         }
 
+        .info-box p {
+            margin-bottom: 0;
+        }
+
         .link-box {
             background: #2b3139;
             color: #f0b90b;
             padding: 16px;
             border-radius: 6px;
             margin: 20px 0;
-            word-break: break-all;
+            overflow-wrap: anywhere;
+            word-break: break-word;
             font-weight: bold;
         }
 
@@ -96,6 +101,7 @@
             border: none;
             border-radius: 6px;
             text-decoration: none;
+            text-align: center;
             font-weight: bold;
             font-size: 15px;
             margin-top: 15px;
@@ -138,6 +144,13 @@
             border: 1px solid rgba(2, 192, 118, 0.4);
         }
 
+        .message-warning {
+            display: block;
+            background: rgba(240, 185, 11, 0.15);
+            color: #f0b90b;
+            border: 1px solid rgba(240, 185, 11, 0.4);
+        }
+
         .message-error {
             display: block;
             background: rgba(246, 70, 93, 0.15);
@@ -150,6 +163,7 @@
 <body>
 
 <div class="card">
+
     <h2>🌍 Victory World</h2>
 
     <p>
@@ -191,7 +205,7 @@
     <input
         id="personalVictoryWorldLink"
         type="url"
-        placeholder="Exemple : https://victoryworld.club/monidentifiant"
+        placeholder="https://victoryworld.club/monidentifiant"
         autocomplete="off"
     >
 
@@ -214,6 +228,7 @@
     >
         Retour au tableau de bord
     </a>
+
 </div>
 
 <script>
@@ -233,10 +248,14 @@
         document.getElementById("victoryWorldBtn");
 
     const personalVictoryWorldLink =
-        document.getElementById("personalVictoryWorldLink");
+        document.getElementById(
+            "personalVictoryWorldLink"
+        );
 
     const saveVictoryWorldLinkBtn =
-        document.getElementById("saveVictoryWorldLinkBtn");
+        document.getElementById(
+            "saveVictoryWorldLinkBtn"
+        );
 
     const messageBox =
         document.getElementById("messageBox");
@@ -244,10 +263,20 @@
     function showMessage(message, type) {
         messageBox.textContent = message;
 
+        if (type === "success") {
+            messageBox.className =
+                "message message-success";
+            return;
+        }
+
+        if (type === "warning") {
+            messageBox.className =
+                "message message-warning";
+            return;
+        }
+
         messageBox.className =
-            type === "success"
-                ? "message message-success"
-                : "message message-error";
+            "message message-error";
     }
 
     function normalizeVictoryWorldLink(value) {
@@ -258,19 +287,119 @@
         try {
             const url = new URL(value);
 
+            const hostname =
+                url.hostname.toLowerCase();
+
             return (
                 url.protocol === "https:"
-                && url.hostname === "victoryworld.club"
+                && (
+                    hostname === "victoryworld.club"
+                    || hostname === "www.victoryworld.club"
+                )
                 && url.pathname.length > 1
+                && url.pathname !== "/"
             );
         } catch (error) {
             return false;
         }
     }
 
+    function getStoredUser() {
+        const storedUser =
+            localStorage.getItem("user");
+
+        if (!storedUser) {
+            return null;
+        }
+
+        try {
+            return JSON.parse(storedUser);
+        } catch (error) {
+            console.error(
+                "Utilisateur local invalide :",
+                error
+            );
+
+            return null;
+        }
+    }
+
+    function saveLinkLocally(link) {
+        const currentUser =
+            getStoredUser() || {};
+
+        currentUser.victoryWorldLink =
+            link;
+
+        currentUser.victory_world_link =
+            link;
+
+        localStorage.setItem(
+            "user",
+            JSON.stringify(currentUser)
+        );
+
+        localStorage.setItem(
+            "victoryWorldLink",
+            link
+        );
+    }
+
+    function getLocalVictoryWorldLink() {
+        const currentUser =
+            getStoredUser();
+
+        return (
+            currentUser?.victoryWorldLink
+            || currentUser?.victory_world_link
+            || localStorage.getItem(
+                "victoryWorldLink"
+            )
+            || ""
+        );
+    }
+
+    function displayAssignedLink(link) {
+        const assignedLink =
+            link || ROOT_VICTORY_WORLD_LINK;
+
+        linkDisplay.textContent =
+            assignedLink;
+
+        victoryWorldBtn.href =
+            assignedLink;
+    }
+
     async function loadSponsorVictoryWorldLink() {
+        displayAssignedLink(
+            ROOT_VICTORY_WORLD_LINK
+        );
+
+        const localPersonalLink =
+            getLocalVictoryWorldLink();
+
+        if (localPersonalLink) {
+            personalVictoryWorldLink.value =
+                localPersonalLink;
+
+            showMessage(
+                "Votre lien Victory World est déjà enregistré sur cet appareil.",
+                "success"
+            );
+        }
+
         if (!token) {
-            window.location.replace("login.html");
+            showMessage(
+                "Votre session a expiré. Reconnectez-vous pour continuer.",
+                "error"
+            );
+
+            setTimeout(function () {
+                window.location.replace(
+                    "login.html"
+                );
+            }, 1800);
+
             return;
         }
 
@@ -280,13 +409,20 @@
                 {
                     method: "GET",
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        Authorization:
+                            `Bearer ${token}`
                     }
                 }
             );
 
+            if (!response.ok) {
+                return;
+            }
+
             const data =
-                await response.json().catch(() => ({}));
+                await response
+                    .json()
+                    .catch(() => ({}));
 
             const assignedLink =
                 data.url
@@ -294,40 +430,70 @@
                 || data.sponsor_victory_world_link
                 || ROOT_VICTORY_WORLD_LINK;
 
-            linkDisplay.textContent =
-                assignedLink;
+            displayAssignedLink(
+                assignedLink
+            );
 
-            victoryWorldBtn.href =
-                assignedLink;
-
-            const personalLink =
+            const backendPersonalLink =
                 data.personalVictoryWorldLink
                 || data.personal_victory_world_link
                 || data.victoryWorldLink
                 || data.victory_world_link
                 || "";
 
-            if (personalLink) {
+            if (backendPersonalLink) {
                 personalVictoryWorldLink.value =
-                    personalLink;
+                    backendPersonalLink;
+
+                saveLinkLocally(
+                    backendPersonalLink
+                );
 
                 showMessage(
                     "Votre lien Victory World est déjà enregistré.",
                     "success"
-                ); 
+                );
             }
         } catch (error) {
-            console.error(
-                "Erreur de chargement Victory World :",
+            console.warn(
+                "Route Victory World indisponible :",
                 error
             );
-
-            linkDisplay.textContent =
-                ROOT_VICTORY_WORLD_LINK;
-
-            victoryWorldBtn.href =
-                ROOT_VICTORY_WORLD_LINK;
         }
+    }
+
+    async function saveLinkOnBackend(link) {
+        const response = await fetch(
+            `${API_URL}/victory-world/link`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json",
+
+                    Authorization:
+                        `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    victoryWorldLink: link,
+                    victory_world_link: link
+                })
+            }
+        );
+
+        const data =
+            await response
+                .json()
+                .catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(
+                data.message
+                || `Erreur serveur ${response.status}`
+            );
+        }
+
+        return data;
     }
 
     saveVictoryWorldLinkBtn.addEventListener(
@@ -343,6 +509,7 @@
                     "Collez votre lien personnel Victory World.",
                     "error"
                 );
+
                 return;
             }
 
@@ -351,87 +518,47 @@
                     "Le lien doit commencer par https://victoryworld.club/ suivi de votre identifiant.",
                     "error"
                 );
+
                 return;
             }
 
-            saveVictoryWorldLinkBtn.disabled = true;
+            saveVictoryWorldLinkBtn.disabled =
+                true;
+
             saveVictoryWorldLinkBtn.textContent =
                 "Enregistrement...";
 
+            /*
+                Enregistrement local immédiat.
+
+                Cela permet au tableau de bord
+                d’afficher Victory World comme
+                étant en cours, même si la route
+                backend n’est pas encore disponible.
+            */
+            saveLinkLocally(link);
+
             try {
-                const response = await fetch(
-                    `${API_URL}/victory-world/link`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            victoryWorldLink: link
-                        })
-                    }
-                );
-
-                const data =
-                    await response.json().catch(() => ({}));
-
-                if (!response.ok) {
-                    throw new Error(
-                        data.message
-                        || "Impossible d’enregistrer le lien."
-                    );
-                }
+                await saveLinkOnBackend(link);
 
                 showMessage(
-                    "Votre lien Victory World a été enregistré. Il peut maintenant alimenter le système Follow Me.",
+                    "Votre lien Victory World a été enregistré avec succès dans Point Focal.",
                     "success"
                 );
-
-                // Mise à jour de l'utilisateur dans le localStorage
-                const storedUser =
-                    localStorage.getItem("user");
-
-                if (storedUser) {
-                    try {
-                        const currentUser =
-                            JSON.parse(storedUser);
-
-                        currentUser.victoryWorldLink =
-                            link;
-
-                        currentUser.victory_world_link =
-                            link;
-
-                        localStorage.setItem(
-                            "user",
-                            JSON.stringify(currentUser)
-                        );
-
-                        console.log(
-                            "✅ Utilisateur local mis à jour avec le lien Victory World"
-                        );
-                    } catch (error) {
-                        console.error(
-                            "Impossible de mettre à jour l’utilisateur local :",
-                            error
-                        );
-                    }
-                }
-
             } catch (error) {
-                console.error(
-                    "Erreur d’enregistrement :",
+                console.warn(
+                    "Enregistrement backend indisponible :",
                     error
                 );
 
                 showMessage(
-                    error.message
-                    || "Une erreur est survenue.",
-                    "error"
+                    "Votre lien a été enregistré sur cet appareil. La synchronisation avec le serveur sera ajoutée lorsque la route Victory World sera disponible.",
+                    "warning"
                 );
             } finally {
-                saveVictoryWorldLinkBtn.disabled = false;
+                saveVictoryWorldLinkBtn.disabled =
+                    false;
+
                 saveVictoryWorldLinkBtn.textContent =
                     "Enregistrer mon lien Victory World";
             }
