@@ -314,7 +314,7 @@
                 showMessage(
                     "Votre lien Victory World est déjà enregistré.",
                     "success"
-                );
+                ); 
             }
         } catch (error) {
             console.error(
@@ -387,6 +387,38 @@
                     "Votre lien Victory World a été enregistré. Il peut maintenant alimenter le système Follow Me.",
                     "success"
                 );
+
+                // Mise à jour de l'utilisateur dans le localStorage
+                const storedUser =
+                    localStorage.getItem("user");
+
+                if (storedUser) {
+                    try {
+                        const currentUser =
+                            JSON.parse(storedUser);
+
+                        currentUser.victoryWorldLink =
+                            link;
+
+                        currentUser.victory_world_link =
+                            link;
+
+                        localStorage.setItem(
+                            "user",
+                            JSON.stringify(currentUser)
+                        );
+
+                        console.log(
+                            "✅ Utilisateur local mis à jour avec le lien Victory World"
+                        );
+                    } catch (error) {
+                        console.error(
+                            "Impossible de mettre à jour l’utilisateur local :",
+                            error
+                        );
+                    }
+                }
+
             } catch (error) {
                 console.error(
                     "Erreur d’enregistrement :",
