@@ -484,14 +484,29 @@
 
 <body>
 
-<div class="app">
+<<button
+                class="icon-btn"
+                type="button"
+                title="Profil"
+                onclick="document.getElementById('profileCard').scrollIntoView()"
+            >
 
-    <header class="topbar">
-        <div class="brand">
-            <div class="logo">PF</div>
+        <div class="brand-text">
 
-            <div class="brand-text">
-                <strong>POINT FOCAL</strong>
+    <img
+        src="logo.jpg"
+        alt="Point Focal"
+        style="
+            width:50px;
+            height:50px;
+            border-radius:10px;
+            margin-bottom:8px;
+        "
+    >
+
+    <strong>POINT FOCAL</strong>
+
+</div>  
                 <span>Tableau de bord utilisateur</span>
             </div>
         </div>
@@ -547,7 +562,7 @@
 
             <article class="card card-wide" id="overviewCard">
                 <div class="card-header">
-                    <div>
+                   ✋ <div>
                         <h2 class="card-title">
                             Vue d’ensemble
                         </h2>
