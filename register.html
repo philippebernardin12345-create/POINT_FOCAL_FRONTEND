@@ -4,11 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>POINT FOCAL - Inscription</title>
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
-
   <style>
-     {
+    * {
       box-sizing: border-box;
     }
 
@@ -192,13 +190,14 @@
       text-align: center;
       font-size: 13px;
     }
+
+    #forgotPasswordBox {
+      margin-top: 18px;
+    }
   </style>
 </head>
-
 <body>
-
   <div class="auth-container">
-
     <div class="lang-selector">
       <button class="lang-btn active" onclick="changeLanguage('FR', this)">FR</button>
       <button class="lang-btn" onclick="changeLanguage('EN', this)">EN</button>
@@ -217,7 +216,6 @@
     </p>
 
     <form id="authForm">
-
       <div class="form-group">
         <label id="lblEmail">Adresse e-mail</label>
         <input type="email" id="email" required autocomplete="email">
@@ -257,16 +255,27 @@
       </div>
 
       <div class="forgot">
-        <span class="link-text" onclick="alert('Fonction mot de passe oublié à connecter au backend.')">
-          Mot de passe oublié ?
-        </span>
+        <span class="link-text" onclick="showForgotPasswordForm()">Mot de passe oublié ?</span>
       </div>
 
+      <div id="forgotPasswordBox" style="display:none;">
+        <div class="form-group">
+          <label for="forgotEmail">Adresse e-mail du compte</label>
+          <input type="email" id="forgotEmail" autocomplete="email" placeholder="exemple@email.com">
+        </div>
+
+        <button type="button" id="forgotPasswordBtn" class="btn-submit" onclick="handleForgotPassword()">
+          Envoyer le lien de réinitialisation
+        </button>
+
+        <div class="forgot">
+          <span class="link-text" onclick="hideForgotPasswordForm()">Retour</span>
+        </div>
+      </div>
     </form>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-
   <script>
     const BASE_API = "https://point-focal.onrender.com/api/auth";
 
@@ -290,7 +299,15 @@
         switchLog: "Pas encore de compte ? <span class='link-text' onclick='toggleAuthMode()'>Créer un compte</span>",
         invalidPhone: "Numéro WhatsApp invalide.",
         passwordMismatch: "Les mots de passe ne correspondent pas.",
-        serverError: "Le serveur met trop de temps à répondre. Attendez 30 secondes puis réessayez."
+        serverError: "Le serveur met trop de temps à répondre. Attendez 30 secondes puis réessayez.",
+        forgotTitle: "Mot de passe oublié",
+        forgotSubtitle: "Saisissez votre adresse e-mail pour recevoir un lien de réinitialisation.",
+        forgotEmail: "Adresse e-mail du compte",
+        forgotBtn: "Envoyer le lien de réinitialisation",
+        forgotBack: "Retour",
+        forgotSuccess: "Un lien de réinitialisation a été envoyé à votre adresse e-mail.",
+        forgotError: "Impossible d'envoyer le lien de réinitialisation.",
+        forgotEmptyEmail: "Veuillez saisir votre adresse e-mail."
       },
       EN: {
         titleReg: "Create an account",
@@ -308,7 +325,15 @@
         switchLog: "No account yet ? <span class='link-text' onclick='toggleAuthMode()'>Create account</span>",
         invalidPhone: "Invalid WhatsApp number.",
         passwordMismatch: "Passwords do not match.",
-        serverError: "The server is taking too long to respond. Wait 30 seconds and try again."
+        serverError: "The server is taking too long to respond. Wait 30 seconds and try again.",
+        forgotTitle: "Forgot Password",
+        forgotSubtitle: "Enter your email address to receive a reset link.",
+        forgotEmail: "Account email address",
+        forgotBtn: "Send reset link",
+        forgotBack: "Back",
+        forgotSuccess: "A reset link has been sent to your email address.",
+        forgotError: "Unable to send reset link.",
+        forgotEmptyEmail: "Please enter your email address."
       },
       ES: {
         titleReg: "Crear una cuenta",
@@ -326,7 +351,15 @@
         switchLog: "¿No tienes cuenta ? <span class='link-text' onclick='toggleAuthMode()'>Crear cuenta</span>",
         invalidPhone: "Número de WhatsApp inválido.",
         passwordMismatch: "Las contraseñas no coinciden.",
-        serverError: "El servidor tarda demasiado. Espere 30 segundos e inténtelo de nuevo."
+        serverError: "El servidor tarda demasiado. Espere 30 segundos e inténtelo de nuevo.",
+        forgotTitle: "¿Olvidó su contraseña?",
+        forgotSubtitle: "Ingrese su correo electrónico para recibir un enlace de restablecimiento.",
+        forgotEmail: "Correo electrónico de la cuenta",
+        forgotBtn: "Enviar enlace de restablecimiento",
+        forgotBack: "Volver",
+        forgotSuccess: "Se ha enviado un enlace de restablecimiento a su correo electrónico.",
+        forgotError: "No se pudo enviar el enlace de restablecimiento.",
+        forgotEmptyEmail: "Por favor, ingrese su correo electrónico."
       },
       PT: {
         titleReg: "Criar uma conta",
@@ -344,7 +377,15 @@
         switchLog: "Ainda não tem conta ? <span class='link-text' onclick='toggleAuthMode()'>Criar conta</span>",
         invalidPhone: "Número de WhatsApp inválido.",
         passwordMismatch: "As senhas não coincidem.",
-        serverError: "O servidor está demorando muito. Aguarde 30 segundos e tente novamente."
+        serverError: "O servidor está demorando muito. Aguarde 30 segundos e tente novamente.",
+        forgotTitle: "Esqueceu a senha?",
+        forgotSubtitle: "Digite seu e-mail para receber um link de redefinição.",
+        forgotEmail: "E-mail da conta",
+        forgotBtn: "Enviar link de redefinição",
+        forgotBack: "Voltar",
+        forgotSuccess: "Um link de redefinição foi enviado para seu e-mail.",
+        forgotError: "Não foi possível enviar o link de redefinição.",
+        forgotEmptyEmail: "Por favor, digite seu e-mail."
       },
       AR: {
         titleReg: "إنشاء حساب",
@@ -362,7 +403,15 @@
         switchLog: "ليس لديك حساب ؟ <span class='link-text' onclick='toggleAuthMode()'>إنشاء حساب</span>",
         invalidPhone: "رقم واتساب غير صحيح.",
         passwordMismatch: "كلمتا المرور غير متطابقتين.",
-        serverError: "الخادم يستغرق وقتا طويلا. انتظر 30 ثانية ثم حاول مرة أخرى."
+        serverError: "الخادم يستغرق وقتا طويلا. انتظر 30 ثانية ثم حاول مرة أخرى.",
+        forgotTitle: "نسيت كلمة المرور",
+        forgotSubtitle: "أدخل بريدك الإلكتروني لتلقي رابط إعادة التعيين.",
+        forgotEmail: "البريد الإلكتروني للحساب",
+        forgotBtn: "إرسال رابط إعادة التعيين",
+        forgotBack: "رجوع",
+        forgotSuccess: "تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني.",
+        forgotError: "تعذر إرسال رابط إعادة التعيين.",
+        forgotEmptyEmail: "يرجى إدخال بريدك الإلكتروني."
       },
       HI: {
         titleReg: "खाता बनाएं",
@@ -380,7 +429,15 @@
         switchLog: "अभी खाता नहीं है ? <span class='link-text' onclick='toggleAuthMode()'>खाता बनाएं</span>",
         invalidPhone: "WhatsApp नंबर गलत है।",
         passwordMismatch: "पासवर्ड मेल नहीं खाते।",
-        serverError: "सर्वर उत्तर देने में देर कर रहा है। 30 सेकंड प्रतीक्षा करें और फिर प्रयास करें।"
+        serverError: "सर्वर उत्तर देने में देर कर रहा है। 30 सेकंड प्रतीक्षा करें और फिर प्रयास करें।",
+        forgotTitle: "पासवर्ड भूल गए",
+        forgotSubtitle: "रिसेट लिंक प्राप्त करने के लिए अपना ईमेल दर्ज करें।",
+        forgotEmail: "खाते का ईमेल पता",
+        forgotBtn: "रिसेट लिंक भेजें",
+        forgotBack: "वापस",
+        forgotSuccess: "आपके ईमेल पर एक रिसेट लिंक भेज दिया गया है।",
+        forgotError: "रिसेट लिंक भेजने में विफल।",
+        forgotEmptyEmail: "कृपया अपना ईमेल पता दर्ज करें।"
       }
     };
 
@@ -392,14 +449,7 @@
       separateDialCode: true
     });
 
-    window.addEventListener("DOMContentLoaded", () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const sponsorParam = urlParams.get("ref") || urlParams.get("sponsor") || "ABCD1000";
-
-      const sponsorField = document.getElementById("sponsor");
-      sponsorField.value = sponsorParam.toUpperCase();
-      sponsorField.readOnly = true;
-    });
+    // ----- FONCTIONS DE GESTION D'AFFICHAGE -----
 
     function showError(message) {
       const box = document.getElementById("errorBox");
@@ -459,6 +509,16 @@
 
       document.getElementById("errorBox").style.display = "none";
       document.getElementById("successBox").style.display = "none";
+      
+      // Cacher le formulaire de mot de passe oublié s'il est visible
+      document.getElementById("forgotPasswordBox").style.display = "none";
+      
+      // Afficher tous les éléments du formulaire
+      Array.from(document.getElementById("authForm").children).forEach((element) => {
+        if (element.id !== "forgotPasswordBox") {
+          element.style.display = "";
+        }
+      });
 
       document.getElementById("whatsappGroup").style.display = isRegisterMode ? "block" : "none";
       document.getElementById("sponsorGroup").style.display = isRegisterMode ? "block" : "none";
@@ -470,6 +530,120 @@
 
       updateTexts();
     }
+
+    // ----- FONCTIONS MOT DE PASSE OUBLIÉ -----
+
+    function showForgotPasswordForm() {
+      const forgotBox = document.getElementById("forgotPasswordBox");
+      const authForm = document.getElementById("authForm");
+      const email = document.getElementById("email").value.trim();
+
+      document.getElementById("errorBox").style.display = "none";
+      document.getElementById("successBox").style.display = "none";
+
+      // Pré-remplir l'email avec celui déjà saisi
+      if (email) {
+        document.getElementById("forgotEmail").value = email;
+      }
+
+      // Cacher les autres éléments du formulaire
+      Array.from(authForm.children).forEach((element) => {
+        if (element.id !== "forgotPasswordBox") {
+          element.style.display = "none";
+        }
+      });
+
+      forgotBox.style.display = "block";
+      
+      // Focus sur le champ email du formulaire de récupération
+      document.getElementById("forgotEmail").focus();
+    }
+
+    function hideForgotPasswordForm() {
+      const forgotBox = document.getElementById("forgotPasswordBox");
+      const authForm = document.getElementById("authForm");
+
+      forgotBox.style.display = "none";
+
+      // Réafficher tous les éléments du formulaire
+      Array.from(authForm.children).forEach((element) => {
+        element.style.display = "";
+      });
+
+      // Restaurer la visibilité correcte en fonction du mode
+      document.getElementById("whatsappGroup").style.display = isRegisterMode ? "block" : "none";
+      document.getElementById("sponsorGroup").style.display = isRegisterMode ? "block" : "none";
+      document.getElementById("confirmGroup").style.display = isRegisterMode ? "block" : "none";
+      
+      // Effacer le champ de récupération et les messages
+      document.getElementById("forgotEmail").value = "";
+    }
+
+    async function handleForgotPassword() {
+      const t = translations[currentLang];
+      const email = document.getElementById("forgotEmail").value.trim();
+      const btn = document.getElementById("forgotPasswordBtn");
+
+      document.getElementById("errorBox").style.display = "none";
+      document.getElementById("successBox").style.display = "none";
+
+      if (!email) {
+        showError(t.forgotEmptyEmail || "Veuillez saisir votre adresse e-mail.");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Envoi en cours...";
+
+      try {
+        const response = await fetch(`${BASE_API}/forgot-password`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await response.json().catch(() => ({
+          message: "Réponse serveur invalide."
+        }));
+
+        if (!response.ok) {
+          showError(data.message || data.error || t.forgotError || "Impossible d'envoyer le lien de réinitialisation.");
+          btn.disabled = false;
+          btn.textContent = t.forgotBtn || "Envoyer le lien de réinitialisation";
+          return;
+        }
+
+        showSuccess(data.message || t.forgotSuccess || "Un lien de réinitialisation a été envoyé à votre adresse e-mail.");
+        document.getElementById("forgotEmail").value = "";
+
+        // Retour au formulaire après un délai
+        setTimeout(() => {
+          hideForgotPasswordForm();
+        }, 3000);
+
+      } catch (error) {
+        console.error("Erreur mot de passe oublié :", error);
+        showError("Erreur réseau. Attendez quelques secondes puis réessayez.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = t.forgotBtn || "Envoyer le lien de réinitialisation";
+      }
+    }
+
+    // ----- GESTION DU SPONSOR -----
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const sponsorParam = urlParams.get("ref") || urlParams.get("sponsor") || "ABCD1000";
+
+      const sponsorField = document.getElementById("sponsor");
+      sponsorField.value = sponsorParam.toUpperCase();
+      sponsorField.readOnly = true;
+    });
+
+    // ----- SOUMISSION DU FORMULAIRE -----
 
     document.getElementById("authForm").addEventListener("submit", async function(e) {
       e.preventDefault();
@@ -487,38 +661,35 @@
       const confirmPassword = document.getElementById("confirmPassword").value;
       let sponsorCode = document.getElementById("sponsor").value.trim().toUpperCase();
 
-if (!sponsorCode) {
-  sponsorCode = "ABCD1000";
-  document.getElementById("sponsor").value = sponsorCode;
-}
+      if (!sponsorCode) {
+        sponsorCode = "ABCD1000";
+        document.getElementById("sponsor").value = sponsorCode;
+      }
 
       try {
         if (isRegisterMode) {
           let whatsapp = phoneInput.value.trim();
+          whatsapp = whatsapp.replace(/\s+/g, "").replace("+", "");
 
-whatsapp = whatsapp.replace(/\s+/g, "").replace("+", "");
+          if (whatsapp.startsWith("0")) {
+            whatsapp = "243" + whatsapp.slice(1);
+          }
 
-if (whatsapp.startsWith("0")) {
-    whatsapp = "243" + whatsapp.slice(1);
-}
+          if (!whatsapp.startsWith("243")) {
+            whatsapp = "243" + whatsapp;
+          }
 
-if (!whatsapp.startsWith("243")) {
-    whatsapp = "243" + whatsapp;
-}
-
-if (!/^243[0-9]{9}$/.test(whatsapp)) {
-    showError(t.invalidPhone);
-    btn.disabled = false;
-    return;
-}
+          if (!/^243[0-9]{9}$/.test(whatsapp)) {
+            showError(t.invalidPhone);
+            btn.disabled = false;
+            return;
+          }
 
           if (password !== confirmPassword) {
             showError(t.passwordMismatch);
             btn.disabled = false;
             return;
           }
-
-         
 
           const res = await fetch(`${BASE_API}/register`, {
             method: "POST",
@@ -534,10 +705,10 @@ if (!/^243[0-9]{9}$/.test(whatsapp)) {
               language: currentLang.toLowerCase()
             })
           });
-const data = await res.json().catch(() => ({
-  message: "Réponse serveur invalide."
-}));
 
+          const data = await res.json().catch(() => ({
+            message: "Réponse serveur invalide."
+          }));
 
           if (!res.ok) {
             showError(data.message || "Erreur lors de la création du compte.");
@@ -553,27 +724,18 @@ const data = await res.json().catch(() => ({
             localStorage.setItem("user", JSON.stringify(data.user));
           }
 
-    localStorage.setItem("pendingEmail", email);
+          localStorage.setItem("pendingEmail", email);
 
-showSuccess("Inscription réussie. Un code OTP a été envoyé à votre adresse e-mail.");
+          showSuccess("Inscription réussie. Un code OTP a été envoyé à votre adresse e-mail.");
 
-setTimeout(() => {
-    window.location.href = "confirm-otp.html";
-}, 1000);
+          setTimeout(() => {
+            window.location.href = "confirm-otp.html";
+          }, 1000);
 
-btn.disabled = false;
-
-return;
-
-btn.disabled = false;
-
-return;
-
-btn.disabled = false;
-
-return;
-
+          btn.disabled = false;
+          return;
         } else {
+          // Mode connexion
           const res = await fetch(`${BASE_API}/login`, {
             method: "POST",
             headers: {
@@ -607,13 +769,11 @@ return;
             window.location.href = "popup-youtube.html";
           }, 1000);
         }
-
       } catch (err) {
         showError(t.serverError);
         btn.disabled = false;
       }
     });
   </script>
-
 </body>
 </html>
