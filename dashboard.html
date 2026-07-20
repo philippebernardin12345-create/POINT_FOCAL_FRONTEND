@@ -1918,7 +1918,27 @@ function getPointFocalLink(currentUser) {
             || user.invitation_code_series_3
 
             || "Non généré";
+const victoryWorldLink =
+    user.victoryWorldLink
+    || user.victory_world_link
+    || "";
 
+if (victoryWorldLink) {
+
+    victoryWorldStatus.textContent =
+        "En cours";
+
+    victoryWorldStatus.style.color =
+        "var(--green)";
+
+} else {
+
+    victoryWorldStatus.textContent =
+        "À rejoindre";
+
+    victoryWorldStatus.style.color =
+        "var(--yellow)";
+}
 
         if (linkActive) {
 
