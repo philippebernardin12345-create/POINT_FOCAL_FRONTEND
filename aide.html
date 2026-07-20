@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>POINT FOCAL - Centre d'aide</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: #0b0e11;
+            --surface: #1e2329;
+            --border: #2b3139;
+            --yellow: #f0b90b;
+            --text: #eaecef;
+            --muted: #a7b0ba;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--background);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: #11161b;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .back-btn {
+            width: 42px;
+            height: 42px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .title strong {
+            color: var(--yellow);
+            display: block;
+        }
+
+        .title span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px 14px 50px;
+        }
+
+        .hero {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 18px;
+        }
+
+        .hero h1 {
+            margin: 0;
+            color: var(--yellow);
+        }
+
+        .hero p {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 14px;
+        }
+
+        .card h2 {
+            margin-top: 0;
+        }
+
+        .card p {
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-top: 12px;
+            border: none;
+            border-radius: 10px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: var(--yellow);
+            color: #111;
+        }
+
+        .btn-secondary {
+            background: #2b3139;
+            color: white;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <header class="topbar">
+
+        <button
+            id="backBtn"
+            class="back-btn"
+        >
+            ←
+        </button>
+
+        <div class="title">
+
+            <strong>POINT FOCAL</strong>
+
+            <span>Centre d'aide</span>
+
+        </div>
+
+    </header>
+
+    <main class="container">
+
+        <section class="hero">
+
+            <h1>Bienvenue dans le centre d'aide</h1>
+
+            <p>
+
+                Vous trouverez ici l'assistance officielle
+                de Point Focal.
+
+                Dans une prochaine version, un agent IA
+                répondra automatiquement à vos questions.
+
+            </p>
+
+        </section>
+
+        <section class="card">
+
+            <h2>Assistant IA</h2>
+
+            <p>
+
+                L'assistant intelligent de Point Focal
+                sera bientôt disponible.
+
+            </p>
+
+            <button
+                class="btn btn-primary"
+                disabled
+            >
+                Bientôt disponible
+            </button>
+
+        </section>
+
+        <section class="card">
+
+            <h2>Questions fréquentes</h2>
+
+            <p>
+
+                Consultez la FAQ pour trouver rapidement
+                des réponses.
+
+            </p>
+
+            <a
+                class="btn btn-secondary"
+                href="faq.html"
+            >
+                Ouvrir la FAQ
+            </a>
+
+        </section>
+
+        <section class="card">
+
+            <h2>Communauté officielle</h2>
+
+            <p>
+
+                Rejoignez la communauté Point Focal
+                sur Telegram.
+
+            </p>
+
+            <a
+                class="btn btn-secondary"
+                href="https://t.me/forumpointfocal"
+                target="_blank"
+            >
+                Rejoindre la communauté
+            </a>
+
+        </section>
+
+    </main>
+
+    <script>
+
+        document
+            .getElementById("backBtn")
+            .addEventListener(
+                "click",
+                function () {
+
+                    window.location.href =
+                        "dashboard.html";
+
+                }
+            );
+
+    </script>
+
+</body>
+
+</html>
