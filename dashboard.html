@@ -1,2175 +1,1358 @@
 <!DOCTYPE html>
-
 <html lang="fr">
-
 <head>
-
     <meta charset="UTF-8">
 
-
     <meta
-
         name="viewport"
-
         content="width=device-width, initial-scale=1.0"
-
     >
-
 
     <title>POINT FOCAL - Tableau de bord</title>
 
-
     <style>
-
         * {
-
             box-sizing: border-box;
-
         }
-
 
         :root {
-
             --background: #0b0e11;
-
             --surface: #1e2329;
-
             --surface-soft: #151a20;
-
             --border: #2b3139;
-
             --yellow: #f0b90b;
-
             --yellow-dark: #d9a600;
-
             --text: #eaecef;
-
             --muted: #a7b0ba;
-
             --green: #2ebd85;
-
             --red: #f6465d;
-
             --blue: #4c9aff;
-
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
-
             margin: 0;
-
             min-height: 100vh;
-
             background: var(--background);
-
             color: var(--text);
-
             font-family: Arial, sans-serif;
-
         }
-
 
         button,
-
         input,
-
         select {
-
             font-family: inherit;
-
         }
 
+        button,
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
 
         .app {
-
             min-height: 100vh;
-
         }
-
 
         .topbar {
-
             position: sticky;
-
             top: 0;
-
             z-index: 20;
-
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
-
             gap: 12px;
-
             padding: 14px 16px;
-
             background: rgba(11, 14, 17, 0.96);
-
             border-bottom: 1px solid var(--border);
-
             backdrop-filter: blur(8px);
-
         }
-
 
         .brand {
-
             display: flex;
-
             align-items: center;
-
             gap: 10px;
-
         }
-
 
         .logo {
-
             width: 38px;
-
             height: 38px;
-
             border-radius: 50%;
-
             background: var(--yellow);
-
             color: #111111;
-
             display: flex;
-
             align-items: center;
-
             justify-content: center;
-
             font-weight: 900;
-
             font-size: 18px;
-
         }
-
 
         .brand-text strong {
-
             display: block;
-
             color: var(--yellow);
-
             font-size: 16px;
-
         }
-
 
         .brand-text span {
-
             display: block;
-
             color: var(--muted);
-
             font-size: 12px;
-
             margin-top: 2px;
-
         }
-
 
         .top-actions {
-
             display: flex;
-
             align-items: center;
-
             gap: 8px;
-
         }
-
 
         .icon-btn {
-
             min-width: 42px;
-
             height: 42px;
-
             border: 1px solid var(--border);
-
             border-radius: 10px;
-
             background: var(--surface);
-
             color: var(--text);
-
             cursor: pointer;
-
             font-size: 18px;
-
         }
-
 
         .main {
-
             width: 100%;
-
             max-width: 1180px;
-
             margin: 0 auto;
-
             padding: 18px 14px 100px;
-
         }
-
 
         .welcome-card {
-
             background:
-
                 linear-gradient(
-
                     135deg,
-
                     rgba(240, 185, 11, 0.20),
-
                     rgba(240, 185, 11, 0.03)
-
                 ),
-
                 var(--surface);
-
             border: 1px solid rgba(240, 185, 11, 0.35);
-
             border-radius: 16px;
-
             padding: 20px;
-
             margin-bottom: 16px;
-
         }
-
 
         .welcome-card h1 {
-
             margin: 0;
-
             color: var(--yellow);
-
             font-size: 24px;
-
         }
-
 
         .welcome-card p {
-
             margin: 8px 0 0;
-
             color: var(--muted);
-
             line-height: 1.5;
-
             font-size: 14px;
-
         }
-
 
         .status-row {
-
             display: flex;
-
             flex-wrap: wrap;
-
             gap: 8px;
-
             margin-top: 16px;
-
         }
-
 
         .badge {
-
             display: inline-flex;
-
             align-items: center;
-
             gap: 6px;
-
             padding: 7px 10px;
-
             border-radius: 999px;
-
             font-size: 12px;
-
             font-weight: bold;
-
         }
-
 
         .badge-success {
-
             background: rgba(46, 189, 133, 0.14);
-
             color: #58d6a5;
-
             border: 1px solid rgba(46, 189, 133, 0.35);
-
         }
-
 
         .badge-warning {
-
             background: rgba(240, 185, 11, 0.14);
-
             color: var(--yellow);
-
             border: 1px solid rgba(240, 185, 11, 0.35);
-
         }
-
 
         .badge-danger {
-
             background: rgba(246, 70, 93, 0.14);
-
             color: #ff7588;
-
             border: 1px solid rgba(246, 70, 93, 0.35);
-
         }
-
 
         .grid {
-
             display: grid;
-
             grid-template-columns: 1fr;
-
             gap: 14px;
-
         }
-
 
         .card {
-
             background: var(--surface);
-
             border: 1px solid var(--border);
-
             border-radius: 14px;
-
             padding: 16px;
-
         }
-
 
         .card-header {
-
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
-
             gap: 12px;
-
             margin-bottom: 14px;
-
         }
-
 
         .card-title {
-
             margin: 0;
-
             color: var(--text);
-
             font-size: 17px;
-
         }
-
 
         .card-subtitle {
-
             margin: 4px 0 0;
-
             color: var(--muted);
-
             font-size: 12px;
-
         }
-
 
         .stat-grid {
-
             display: grid;
-
             grid-template-columns: repeat(2, 1fr);
-
             gap: 10px;
-
         }
-
 
         .stat-box {
-
             background: var(--surface-soft);
-
             border: 1px solid var(--border);
-
             border-radius: 12px;
-
             padding: 14px;
-
         }
-
 
         .stat-box span {
-
             display: block;
-
             color: var(--muted);
-
             font-size: 12px;
-
             margin-bottom: 7px;
-
         }
-
 
         .stat-box strong {
-
             color: var(--yellow);
-
             font-size: 21px;
-
         }
-
 
         .link-box {
-
             background: var(--surface-soft);
-
             border: 1px solid var(--border);
-
             border-radius: 10px;
-
             padding: 12px;
-
             color: var(--text);
-
             font-size: 13px;
-
             word-break: break-all;
-
             min-height: 48px;
-
             display: flex;
-
             align-items: center;
-
         }
-
 
         .btn-row {
-
             display: grid;
-
             grid-template-columns: 1fr;
-
             gap: 9px;
-
             margin-top: 12px;
-
         }
-
 
         .btn {
-
             width: 100%;
-
             border: none;
-
             border-radius: 10px;
-
             padding: 12px 14px;
-
             cursor: pointer;
-
             font-size: 14px;
-
             font-weight: bold;
-
         }
-
 
         .btn-primary {
-
             background: var(--yellow);
-
             color: #121212;
-
         }
-
 
         .btn-primary:hover {
-
             background: var(--yellow-dark);
-
         }
-
 
         .btn-secondary {
-
             background: #2b3139;
-
             color: var(--text);
-
             border: 1px solid #3b424c;
-
         }
-
 
         .btn-danger {
-
             background: rgba(246, 70, 93, 0.12);
-
             color: #ff7588;
-
             border: 1px solid rgba(246, 70, 93, 0.35);
-
         }
-
 
         .info-list {
-
             display: grid;
-
             gap: 10px;
-
         }
-
 
         .info-item {
-
             display: flex;
-
             justify-content: space-between;
-
             gap: 18px;
-
             padding-bottom: 10px;
-
             border-bottom: 1px solid var(--border);
-
         }
-
 
         .info-item:last-child {
-
             border-bottom: none;
-
             padding-bottom: 0;
-
         }
-
 
         .info-item span {
-
             color: var(--muted);
-
             font-size: 13px;
-
         }
-
 
         .info-item strong {
-
             color: var(--text);
-
             font-size: 13px;
-
             text-align: right;
-
             word-break: break-word;
-
         }
-
 
         .opportunity-list {
-
             display: grid;
-
             gap: 10px;
-
         }
-
 
         .opportunity {
-
             display: flex;
-
             align-items: center;
-
             gap: 12px;
-
             background: var(--surface-soft);
-
             border: 1px solid var(--border);
-
             border-radius: 12px;
-
             padding: 12px;
-
         }
-
 
         .opportunity-icon {
-
             width: 42px;
-
             height: 42px;
-
             flex: 0 0 42px;
-
             border-radius: 10px;
-
             display: flex;
-
             align-items: center;
-
             justify-content: center;
-
             background: rgba(240, 185, 11, 0.12);
-
             color: var(--yellow);
-
             font-weight: bold;
-
         }
-
 
         .opportunity-content {
-
             flex: 1;
-
             min-width: 0;
-
         }
-
 
         .opportunity-content strong {
-
             display: block;
-
             font-size: 14px;
-
         }
-
 
         .opportunity-content span {
-
             display: block;
-
             margin-top: 4px;
-
             color: var(--muted);
-
             font-size: 12px;
-
         }
-
 
         .opportunity-status {
-
             font-size: 11px;
-
             font-weight: bold;
-
             white-space: nowrap;
-
+            cursor: pointer;
         }
-
 
         .progress {
-
             width: 100%;
-
             height: 10px;
-
             background: #11161b;
-
             border-radius: 999px;
-
             overflow: hidden;
-
             margin-top: 12px;
-
         }
-
 
         .progress-bar {
-
             width: 35%;
-
             height: 100%;
-
             background: var(--yellow);
-
             border-radius: 999px;
-
         }
-
 
         .progress-text {
-
             display: flex;
-
             justify-content: space-between;
-
             gap: 10px;
-
             margin-top: 8px;
-
             color: var(--muted);
-
             font-size: 12px;
-
         }
-
-
-        .bottom-nav {
-
-            position: fixed;
-
-            left: 0;
-
-            right: 0;
-
-            bottom: 0;
-
-            z-index: 30;
-
-            display: grid;
-
-            grid-template-columns: repeat(5, 1fr);
-
-            background: rgba(17, 22, 27, 0.98);
-
-            border-top: 1px solid var(--border);
-
-            padding: 8px 5px 10px;
-
-        }
-
-
-        .nav-item {
-
-            border: none;
-
-            background: transparent;
-
-            color: var(--muted);
-
-            padding: 4px 2px;
-
-            cursor: pointer;
-
-            font-size: 11px;
-
-        }
-
-
-        .nav-item span {
-
-            display: block;
-
-            font-size: 19px;
-
-            margin-bottom: 3px;
-
-        }
-
-
-        .nav-item.active {
-
-            color: var(--yellow);
-
-        }
-
 
         .empty-text {
-
             color: var(--muted);
-
             font-size: 13px;
-
             line-height: 1.5;
-
             margin: 0;
-
         }
 
+        .bottom-nav {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 30;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            background: rgba(17, 22, 27, 0.98);
+            border-top: 1px solid var(--border);
+            padding: 8px 4px 10px;
+        }
+
+        .nav-item {
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            padding: 4px 1px;
+            cursor: pointer;
+            font-size: 10px;
+        }
+
+        .nav-item span {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 3px;
+        }
+
+        .nav-item.active {
+            color: var(--yellow);
+        }
 
         @media (min-width: 700px) {
-
             .main {
-
                 padding-left: 20px;
-
                 padding-right: 20px;
-
             }
-
 
             .grid {
-
                 grid-template-columns: repeat(2, minmax(0, 1fr));
-
             }
-
 
             .card-wide {
-
                 grid-column: span 2;
-
             }
-
 
             .btn-row {
-
                 grid-template-columns: repeat(2, 1fr);
-
             }
-
 
             .stat-grid {
-
                 grid-template-columns: repeat(4, 1fr);
-
             }
-
         }
-
 
         @media (min-width: 1024px) {
-
             .main {
-
                 padding-bottom: 30px;
-
             }
-
 
             .bottom-nav {
-
                 position: static;
-
                 max-width: 1180px;
-
                 margin: 0 auto 20px;
-
                 border: 1px solid var(--border);
-
                 border-radius: 14px;
-
             }
-
         }
-
     </style>
-
 </head>
-
 
 <body>
 
-
 <div class="app">
 
-
     <header class="topbar">
-
         <div class="brand">
-
             <div class="logo">PF</div>
 
-
             <div class="brand-text">
-
                 <strong>POINT FOCAL</strong>
-
                 <span>Tableau de bord utilisateur</span>
-
             </div>
-
         </div>
-
 
         <div class="top-actions">
-
             <button
-
                 class="icon-btn"
-
                 type="button"
-
                 title="Notifications"
-
             >
-
                 🔔
-
             </button>
-
 
             <button
-
                 class="icon-btn"
-
                 type="button"
-
                 title="Profil"
-
+                onclick="document.getElementById('profileCard').scrollIntoView()"
             >
-
                 👤
-
             </button>
-
         </div>
-
     </header>
-
 
     <main class="main">
 
-
         <section class="welcome-card">
-
             <h1 id="welcomeTitle">Bienvenue</h1>
 
-
             <p>
-
                 Gérez votre lien Point Focal, votre progression,
-
                 vos opportunités et votre équipe depuis un seul espace.
-
             </p>
 
-
             <div class="status-row">
-
                 <span
-
                     id="accountStatusBadge"
-
                     class="badge badge-warning"
-
                 >
-
                     Compte en vérification
-
                 </span>
-
 
                 <span
-
                     id="linkStatusBadge"
-
                     class="badge badge-warning"
-
                 >
-
                     Lien non activé
-
                 </span>
-
             </div>
-
         </section>
-
 
         <section class="grid">
 
-
-            <article class="card card-wide">
-
+            <article class="card card-wide" id="overviewCard">
                 <div class="card-header">
-
                     <div>
-
                         <h2 class="card-title">
-
                             Vue d’ensemble
-
                         </h2>
 
-
                         <p class="card-subtitle">
-
                             Résumé de votre compte Point Focal
-
                         </p>
-
                     </div>
-
                 </div>
-
 
                 <div class="stat-grid">
-
                     <div class="stat-box">
-
                         <span>Filleuls directs</span>
-
                         <strong id="directReferrals">0</strong>
-
                     </div>
 
-
                     <div class="stat-box">
-
                         <span>Opportunités rejointes</span>
-
                         <strong id="joinedOpportunities">1</strong>
-
                     </div>
 
-
                     <div class="stat-box">
-
                         <span>Codes actifs</span>
-
                         <strong id="activeCodes">0</strong>
-
                     </div>
-
 
                     <div class="stat-box">
-
                         <span>Progression</span>
-
                         <strong id="progressPercent">35%</strong>
-
                     </div>
-
                 </div>
-
             </article>
 
-
-            <article class="card">
-
+            <article class="card" id="linkCard">
                 <div class="card-header">
-
                     <div>
-
                         <h2 class="card-title">
-
                             Mon lien Point Focal
-
                         </h2>
 
-
                         <p class="card-subtitle">
-
                             Partagez un seul lien pour développer votre réseau
-
                         </p>
-
                     </div>
-
                 </div>
-
 
                 <div
-
                     id="pointFocalLink"
-
                     class="link-box"
-
                 >
-
                     Votre lien Point Focal sera affiché ici.
-
                 </div>
-
 
                 <div class="btn-row">
-
                     <button
-
                         id="copyLinkBtn"
-
                         class="btn btn-primary"
-
                         type="button"
-
                     >
-
                         Copier le lien
-
                     </button>
-
 
                     <button
-
                         id="shareLinkBtn"
-
                         class="btn btn-secondary"
-
                         type="button"
-
                     >
-
                         Partager
-
                     </button>
-
                 </div>
-
             </article>
 
-
-            <article class="card">
-
+            <article class="card" id="progressCard">
                 <div class="card-header">
-
                     <div>
-
                         <h2 class="card-title">
-
                             Ma progression
-
                         </h2>
 
-
                         <p class="card-subtitle">
-
                             Étape actuelle du parcours
-
                         </p>
-
                     </div>
-
                 </div>
-
 
                 <p
-
                     id="currentStepText"
-
                     class="empty-text"
-
                 >
-
                     Étape actuelle : finalisation du lien personnel.
-
                 </p>
 
-
                 <div class="progress">
-
                     <div
-
                         id="progressBar"
-
                         class="progress-bar"
-
                     ></div>
-
                 </div>
-
 
                 <div class="progress-text">
-
                     <span>Début</span>
-
                     <span id="progressLabel">35 % terminé</span>
-
                     <span>Terminé</span>
-
                 </div>
-
 
                 <button
-
                     id="continueJourneyBtn"
-
                     class="btn btn-primary"
-
                     type="button"
-
                     style="margin-top: 14px;"
-
                 >
-
                     Continuer mon parcours
-
                 </button>
-
             </article>
 
-
-            <article class="card card-wide">
-
+            <article class="card card-wide" id="opportunitiesCard">
                 <div class="card-header">
-
                     <div>
-
                         <h2 class="card-title">
-
                             Mes opportunités
-
                         </h2>
 
-
                         <p class="card-subtitle">
-
                             Suivez votre évolution dans chaque opportunité
-
                         </p>
-
                     </div>
-
                 </div>
-
 
                 <div class="opportunity-list">
 
                     <div class="opportunity">
-
-                        <div class="opportunity-icon">VA</div>
-
+                        <div class="opportunity-icon">
+                            VA
+                        </div>
 
                         <div class="opportunity-content">
-
                             <strong>Victory Automatic</strong>
 
                             <span>
-
                                 Première opportunité du parcours Point Focal
-
                             </span>
-
                         </div>
-
 
                         <div
-
                             id="victoryAutomaticStatus"
-
                             class="opportunity-status"
-
                             style="color: var(--green);"
-
                         >
-
                             En cours
-
                         </div>
-
                     </div>
 
-
                     <div class="opportunity">
-
-                        <div class="opportunity-icon">VW</div>
-
+                        <div class="opportunity-icon">
+                            VW
+                        </div>
 
                         <div class="opportunity-content">
-
                             <strong>Victory World</strong>
 
-
                             <span>
-
                                 Deuxième opportunité disponible
-
                             </span>
-
                         </div>
-
 
                         <div
-
                             id="victoryWorldStatus"
-
                             class="opportunity-status"
-
                             style="color: var(--yellow);"
-
                         >
-
                             À rejoindre
-
                         </div>
-
                     </div>
 
-
                     <div class="opportunity">
-
-                        <div class="opportunity-icon">S2</div>
-
+                        <div class="opportunity-icon">
+                            S2
+                        </div>
 
                         <div class="opportunity-content">
-
                             <strong>Générateur série 2</strong>
 
                             <span>
-
                                 Disponible après les premières opportunités
-
                             </span>
-
                         </div>
-
 
                         <div
-
                             class="opportunity-status"
-
-                            style="color: var(--muted);"
-
+                            style="color: var(--muted); cursor: default;"
                         >
-
                             Verrouillé
-
                         </div>
-
                     </div>
 
                 </div>
-
             </article>
 
-
             <article class="card">
-
                 <div class="card-header">
-
                     <div>
-
                         <h2 class="card-title">
-
                             Mes codes d’invitation
-
                         </h2>
 
-
                         <p class="card-subtitle">
-
                             Codes personnels liés à votre compte
-
                         </p>
-
                     </div>
-
                 </div>
 
-
                 <div class="info-list">
-
                     <div class="info-item">
-
                         <span>Série 1</span>
-
                         <strong id="series1Code">Non généré</strong>
-
                     </div>
 
-
                     <div class="info-item">
-
                         <span>Série 2</span>
-
                         <strong id="series2Code">Non généré</strong>
-
                     </div>
-
 
                     <div class="info-item">
-
                         <span>Série 3</span>
-
                         <strong id="series3Code">Non généré</strong>
-
                     </div>
-
                 </div>
-
             </article>
 
-
-            <article class="card">
-
+            <article class="card" id="profileCard">
                 <div class="card-header">
-
                     <div>
-
                         <h2 class="card-title">
-
                             Mon profil
-
                         </h2>
 
-
                         <p class="card-subtitle">
-
                             Informations principales du compte
-
                         </p>
-
                     </div>
-
                 </div>
-
 
                 <div class="info-list">
-
                     <div class="info-item">
-
                         <span>Email</span>
-
                         <strong id="profileEmail">—</strong>
-
                     </div>
 
-
                     <div class="info-item">
-
                         <span>WhatsApp</span>
-
                         <strong id="profileWhatsapp">—</strong>
-
                     </div>
 
-
                     <div class="info-item">
-
                         <span>Langue</span>
-
                         <strong id="profileLanguage">Français</strong>
-
                     </div>
-
 
                     <div class="info-item">
-
                         <span>Statut</span>
-
                         <strong id="profileStatus">En vérification</strong>
-
                     </div>
-
                 </div>
-
             </article>
 
-
-            <article class="card">
-
+            <article class="card" id="teamCard">
                 <div class="card-header">
-
                     <div>
-
                         <h2 class="card-title">
-
                             Mon équipe
-
                         </h2>
 
-
                         <p class="card-subtitle">
-
                             Maximum de deux filleuls directs
-
                         </p>
-
                     </div>
-
                 </div>
-
 
                 <p class="empty-text">
-
                     Aucun filleul direct enregistré pour le moment.
-
                 </p>
 
-
                 <button
-
                     class="btn btn-secondary"
-
                     type="button"
-
                     style="margin-top: 14px;"
-
                 >
-
                     Voir mon équipe
-
                 </button>
-
             </article>
 
-
-            <article class="card">
-
+            <article class="card" id="supportCard">
                 <div class="card-header">
-
                     <div>
-
                         <h2 class="card-title">
-
                             Support
-
                         </h2>
 
-
                         <p class="card-subtitle">
-
                             Assistance et communauté Point Focal
-
                         </p>
-
                     </div>
-
                 </div>
 
+                <div class="btn-row">
+                    <a
+                        class="btn btn-primary"
+                        href="https://t.me/forumpointfocal"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style="
+                            display: block;
+                            text-align: center;
+                            text-decoration: none;
+                        "
+                    >
+                        Rejoindre la communauté
+                    </a>
 
-               <div class="btn-row">
+                    <a
+                        class="btn btn-secondary"
+                        href="aide.html"
+                        style="
+                            display: block;
+                            text-align: center;
+                            text-decoration: none;
+                        "
+                    >
+                        Ouvrir l’aide
+                    </a>
 
-    <a
-        class="btn btn-primary"
-        href="https://t.me/forumpointfocal"
-        target="_blank"
-        rel="noopener noreferrer"
-        style="
-            display: block;
-            text-align: center;
-            text-decoration: none;
-        "
-    >
-        Rejoindre la communauté
-    </a>
-
-    <a
-        class="btn btn-secondary"
-        href="aide.html"
-        style="
-            display: block;
-            text-align: center;
-            text-decoration: none;
-        "
-    >
-        Ouvrir l’aide
-    </a>
-
-    <a
-        class="btn btn-secondary"
-        href="faq.html"
-        style="
-            display: block;
-            text-align: center;
-            text-decoration: none;
-        "
-    >
-        Questions fréquentes
-    </a>
-
-</div>
-
-                        
-
+                    <a
+                        class="btn btn-secondary"
+                        href="faq.html"
+                        style="
+                            display: block;
+                            text-align: center;
+                            text-decoration: none;
+                        "
+                    >
+                        Questions fréquentes
+                    </a>
+                </div>
             </article>
 
-
-            <article class="card card-wide">
-
+            <article class="card card-wide" id="settingsCard">
                 <div class="card-header">
-
                     <div>
-
                         <h2 class="card-title">
-
                             Paramètres
-
                         </h2>
 
-
                         <p class="card-subtitle">
-
                             Gestion de la session utilisateur
-
                         </p>
-
                     </div>
-
                 </div>
-
 
                 <button
-
                     id="logoutBtn"
-
                     class="btn btn-danger"
-
                     type="button"
-
                 >
-
                     Se déconnecter
-
                 </button>
-
             </article>
-
 
         </section>
-
     </main>
-
 
     <nav class="bottom-nav">
 
-        <button class="nav-item active" type="button">
-
+        <button
+            class="nav-item active"
+            type="button"
+            onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        >
             <span>🏠</span>
-
             Accueil
-
         </button>
 
-
-        <button class="nav-item" type="button">
-
+        <button
+            class="nav-item"
+            type="button"
+            onclick="document.getElementById('linkCard').scrollIntoView()"
+        >
             <span>🔗</span>
-
             Mon lien
-
         </button>
 
-
-        <button class="nav-item" type="button">
-
+        <button
+            class="nav-item"
+            type="button"
+            onclick="document.getElementById('teamCard').scrollIntoView()"
+        >
             <span>👥</span>
-
             Équipe
-
         </button>
 
-
-        <button class="nav-item" type="button">
-
+        <button
+            class="nav-item"
+            type="button"
+            onclick="document.getElementById('progressCard').scrollIntoView()"
+        >
             <span>📊</span>
-
             Progression
-
         </button>
 
+        <button
+            class="nav-item"
+            type="button"
+            onclick="window.location.href='faq.html'"
+        >
+            <span>❓</span>
+            FAQ
+        </button>
 
-      <button
-    class="nav-item"
-    type="button"
-    onclick="window.location.href='faq.html'"
->
-    <span>❓</span>
+        <button
+            class="nav-item"
+            type="button"
+            onclick="document.getElementById('settingsCard').scrollIntoView()"
+        >
+            <span>⚙️</span>
+            Paramètres
+        </button>
 
-    FAQ
-</button>
-
-<button class="nav-item" type="button">
-
-    <span>⚙️</span>
-
-    Paramètres
-
-</button>
-
-    </nav> 
-
+    </nav>
 
 </div>
 
-
 <script>
-
     const storedUser = localStorage.getItem("user");
-
 
     let user = null;
 
-
     try {
-
         user = storedUser
-
             ? JSON.parse(storedUser)
-
             : null;
-
     } catch (error) {
-
         console.error(
-
             "Impossible de lire les données utilisateur :",
-
             error
-
         );
-
     }
-
 
     const welcomeTitle =
-
         document.getElementById("welcomeTitle");
 
-
     const accountStatusBadge =
-
         document.getElementById("accountStatusBadge");
 
-
     const linkStatusBadge =
-
         document.getElementById("linkStatusBadge");
 
-
     const pointFocalLink =
-
         document.getElementById("pointFocalLink");
 
-
     const profileEmail =
-
         document.getElementById("profileEmail");
 
-
     const profileWhatsapp =
-
         document.getElementById("profileWhatsapp");
 
-
     const profileLanguage =
-
         document.getElementById("profileLanguage");
 
-
     const profileStatus =
-
         document.getElementById("profileStatus");
 
-
     const series1Code =
-
         document.getElementById("series1Code");
 
-
     const series2Code =
-
         document.getElementById("series2Code");
 
-
     const series3Code =
+        document.getElementById("series3Code");
 
-       document.getElementById("series3Code");
+    const victoryWorldStatus =
+        document.getElementById("victoryWorldStatus");
 
-const victoryWorldStatus =
-    document.getElementById("victoryWorldStatus");
     const copyLinkBtn =
-
         document.getElementById("copyLinkBtn");
 
-
     const shareLinkBtn =
-
         document.getElementById("shareLinkBtn");
 
-
     const logoutBtn =
-
         document.getElementById("logoutBtn");
 
-
     const continueJourneyBtn =
-
         document.getElementById("continueJourneyBtn");
 
+    const joinedOpportunities =
+        document.getElementById("joinedOpportunities");
 
-   
+    const activeCodes =
+        document.getElementById("activeCodes");
 
-function getPointFocalLink(currentUser) {
+    const progressPercent =
+        document.getElementById("progressPercent");
 
-    if (!currentUser) {
+    const progressBar =
+        document.getElementById("progressBar");
 
-        return "";
+    const progressLabel =
+        document.getElementById("progressLabel");
 
+    const currentStepText =
+        document.getElementById("currentStepText");
+
+    function getPointFocalLink(currentUser) {
+        if (!currentUser) {
+            return "";
+        }
+
+        const code =
+            currentUser.invitationCodeSeries1
+            || currentUser.invitation_code_series_1
+            || "";
+
+        if (!code) {
+            return "";
+        }
+
+        return (
+            "https://pointfocalapp.com/register.html?ref="
+            + encodeURIComponent(code)
+        );
     }
-
-
-    const code =
-
-        currentUser.invitationCodeSeries1
-
-        || currentUser.invitation_code_series_1
-
-        || "";
-
-
-    if (!code) {
-
-        return "";
-
-    }
-
-
-    return (
-
-        "https://pointfocalapp.com/register.html?ref="
-
-        + encodeURIComponent(code)
-
-    );
-
-}
 
     function formatLanguage(language) {
-
         const labels = {
-
             fr: "Français",
-
             en: "English",
-
             es: "Español",
-
             pt: "Português",
-
             ar: "العربية",
-
             hi: "हिन्दी"
-
         };
 
-
-        return labels[language] || language || "Français";
-
+        return labels[language]
+            || language
+            || "Français";
     }
 
+    function countActiveCodes(currentUser) {
+        if (!currentUser) {
+            return 0;
+        }
+
+        const codes = [
+            currentUser.invitationCodeSeries1
+                || currentUser.invitation_code_series_1,
+
+            currentUser.invitationCodeSeries2
+                || currentUser.invitation_code_series_2,
+
+            currentUser.invitationCodeSeries3
+                || currentUser.invitation_code_series_3
+        ];
+
+        return codes.filter(Boolean).length;
+    }
 
     function renderDashboard() {
-
         if (!user) {
-
-            welcomeTitle.textContent = "Bienvenue sur Point Focal";
+            welcomeTitle.textContent =
+                "Bienvenue sur Point Focal";
 
             return;
-
         }
-
 
         const email =
-
             user.email || "Utilisateur";
 
-
         const link =
-
             getPointFocalLink(user);
 
-
         const linkActive =
-
             user.linkActive === true
-
             || user.link_active === true
-
             || Boolean(link);
 
+        const victoryWorldLink =
+            user.victoryWorldLink
+            || user.victory_world_link
+            || "";
 
         welcomeTitle.textContent =
-
             `Bienvenue, ${email}`;
 
-
         profileEmail.textContent =
-
             user.email || "—";
 
-
         profileWhatsapp.textContent =
-
             user.whatsapp || "—";
 
-
         profileLanguage.textContent =
-
             formatLanguage(user.language);
 
-
         profileStatus.textContent =
-
             user.status || "En vérification";
 
-
         series1Code.textContent =
-
             user.invitationCodeSeries1
-
             || user.invitation_code_series_1
-
             || "Non généré";
-
 
         series2Code.textContent =
-
             user.invitationCodeSeries2
-
             || user.invitation_code_series_2
-
             || "Non généré";
-
 
         series3Code.textContent =
-
             user.invitationCodeSeries3
-
             || user.invitation_code_series_3
-
             || "Non généré";
-const victoryWorldLink =
-    user.victoryWorldLink
-    || user.victory_world_link
-    || "";
 
-if (victoryWorldLink) {
+        activeCodes.textContent =
+            String(countActiveCodes(user));
 
-    victoryWorldStatus.textContent =
-        "En cours";
+        if (victoryWorldLink) {
+            victoryWorldStatus.textContent =
+                "En cours";
 
-    victoryWorldStatus.style.color =
-        "var(--green)";
+            victoryWorldStatus.style.color =
+                "var(--green)";
 
-} else {
+            joinedOpportunities.textContent =
+                "2";
 
-    victoryWorldStatus.textContent =
-        "À rejoindre";
+            progressPercent.textContent =
+                "65%";
 
-    victoryWorldStatus.style.color =
-        "var(--yellow)";
-}
+            progressBar.style.width =
+                "65%";
+
+            progressLabel.textContent =
+                "65 % terminé";
+
+            currentStepText.textContent =
+                "Étape actuelle : progression dans Victory World.";
+        } else {
+            victoryWorldStatus.textContent =
+                "À rejoindre";
+
+            victoryWorldStatus.style.color =
+                "var(--yellow)";
+
+            joinedOpportunities.textContent =
+                "1";
+
+            progressPercent.textContent =
+                "35%";
+
+            progressBar.style.width =
+                "35%";
+
+            progressLabel.textContent =
+                "35 % terminé";
+
+            currentStepText.textContent =
+                "Étape actuelle : rejoindre Victory World.";
+        }
 
         if (linkActive) {
-
             accountStatusBadge.textContent =
-
                 "Compte actif";
 
-
             accountStatusBadge.className =
-
                 "badge badge-success";
 
-
             linkStatusBadge.textContent =
-
                 "Lien activé";
 
-
             linkStatusBadge.className =
-
                 "badge badge-success";
 
-
             pointFocalLink.textContent =
-
                 link || "Lien Point Focal actif";
-
         } else {
-
             accountStatusBadge.textContent =
-
                 "Compte en cours";
 
-
             accountStatusBadge.className =
-
                 "badge badge-warning";
-
 
             linkStatusBadge.textContent =
-
                 "Lien non activé";
 
-
             linkStatusBadge.className =
-
                 "badge badge-warning";
 
-
             pointFocalLink.textContent =
-
                 "Votre lien Point Focal sera affiché ici.";
-
         }
-
     }
-
 
     copyLinkBtn.addEventListener(
-
         "click",
-
         async function () {
-
-            const link = getPointFocalLink(user);
-
+            const link =
+                getPointFocalLink(user);
 
             if (!link) {
-
                 alert(
-
                     "Votre lien Point Focal n’est pas encore disponible."
-
                 );
 
                 return;
-
             }
-
 
             try {
-
                 await navigator.clipboard.writeText(link);
 
-
                 alert(
-
                     "Lien Point Focal copié."
-
                 );
-
             } catch (error) {
-
                 console.error(error);
 
-
                 alert(
-
                     "Impossible de copier automatiquement le lien."
-
                 );
-
             }
-
         }
-
     );
-
 
     shareLinkBtn.addEventListener(
-
         "click",
-
         async function () {
-
-            const link = getPointFocalLink(user);
-
+            const link =
+                getPointFocalLink(user);
 
             if (!link) {
-
                 alert(
-
                     "Votre lien Point Focal n’est pas encore disponible."
-
                 );
 
                 return;
-
             }
-
 
             if (navigator.share) {
-
                 try {
-
                     await navigator.share({
-
                         title: "Point Focal",
-
                         text:
-
                             "Rejoignez Point Focal avec mon lien personnel.",
-
                         url: link
-
                     });
-
                 } catch (error) {
-
                     console.error(error);
-
                 }
 
-
                 return;
-
             }
 
+            try {
+                await navigator.clipboard.writeText(link);
 
-            alert(
+                alert(
+                    "Le partage direct n’est pas disponible. Le lien a été copié."
+                );
+            } catch (error) {
+                console.error(error);
 
-                "Le partage direct n’est pas disponible sur ce navigateur."
-
-            );
-
+                alert(
+                    "Le partage direct n’est pas disponible sur ce navigateur."
+                );
+            }
         }
-
     );
-
 
     continueJourneyBtn.addEventListener(
-    "click",
-    function () {
-        window.location.href = "victory-world.html";
-    }
-);
-
-
-    logoutBtn.addEventListener(
-
         "click",
-
         function () {
-
-            localStorage.removeItem("token");
-
-            localStorage.removeItem("user");
-
-
-            window.location.replace("login.html");
-
+            window.location.href =
+                "victory-world.html";
         }
-
     );
 
-victoryWorldStatus.addEventListener(
-    "click",
-    function () {
-        window.location.href =
-            "victory-world.html";
-    }
-);
+    victoryWorldStatus.addEventListener(
+        "click",
+        function () {
+            window.location.href =
+                "victory-world.html";
+        }
+    );
 
-renderDashboard();
+    logoutBtn.addEventListener(
+        "click",
+        function () {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
 
+            window.location.replace(
+                "login.html"
+            );
+        }
+    );
+
+    renderDashboard();
 </script>
 
-
 </body>
-
-
 </html>
