@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>POINT FOCAL - FAQ</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: #0b0e11;
+            --surface: #1e2329;
+            --surface-soft: #151a20;
+            --border: #2b3139;
+            --yellow: #f0b90b;
+            --yellow-dark: #d9a600;
+            --text: #eaecef;
+            --muted: #a7b0ba;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--background);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: rgba(11, 14, 17, 0.96);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .back-btn {
+            width: 42px;
+            height: 42px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .brand strong {
+            display: block;
+            color: var(--yellow);
+            font-size: 16px;
+        }
+
+        .brand span {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .main {
+            width: 100%;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 20px 14px 50px;
+        }
+
+        .intro {
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(240, 185, 11, 0.18),
+                    rgba(240, 185, 11, 0.03)
+                ),
+                var(--surface);
+            border: 1px solid rgba(240, 185, 11, 0.35);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .intro h1 {
+            margin: 0;
+            color: var(--yellow);
+            font-size: 25px;
+        }
+
+        .intro p {
+            margin: 10px 0 0;
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .faq-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .faq-question span:last-child {
+            color: var(--yellow);
+            font-size: 20px;
+        }
+
+        .faq-answer {
+            display: none;
+            padding: 0 16px 16px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .faq-item.open .faq-answer {
+            display: block;
+        }
+
+        .faq-item.open .faq-question span:last-child {
+            transform: rotate(45deg);
+        }
+
+        .support-box {
+            margin-top: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .support-box h2 {
+            margin: 0 0 8px;
+            font-size: 18px;
+        }
+
+        .support-box p {
+            margin: 0 0 14px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 13px 14px;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--yellow);
+            color: #121212;
+        }
+
+        .btn-primary:hover {
+            background: var(--yellow-dark);
+        }
+
+        .btn-secondary {
+            margin-top: 10px;
+            background: #2b3139;
+            color: var(--text);
+            border: 1px solid #3b424c;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <button
+        id="backBtn"
+        class="back-btn"
+        type="button"
+        aria-label="Retour"
+    >
+        ←
+    </button>
+
+    <div class="brand">
+        <strong>POINT FOCAL</strong>
+        <span>Questions fréquentes</span>
+    </div>
+</header>
+
+<main class="main">
+
+    <section class="intro">
+        <h1>Questions fréquentes</h1>
+
+        <p>
+            Retrouvez ici les réponses aux principales questions
+            concernant votre compte, votre lien Point Focal,
+            vos opportunités et votre progression.
+        </p>
+    </section>
+
+    <section class="faq-list">
+
+        <article class="faq-item">
+            <button class="faq-question" type="button">
+                <span>Qu’est-ce que Point Focal ?</span>
+                <span>+</span>
+            </button>
+
+            <div class="faq-answer">
+                Point Focal est une plateforme qui relie plusieurs
+                opportunités à travers un seul lien personnel.
+                Elle aide chaque membre à suivre son parcours,
+                son équipe et ses liens de parrainage.
+            </div>
+        </article>
+
+        <article class="faq-item">
+            <button class="faq-question" type="button">
+                <span>Pourquoi dois-je regarder la vidéo ?</span>
+                <span>+</span>
+            </button>
+
+            <div class="faq-answer">
+                La vidéo présente le fonctionnement de Point Focal
+                et permet à chaque nouveau membre de comprendre
+                correctement le parcours avant de continuer.
+            </div>
+        </article>
+
+        <article class="faq-item">
+            <button class="faq-question" type="button">
+                <span>Combien de filleuls directs puis-je avoir ?</span>
+                <span>+</span>
+            </button>
+
+            <div class="faq-answer">
+                Chaque membre peut avoir au maximum deux filleuls
+                directs, y compris les filleuls personnels.
+                Les inscriptions supplémentaires sont distribuées
+                automatiquement selon le système prévu.
+            </div>
+        </article>
+
+        <article class="faq-item">
+            <button class="faq-question" type="button">
+                <span>Comment obtenir mon lien Point Focal ?</span>
+                <span>+</span>
+            </button>
+
+            <div class="faq-answer">
+                Vous devez terminer les premières étapes du parcours,
+                enregistrer les informations demandées et faire valider
+                votre progression. Votre lien personnel est ensuite
+                généré automatiquement.
+            </div>
+        </article>
+
+        <article class="faq-item">
+            <button class="faq-question" type="button">
+                <span>Comment rejoindre Victory Automatic ?</span>
+                <span>+</span>
+            </button>
+
+            <div class="faq-answer">
+                Suivez le lien du parrain présenté par Point Focal,
+                créez votre compte Victory Automatic, puis revenez
+                dans Point Focal afin d’enregistrer les informations
+                demandées.
+            </div>
+        </article>
+
+        <article class="faq-item">
+            <button class="faq-question" type="button">
+                <span>Comment rejoindre Victory World ?</span>
+                <span>+</span>
+            </button>
+
+            <div class="faq-answer">
+                Depuis votre tableau de bord, appuyez sur
+                « Continuer mon parcours », ouvrez Victory World,
+                créez votre compte, puis enregistrez votre lien
+                Victory World personnel dans Point Focal.
+            </div>
+        </article>
+
+        <article class="faq-item">
+            <button class="faq-question" type="button">
+                <span>Pourquoi mon statut affiche-t-il « À rejoindre » ?</span>
+                <span>+</span>
+            </button>
+
+            <div class="faq-answer">
+                Cela signifie que votre lien personnel pour cette
+                opportunité n’a pas encore été enregistré ou reconnu
+                par Point Focal.
+            </div>
+        </article>
+
+        <article class="faq-item">
+            <button class="faq-question" type="button">
+                <span>Que signifie « Verrouillé » ?</span>
+                <span>+</span>
+            </button
