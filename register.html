@@ -563,19 +563,22 @@
       const forgotBox = document.getElementById("forgotPasswordBox");
       const authForm = document.getElementById("authForm");
 
-      forgotBox.style.display = "none";
-
-      // Réafficher tous les éléments du formulaire
+      // Réafficher tous les éléments du formulaire SAUF forgotPasswordBox
       Array.from(authForm.children).forEach((element) => {
-        element.style.display = "";
+        if (element.id !== "forgotPasswordBox") {
+          element.style.display = "";
+        }
       });
+
+      // Puis cacher forgotPasswordBox
+      forgotBox.style.display = "none";
 
       // Restaurer la visibilité correcte en fonction du mode
       document.getElementById("whatsappGroup").style.display = isRegisterMode ? "block" : "none";
       document.getElementById("sponsorGroup").style.display = isRegisterMode ? "block" : "none";
       document.getElementById("confirmGroup").style.display = isRegisterMode ? "block" : "none";
       
-      // Effacer le champ de récupération et les messages
+      // Effacer le champ de récupération
       document.getElementById("forgotEmail").value = "";
     }
 
