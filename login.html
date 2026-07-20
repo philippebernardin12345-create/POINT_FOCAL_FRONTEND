@@ -209,15 +209,32 @@
         return false;
     }
 
-    return (
-        user.linkActive === true ||
-        user.link_active === true ||
-        Boolean(user.pointFocalLink) ||
-        Boolean(user.point_focal_link) ||
-        Boolean(user.publicLink) ||
-        Boolean(user.public_link) ||
-        Boolean(user.victoryPersonalLink) ||
-        Boolean(user.victory_personal_link)
+    const linkIsActive =
+        user.linkActive === true
+        || user.link_active === true
+        || user.linkActive === 1
+        || user.link_active === 1
+        || String(user.linkActive).toLowerCase() === "true"
+        || String(user.link_active).toLowerCase() === "true";
+
+    const pointFocalLink =
+        user.pointFocalLink
+        || user.point_focal_link
+        || user.publicLink
+        || user.public_link
+        || user.victoryPersonalLink
+        || user.victory_personal_link
+        || "";
+
+    const invitationCode =
+        user.invitationCodeSeries1
+        || user.invitation_code_series_1
+        || "";
+
+    return Boolean(
+        linkIsActive
+        || String(pointFocalLink).trim()
+        || String(invitationCode).trim()
     );
 }
 
@@ -292,12 +309,10 @@
     loginUser
 );
 
-alert(JSON.stringify(currentUser, null, 2));
-
 localStorage.setItem(
     "user",
-            JSON.stringify(currentUser)
-        );
+    JSON.stringify(currentUser)
+);
 
         if (userHasPointFocalLink(currentUser)) {
             window.location.replace("dashboard.html");
