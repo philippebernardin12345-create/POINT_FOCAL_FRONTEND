@@ -765,13 +765,47 @@
                             }
                         );
 
-                    ✋✋✋✋showMessage(
-                        data.message
-                        || "Paiement Victory World validé.",
-                        "success"
-                    );
+                    showMessage(
+    data.message
+    || "Paiement Victory World validé.",
+    "success"
+);
 
-                    await loadStatus();
+await loadStatus();
+
+if (
+    data.nextOpportunityUnlocked
+    && data.nextOpportunity
+) {
+    const existingButton =
+        document.getElementById(
+            "nextOpportunityButton"
+        );
+
+    if (!existingButton) {
+
+        const nextButton =
+            document.createElement(
+                "a"
+            );
+
+        nextButton.id =
+            "nextOpportunityButton";
+
+        nextButton.href =
+            data.nextOpportunity.entry_url;
+
+        nextButton.textContent =
+            `Je rejoins ${data.nextOpportunity.name}`;
+
+        nextButton.className =
+            "btn btn-green";
+
+        validatedSection.appendChild(
+            nextButton
+        );
+    }
+}
 
                 } catch (error) {
                     showMessage(
