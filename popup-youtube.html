@@ -94,33 +94,200 @@
 </div>
 
 <script>
-    let timeLeft = 10;
-    const timerDisplay = document.getElementById('timer');
-    const btnContinue = document.getElementById('btnContinue');
+ <script>
+const timerDisplay =
+  document.getElementById("timer");
 
-    const countdown = setInterval(() => {
-        timeLeft--;
+const btnContinue =
+  document.getElementById("btnContinue");
 
-        if (timeLeft > 0) {
-            timerDisplay.innerText = `Attente obligatoire : ${timeLeft}s`;
-        } else {
-            clearInterval(countdown);
-            timerDisplay.innerText = "✓ Règle lue et comprise de manière permanente.";
-            timerDisplay.style.color = "#02C076";
-            btnContinue.innerText = "JE COMPRENDS — PASSER À LA VIDÉO";
-            btnContinue.disabled = false;
-            btnContinue.classList.add('active');
+let countdown = null;
+
+function hasPointFocalLink(user) {
+  if (!user) {
+    return false;
+  }
+
+  const pointFocalLink =
+    user.point_focal_link ||
+    user.pointFocalLink ||
+    user.personal_link ||
+    user.personalLink ||
+    user.invitation_link ||
+    user.invitationLink ||
+    user.invitation_code_series_1 ||
+    user.invitationCodeSeries1;
+
+  return Boolean(
+    pointFocalLink &&
+    String(pointFocalLink).trim()
+  );
+}
+
+function readStoredUser() {
+  const possibleKeys = [
+    "point_focal_user",
+    "user",
+    "currentUser"
+  ];
+
+  for (const key of possibleKeys) {
+    try {
+      const savedUser =
+        localStorage.getItem(key);
+
+      if (!savedUser) {
+        continue;
+      }
+
+      const parsedUser =
+        JSON.parse(savedUser);
+
+      if (parsedUser) {
+        return parsedUser;
+      }
+    } catch (error) {
+      console.error(
+        `Utilisateur invalide dans ${key}`,
+        error
+      );
+    }
+  }
+
+  return null;
+}
+
+function getToken() {
+  return (
+    localStorage.getItem("token") ||
+    localStorage.getItem("accessToken") ||
+    localStorage.getItem("authToken") ||
+    ""
+  );
+}
+
+async function getUserFromServer() {
+  const token = getToken();
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(
+      "https://point-focal.onrender.com/api/auth/me",
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-    }, 1000);
+      }
+    );
 
-    btnContinue.addEventListener('click', (e) => {
-        e.preventDefault();
+    if (!response.ok) {
+      return null;
+    }
 
-        sessionStorage.setItem("popupYoutubeOk", "true");
+    const result = await response.json();
 
-        window.location.href = "./video.html";
-    });
+    return (
+      result.user ||
+      result.data ||
+      result
+    );
+  } catch (error) {
+    console.error(
+      "Impossible de vérifier le compte :",
+      error
+    );
+
+    return null;
+  }
+}
+
+function startCountdown() {
+  let timeLeft = 10;
+
+  timerDisplay.innerText =
+    `Attente obligatoire : ${timeLeft}s`;
+
+  countdown = setInterval(() => {
+    timeLeft--;
+
+    if (timeLeft > 0) {
+      timerDisplay.innerText =
+        `Attente obligatoire : ${timeLeft}s`;
+
+      return;
+    }
+
+    clearInterval(countdown);
+
+    timerDisplay.innerText =
+      "✓ Règle lue et comprise de manière permanente.";
+
+    timerDisplay.style.color =
+      "#02C076";
+
+    btnContinue.innerText =
+      "JE COMPRENDS — PASSER À LA VIDÉO";
+
+    btnContinue.disabled = false;
+    btnContinue.classList.add("active");
+  }, 1000);
+}
+
+async function initializePopup() {
+  timerDisplay.innerText =
+    "Vérification de votre compte...";
+
+  const storedUser = readStoredUser();
+
+  if (hasPointFocalLink(storedUser)) {
+    window.location.replace(
+      "./dashboard.html"
+    );
+
+    return;
+  }
+
+  const serverUser =
+    await getUserFromServer();
+
+  if (hasPointFocalLink(serverUser)) {
+    localStorage.setItem(
+      "point_focal_user",
+      JSON.stringify(serverUser)
+    );
+
+    window.location.replace(
+      "./dashboard.html"
+    );
+
+    return;
+  }
+
+  startCountdown();
+}
+
+btnContinue.addEventListener(
+  "click",
+  (event) => {
+    event.preventDefault();
+
+    if (btnContinue.disabled) {
+      return;
+    }
+
+    sessionStorage.setItem(
+      "popupYoutubeOk",
+      "true"
+    );
+
+    window.location.href =
+      "./video.html";
+  }
+);
+
+initializePopup();
 </script>
-
-</body>
-</html>
