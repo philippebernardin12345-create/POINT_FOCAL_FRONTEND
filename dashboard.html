@@ -506,7 +506,7 @@
 
     <strong>POINT FOCAL</strong>
 
-</div>  
+</div>
                 <span>Tableau de bord utilisateur</span>
             </div>
         </div>
@@ -737,26 +737,7 @@
                         </div>
                     </div>
 
-                    <div class="opportunity">
-                        <div class="opportunity-icon">
-                            S2
-                        </div>
 
-                        <div class="opportunity-content">
-                            <strong>Générateur série 2</strong>
-
-                            <span>
-                                Disponible après les premières opportunités
-                            </span>
-                        </div>
-
-                        <div
-                            class="opportunity-status"
-                            style="color: var(--muted); cursor: default;"
-                        >
-                            Verrouillé
-                        </div>
-                    </div>
 
                 </div>
             </article>
@@ -774,22 +755,13 @@
                     </div>
                 </div>
 
-                <div class="info-list">
-                    <div class="info-item">
-                        <span>Série 1</span>
-                        <strong id="series1Code">Non généré</strong>
-                    </div>
 
-                    <div class="info-item">
-                        <span>Série 2</span>
-                        <strong id="series2Code">Non généré</strong>
-                    </div>
-
-                    <div class="info-item">
-                        <span>Série 3</span>
-                        <strong id="series3Code">Non généré</strong>
-                    </div>
-                </div>
+                  <div class="info-list">
+                      <div class="info-item">
+                          <span>Mon code d’invitation</span>
+                          <strong id="invitationCode">Non généré</strong>
+                      </div>
+                  </div>
             </article>
 
             <article class="card" id="profileCard">
@@ -1032,15 +1004,8 @@
 
     const profileStatus =
         document.getElementById("profileStatus");
-
-    const series1Code =
-        document.getElementById("series1Code");
-
-    const series2Code =
-        document.getElementById("series2Code");
-
-    const series3Code =
-        document.getElementById("series3Code");
+    const invitationCodeElement =
+        document.getElementById("invitationCode");
 
     const victoryWorldStatus =
         document.getElementById("victoryWorldStatus");
@@ -1081,8 +1046,8 @@
         }
 
         const code =
-            currentUser.invitationCodeSeries1
-            || currentUser.invitation_code_series_1
+            currentUser.invitationCode
+            || currentUser.invitation_code
             || "";
 
         if (!code) {
@@ -1110,26 +1075,19 @@
             || "Français";
     }
 
-    function countActiveCodes(currentUser) {
-        if (!currentUser) {
-            return 0;
-        }
+      function countActiveCodes(currentUser) {
+          if (!currentUser) {
+              return 0;
+          }
 
-        const codes = [
-            currentUser.invitationCodeSeries1
-                || currentUser.invitation_code_series_1,
+          const code =
+              currentUser.invitationCode
+              || currentUser.invitation_code;
 
-            currentUser.invitationCodeSeries2
-                || currentUser.invitation_code_series_2,
+          return code ? 1 : 0;
+      }
 
-            currentUser.invitationCodeSeries3
-                || currentUser.invitation_code_series_3
-        ];
-
-        return codes.filter(Boolean).length;
-    }
-
-    function renderDashboard() {
+      function renderDashboard() {
         if (!user) {
             welcomeTitle.textContent =
                 "Bienvenue sur Point Focal";
@@ -1167,21 +1125,12 @@
 
         profileStatus.textContent =
             user.status || "En vérification";
-
-        series1Code.textContent =
-            user.invitationCodeSeries1
-            || user.invitation_code_series_1
-            || "Non généré";
-
-        series2Code.textContent =
-            user.invitationCodeSeries2
-            || user.invitation_code_series_2
-            || "Non généré";
-
-        series3Code.textContent =
-            user.invitationCodeSeries3
-            || user.invitation_code_series_3
-            || "Non généré";
+        if (invitationCodeElement) {
+            invitationCodeElement.textContent =
+                user.invitationCode
+                || user.invitation_code
+                || "Non généré";
+        }
 
         activeCodes.textContent =
             String(countActiveCodes(user));

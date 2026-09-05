@@ -231,7 +231,7 @@
 
     <h2 id="formTitle">Créer un compte</h2>
     <p id="formSubtitle" class="subtitle-form">
-      Inscription obligatoire avec le code de votre parrain réel.
+      Inscription avec le code du parrain facultatif. Sans code, le système attribue automatiquement le parrain.
     </p>
 
     <form id="authForm">
@@ -246,8 +246,8 @@
       </div>
 
       <div class="form-group" id="sponsorGroup">
-        <label id="lblSponsor">Code du parrain obligatoire</label>
-        <input type="text" id="sponsor" required autocomplete="off">
+        <label id="lblSponsor">Code du parrain (facultatif)</label>
+        <input type="text" id="sponsor" autocomplete="off">
       </div>
 
       <div class="form-group">
@@ -304,12 +304,12 @@
     const translations = {
       FR: {
         titleReg: "Créer un compte",
-        subtitleReg: "Inscription obligatoire avec le code de votre parrain réel.",
+        subtitleReg: "Inscription avec le code du parrain facultatif. Sans code, le système attribue automatiquement le parrain.",
         titleLog: "Connexion",
         subtitleLog: "Accédez à votre espace membre Point Focal.",
         email: "Adresse e-mail",
         whatsapp: "Numéro WhatsApp",
-        sponsor: "Code du parrain obligatoire",
+        sponsor: "Code du parrain (facultatif)",
         password: "Mot de passe",
         confirmPassword: "Confirmer le mot de passe",
         btnReg: "Créer mon compte",
@@ -658,7 +658,7 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const sponsorParam = urlParams.get("ref") || urlParams.get("sponsor") || "ABCD1000";
+      const sponsorParam = urlParams.get("ref") || urlParams.get("sponsor") || "";
 
       const sponsorField = document.getElementById("sponsor");
       sponsorField.value = sponsorParam.toUpperCase();
@@ -683,10 +683,6 @@
       const confirmPassword = document.getElementById("confirmPassword").value;
       let sponsorCode = document.getElementById("sponsor").value.trim().toUpperCase();
 
-      if (!sponsorCode) {
-        sponsorCode = "ABCD1000";
-        document.getElementById("sponsor").value = sponsorCode;
-      }
 
       try {
         if (isRegisterMode) {
