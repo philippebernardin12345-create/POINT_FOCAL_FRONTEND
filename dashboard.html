@@ -966,19 +966,46 @@
 </div>
 
 <script>
-    const storedUser = localStorage.getItem("user");
-
     let user = null;
 
-    try {
-        user = storedUser
-            ? JSON.parse(storedUser)
-            : null;
-    } catch (error) {
-        console.error(
-            "Impossible de lire les données utilisateur :",
-            error
-        );
+    async function loadCurrentUser() {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        return null;
+      }
+
+      try {
+        const response = await fetch("/api/auth/me", {
+          headers: {
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json"
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
+        }
+
+        const data = await response.json();
+        const serverUser = data.user || data;
+
+        if (serverUser && serverUser.id) {
+          localStorage.setItem("user", JSON.stringify(serverUser));
+          return serverUser;
+        }
+      } catch (error) {
+        console.warn("Impossible de récupérer /api/auth/me:", error);
+      }
+
+      const storedUser = localStorage.getItem("user");
+
+      try {
+        return storedUser ? JSON.parse(storedUser) : null;
+      } catch (error) {
+        console.error("Erreur lecture utilisateur local:", error);
+        return null;
+      }
     }
 
     const welcomeTitle =
@@ -1101,10 +1128,17 @@
         const link =
             getPointFocalLink(user);
 
+        const hasInvitationCode = Boolean(
+            user.invitationCode
+            || user.invitation_code
+        );
+
         const linkActive =
-            user.linkActive === true
-            || user.link_active === true
-            || Boolean(link);
+            (
+                user.linkActive === true
+                || user.link_active === true
+            )
+            && hasInvitationCode;
 
         const victoryWorldLink =
             user.victoryWorldLink
@@ -1317,7 +1351,10 @@
         }
     );
 
-    renderDashboard();
+    (async () => {
+      user = await loadCurrentUser();
+      renderDashboard();
+    })();
 </script>
 
 </body>

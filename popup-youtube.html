@@ -114,9 +114,7 @@ function hasPointFocalLink(user) {
     user.personal_link ||
     user.personalLink ||
     user.invitation_link ||
-    user.invitationLink ||
-    user.invitation_code ||
-    user.invitationCode;
+    user.invitationLink;
 
   return Boolean(
     pointFocalLink &&
@@ -125,39 +123,21 @@ function hasPointFocalLink(user) {
 }
 
 function readStoredUser() {
-  const possibleKeys = [
-    "point_focal_user",
-    "user",
-    "currentUser"
-  ];
-
-  for (const key of possibleKeys) {
     try {
-      const savedUser =
-        localStorage.getItem(key);
+      const savedUser = localStorage.getItem("user");
 
       if (!savedUser) {
-        continue;
+        return null;
       }
 
-      const parsedUser =
-        JSON.parse(savedUser);
-
-      if (parsedUser) {
-        return parsedUser;
-      }
+      return JSON.parse(savedUser) || null;
     } catch (error) {
-      console.error(
-        `Utilisateur invalide dans ${key}`,
-        error
-      );
+      console.error("Utilisateur invalide dans localStorage.user", error);
+      return null;
     }
   }
 
-  return null;
-}
-
-function getToken() {
+  function getToken() {
   return (
     localStorage.getItem("token") ||
     localStorage.getItem("accessToken") ||
@@ -242,32 +222,24 @@ async function initializePopup() {
     "Vérification de votre compte...";
 
   const storedUser = readStoredUser();
+    const serverUser = await getUserFromServer();
+    const currentUser = serverUser || storedUser;
 
-  if (hasPointFocalLink(storedUser)) {
-    window.location.replace(
-      "./dashboard.html"
-    );
+    if (serverUser) {
+      localStorage.setItem(
+        "user",
+        JSON.stringify(serverUser)
+      );
+    }
 
-    return;
-  }
+    if (hasPointFocalLink(currentUser)) {
+      window.location.replace(
+        "./dashboard.html"
+      );
+      return;
+    }
 
-  const serverUser =
-    await getUserFromServer();
-
-  if (hasPointFocalLink(serverUser)) {
-    localStorage.setItem(
-      "point_focal_user",
-      JSON.stringify(serverUser)
-    );
-
-    window.location.replace(
-      "./dashboard.html"
-    );
-
-    return;
-  }
-
-  startCountdown();
+    startCountdown();
 }
 
 btnContinue.addEventListener(
