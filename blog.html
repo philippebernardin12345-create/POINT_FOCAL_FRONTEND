@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POINT FOCAL - Blog</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: #0b0e11;
+            --surface: #1e2329;
+            --surface-soft: #151a20;
+            --border: #2b3139;
+            --yellow: #f0b90b;
+            --text: #eaecef;
+            --muted: #a7b0ba;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--background);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+        }
+
+        .topbar {
+            padding: 18px 16px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(11, 14, 17, 0.97);
+        }
+
+        .brand {
+            max-width: 1180px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .brand strong {
+            display: block;
+            color: var(--yellow);
+            font-size: 18px;
+        }
+
+        .brand span {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        main {
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 24px 14px 50px;
+        }
+
+        .hero {
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(240, 185, 11, 0.20),
+                    rgba(240, 185, 11, 0.03)
+                ),
+                var(--surface);
+            border: 1px solid rgba(240, 185, 11, 0.35);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            color: var(--yellow);
+            font-size: 28px;
+        }
+
+        .hero p {
+            margin: 10px 0 0;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .articles {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .article {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .category {
+            display: inline-block;
+            color: var(--yellow);
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .article h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .article p {
+            color: var(--muted);
+            line-height: 1.55;
+            font-size: 13px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 11px 15px;
+            border-radius: 10px
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            background: var(--yellow);
+            color: #121212;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        @media (min-width: 700px) {
+            main {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .articles {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="brand">
+        <img
+            class="logo"
+            src="logo.jpg"
+            alt="Point Focal"
+        >
+        <div>
+            <strong>POINT FOCAL</strong>
+            <span>Blog officiel</span>
+        </div>
+    </div>
+</header>
+
+<main>
+
+    <section class="hero">
+        <h1>Le Blog Point Focal</h1>
+        <p>
+            Découvrez les idées, les stratégies et les actualités
+            qui accompagnent l'évolution du marketing relationnel,
+            du financement participatif et de Point Focal.
+        </p>
+    </section>
+
+    <section class="articles">
+
+        <article class="article">
+            <span class="category">POINT FOCAL</span>
+            <h2>Pourquoi Point Focal a été créé</h2>
+            <p>
+                Comprendre le problème que Point Focal cherche à résoudre
+                dans le développement des réseaux et l'acquisition de nouveaux membres.
+            </p>
+        </article>
+
+        <article class="article">
+            <span class="category">FOLLOW ME</span>
+            <h2>La puissance du Follow Me</h2>
+            <p>
+                Comment un seul lien Point Focal peut accompagner un utilisateur
+                à travers plusieurs opportunités.
+            </p>
+        </article>
+
+        <article class="article">
+            <span class="category">MARKETING RELATIONNEL</span>
+            <h2>Construire un réseau autrement</h2>
+            <p>
+                Réflexions et stratégies autour de la duplication,
+                du recrutement et du développement des réseaux.
+            </p>
+        </article>
+
+        <article class="article">
+            <span class="category">ACTUALITÉS</span>
+            <h2>Actualités Point Focal</h2>
+            <p>
+                Retrouvez progressivement ici les nouveautés,
+                évolutions et annonces importantes de Point Focal.
+            </p>
+        </article>
+
+    </section>
+
+    <a class="back" href="dashboard.html">
+        ← Retour au tableau de bord
+    </a>
+
+</main>
+
+</body>
+</html>
