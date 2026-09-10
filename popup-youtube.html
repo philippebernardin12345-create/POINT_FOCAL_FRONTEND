@@ -218,6 +218,7 @@ function startCountdown() {
 }
 
 async function initializePopup() {
+  if (sessionStorage.getItem("popupYoutubeOk") === "true") { window.location.replace("./victory-link.html"); return; }
   timerDisplay.innerText =
     "Vérification de votre compte...";
 
