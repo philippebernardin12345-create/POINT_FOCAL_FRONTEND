@@ -219,38 +219,28 @@
     }
 
     function userHasPointFocalLink(user) {
-    if (!user) {
-        return false;
+        if (!user) {
+            return false;
+        }
+
+        const linkIsActive =
+            user.linkActive === true
+            || user.link_active === true
+            || user.linkActive === 1
+            || user.link_active === 1
+            || String(user.linkActive).toLowerCase() === "true"
+            || String(user.link_active).toLowerCase() === "true";
+
+        const invitationCode =
+            user.invitationCode
+            || user.invitation_code
+            || "";
+
+        return Boolean(
+            linkIsActive
+            && String(invitationCode).trim()
+        );
     }
-
-    const linkIsActive =
-        user.linkActive === true
-        || user.link_active === true
-        || user.linkActive === 1
-        || user.link_active === 1
-        || String(user.linkActive).toLowerCase() === "true"
-        || String(user.link_active).toLowerCase() === "true";
-
-    const pointFocalLink =
-        user.pointFocalLink
-        || user.point_focal_link
-        || user.publicLink
-        || user.public_link
-        || user.victoryPersonalLink
-        || user.victory_personal_link
-        || "";
-
-    const invitationCode =
-        user.invitationCode
-        || user.invitation_code
-        || "";
-
-    return Boolean(
-        linkIsActive
-        || String(pointFocalLink).trim()
-        || String(invitationCode).trim()
-    );
-}
 
     function videoIsCompleted(videoResult) {
         const session =
