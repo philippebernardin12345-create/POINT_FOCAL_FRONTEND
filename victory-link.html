@@ -187,30 +187,19 @@ h2 {
     Lien Victory Automatic attribué :
   </p>
 
-  <div id="linkDisplay" class="link-box">
+  <a id="linkDisplay" class="link-box" href="#" target="_blank" rel="noopener noreferrer">
     Attribution du lien en cours...
-  </div>
+  </a>
 
   <div class="information-box">
     <strong>Étapes à suivre :</strong><br><br>
 
-    1. Ouvrez Victory Automatic avec le bouton ci-dessous.<br>
+    1. Cliquez sur le lien Victory Automatic attribué ci-dessus.<br>
     2. Créez votre compte avec le lien attribué.<br>
     3. Effectuez votre don directement sur la blockchain.<br>
     4. Revenez ensuite sur Point Focal.<br>
     5. Cliquez sur « J’ai créé mon compte et effectué mon don ».
   </div>
-
-  <a
-    id="victoryBtn"
-    href="#"
-    target="_blank"
-    rel="noopener noreferrer"
-    class="btn btn-victory locked"
-    aria-disabled="true"
-  >
-    Chargement du lien...
-  </a>
 
   <button
     id="nextBtn"
@@ -236,7 +225,7 @@ const API_BASE_URL =
   "https://point-focal.onrender.com/api";
 
 const ASSIGN_URL =
-  `${API_BASE_URL}/victory/assign`;
+  `${API_BASE_URL}/victory-link/assign`;
 
 const REACTIVATE_URL =
   `${API_BASE_URL}/victory-link/reactivate`;
@@ -249,12 +238,7 @@ const timerBox =
   document.getElementById("timerBox");
 
 const linkDisplay =
-  document.getElementById("linkDisplay");
-
-const victoryBtn =
-  document.getElementById("victoryBtn");
-
-const nextBtn =
+  document.getElementById("linkDisplay");const nextBtn =
   document.getElementById("nextBtn");
 
 const reactivateBtn =
@@ -360,15 +344,15 @@ function formatRemainingTime(milliseconds) {
 }
 
 function lockVictoryButton(message) {
-  victoryBtn.href = "#";
-  victoryBtn.classList.add("locked");
+  linkDisplay.href = "#";
+  linkDisplay.classList.add("locked");
 
-  victoryBtn.setAttribute(
+  linkDisplay.setAttribute(
     "aria-disabled",
     "true"
   );
 
-  victoryBtn.textContent =
+  linkDisplay.textContent =
     message || "Lien indisponible";
 }
 
@@ -381,17 +365,17 @@ function unlockVictoryButton() {
     return;
   }
 
-  victoryBtn.href =
+  linkDisplay.href =
     assignedVictoryLink;
 
-  victoryBtn.classList.remove("locked");
+  linkDisplay.classList.remove("locked");
 
-  victoryBtn.setAttribute(
+  linkDisplay.setAttribute(
     "aria-disabled",
     "false"
   );
 
-  victoryBtn.textContent =
+  linkDisplay.textContent =
     "Créer mon compte Victory Automatic";
 }
 
@@ -405,7 +389,7 @@ function showExpiredState() {
   linkDisplay.textContent =
     "Lien temporairement indisponible.";
 
-  victoryBtn.style.display =
+  linkDisplay.style.display =
     "none";
 
   nextBtn.style.display =
@@ -520,7 +504,7 @@ async function assignVictoryLink() {
   linkDisplay.textContent =
     "Attribution du lien Victory Automatic en cours...";
 
-  victoryBtn.style.display =
+  linkDisplay.style.display =
     "block";
 
   nextBtn.style.display =
@@ -728,7 +712,7 @@ async function reactivateAccount() {
   }
 }
 
-victoryBtn.addEventListener(
+linkDisplay.addEventListener(
   "click",
   (event) => {
     if (
