@@ -1388,6 +1388,9 @@
           if ((!linkActive && currentUser.isLeader !== true) || !String(invitationCode).trim()) {
             window.location.replace("provision.html");
           } else {
+            document.body.innerHTML = "<pre style=\"padding:20px;white-space:pre-wrap;\">CURRENT USER : " + JSON.stringify(currentUser, null, 2) + "</pre>";
+            document.body.innerHTML = "<pre style=\"padding:20px;white-space:pre-wrap;\">CURRENT USER : " + JSON.stringify(currentUser, null, 2) + "</pre>";
+            return;
             user = currentUser;
             localStorage.setItem("user", JSON.stringify(currentUser));
             renderDashboard();
