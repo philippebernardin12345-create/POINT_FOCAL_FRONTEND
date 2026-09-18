@@ -405,6 +405,8 @@ function showExpiredState() {
 
   nextBtn.style.display =
     "none";
+  existingVictoryBtn.style.display =
+    "block";
 
   reactivateBtn.style.display =
     "block";
@@ -520,6 +522,9 @@ async function assignVictoryLink() {
 
   nextBtn.style.display =
     "none";
+
+  existingVictoryBtn.style.display =
+    "block";
 
   reactivateBtn.style.display =
     "none";
@@ -788,6 +793,10 @@ existingVictoryBtn.addEventListener(
       return;
     }
 
+    localStorage.setItem(
+      "victoryAccountOpeningStarted",
+      "true"
+    );
     window.location.href = "payment.html";
   }
 );
