@@ -210,6 +210,14 @@ h2 {
   </button>
 
   <button
+    id="existingVictoryBtn"
+    type="button"
+    class="btn btn-next"
+  >
+    J’ai déjà créé mon compte Victory Automatic
+  </button>
+
+  <button
     id="reactivateBtn"
     type="button"
     class="btn btn-reactivate"
@@ -240,6 +248,9 @@ const timerBox =
 const linkDisplay =
   document.getElementById("linkDisplay");const nextBtn =
   document.getElementById("nextBtn");
+
+const existingVictoryBtn =
+  document.getElementById("existingVictoryBtn");
 
 const reactivateBtn =
   document.getElementById("reactivateBtn");
@@ -763,6 +774,21 @@ nextBtn.addEventListener(
 
     window.location.href =
       "payment.html";
+  }
+);
+
+existingVictoryBtn.addEventListener(
+  "click",
+  () => {
+    if (accountExpired) {
+      showStatus(
+        "Votre délai de 24 heures a expiré. Réactivez d’abord votre compte.",
+        "error"
+      );
+      return;
+    }
+
+    window.location.href = "payment.html";
   }
 );
 
