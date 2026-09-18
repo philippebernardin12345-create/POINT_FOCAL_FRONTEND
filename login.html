@@ -295,80 +295,58 @@
     }
 
     async function redirectUser(token, loginUser) {
-        /*
-         * Ordre obligatoire :
-         *
-         * 1. Lien Point Focal déjà créé :
-         *    dashboard.html
-         *
-         * 2. Vidéo déjà terminée :
-         *    provision.html
-         *
-         * 3. Vidéo non terminée :
-         *    popup-youtube.html
-         */
+    /*
+     * Parcours obligatoire :
+     * 1. Lien Point Focal actif : dashboard.html
+     *    => aucun popup, aucune vidéo.
+     * 2. Pas de lien actif :
+     *    - vidéo terminée : provision.html
+     *    - vidéo non terminée : popup-youtube.html
+     */
+    const currentUser = await fetchCurrentUser(token, loginUser);
+    localStorage.setItem("user", JSON.stringify(currentUser));
 
-       const currentUser = await fetchCurrentUser(
-    token,
-    loginUser
-);
+    const hasActivePointFocalLink = userHasPointFocalLink(currentUser);
 
-localStorage.setItem(
-    "user",
-    JSON.stringify(currentUser)
-);
+    if (hasActivePointFocalLink) {
+        window.location.replace("dashboard.html");
+        return;
+    }
 
-        if (userHasPointFocalLink(currentUser)) {
-            window.location.replace("dashboard.html");
+    try {
+        const videoResponse = await fetch(`${BASE_API_URL}/video/session`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json"
+            }
+        });
+
+        if (!videoResponse.ok) {
+            console.error(
+                "Erreur de vérification vidéo :",
+                videoResponse.status,
+                await videoResponse.text()
+            );
+            window.location.replace("popup-youtube.html");
             return;
         }
 
-        try {
-            const videoResponse = await fetch(
-                `${BASE_API_URL}/video/session`,
-                {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        Accept: "application/json"
-                    }
-                }
-            );
+        const videoResult = await readJsonSafely(videoResponse);
 
-            if (!videoResponse.ok) {
-                console.error(
-                    "Erreur de vérification vidéo :",
-                    videoResponse.status,
-                    await videoResponse.text()
-                );
-
-                window.location.replace(
-                    "popup-youtube.html"
-                );
-                return;
-            }
-
-            const videoResult = await readJsonSafely(
-                videoResponse
-            );
-
-            if (videoIsCompleted(videoResult)) {
-                window.location.replace("provision.html");
-                return;
-            }
-
-            window.location.replace("popup-youtube.html");
-        } catch (error) {
-            console.error(
-                "Erreur de redirection :",
-                error
-            );
-
-            window.location.replace("popup-youtube.html");
+        if (videoIsCompleted(videoResult)) {
+            window.location.replace("provision.html");
+            return;
         }
-    }
 
-    loginForm.addEventListener(
+        window.location.replace("popup-youtube.html");
+    } catch (error) {
+        console.error("Erreur de redirection :", error);
+        window.location.replace("popup-youtube.html");
+    }
+}
+
+loginForm.addEventListener(
         "submit",
         async function (event) {
             event.preventDefault();

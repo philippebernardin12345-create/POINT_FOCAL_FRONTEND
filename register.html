@@ -784,7 +784,11 @@
           showSuccess(data.message || "Connexion réussie.");
 
           setTimeout(() => {
-            window.location.href = "popup-youtube.html";
+            if (data.token && data.user) {
+              redirectAfterLogin(data.token, data.user);
+            } else {
+              window.location.href = "login.html";
+            }
           }, 1000);
         }
       } catch (err) {
@@ -792,6 +796,57 @@
         btn.disabled = false;
       }
     });
-  </script>
+  
+  async function redirectAfterLogin(token, loginUser) {
+    const user = loginUser || {};
+
+    const linkActive =
+      user.linkActive === true ||
+      user.linkActive === 1 ||
+      String(user.linkActive).toLowerCase() === "true";
+
+    const invitationCode =
+      user.invitationCode ||
+      user.invitation_code ||
+      "";
+
+    if (linkActive && String(invitationCode).trim()) {
+      window.location.replace("dashboard.html");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BASE_API_URL}/video/session`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json"
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        const session = result?.data || result?.session || result;
+
+        const completed =
+          session?.isCompleted === true ||
+          session?.is_completed === true ||
+          session?.completed === true ||
+          Number(session?.watchedSeconds) >= 200 ||
+          Number(session?.watched_seconds) >= 200;
+
+        if (completed) {
+          window.location.replace("provision.html");
+          return;
+        }
+      }
+    } catch (error) {
+      console.error("Erreur de vérification vidéo :", error);
+    }
+
+    window.location.replace("popup-youtube.html");
+  }
+
+</script>
 </body>
 </html>

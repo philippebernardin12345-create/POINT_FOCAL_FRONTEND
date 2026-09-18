@@ -899,7 +899,7 @@ async function validerPaiement() {
 
   if (!isValidVictoryLink(victoryLink)) {
     showStatus(
-      "Le lien doit respecter le format https://victoryautomatic.com/user/register/identifiant."
+      `DIAGNOSTIC: lien lu = [${victoryLink}] ; validation = [${isValidVictoryLink(victoryLink)}]`
     );
 
     victoryLinkInput.focus();
