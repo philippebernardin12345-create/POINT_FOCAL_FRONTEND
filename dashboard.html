@@ -1385,7 +1385,7 @@
             currentUser.invitation_code ||
             ""
           );
-          if (!linkActive || !String(invitationCode).trim()) {
+          if ((!linkActive && currentUser.isLeader !== true) || !String(invitationCode).trim()) {
             window.location.replace("provision.html");
           } else {
             user = currentUser;
