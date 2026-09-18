@@ -1396,7 +1396,7 @@
           console.error("Accès dashboard refusé :", error);
           localStorage.removeItem("token");
           localStorage.removeItem("user");
-          window.location.replace("login.html");
+          alert("ERREUR DASHBOARD : " + (error.stack || error.message || error));
         }
       }
 
