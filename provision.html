@@ -212,17 +212,6 @@
         try {
             const user = JSON.parse(savedUser);
 
-            if (
-                user.link_active === true ||
-                user.linkActive === true ||
-                user.point_focal_link ||
-                user.pointFocalLink ||
-                user.public_link ||
-                user.publicLink
-            ) {
-                window.location.replace("dashboard.html");
-                return false;
-            }
 
             return true;
         } catch (error) {
