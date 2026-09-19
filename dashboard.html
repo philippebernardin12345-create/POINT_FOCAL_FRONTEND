@@ -1333,7 +1333,6 @@
    continueJourneyBtn.addEventListener(
     "click",
     function () {
-        alert("Je suis bien dans dashboard.html");
 
         window.location.href =
             "provision.html";
@@ -1388,7 +1387,6 @@
           if ((!linkActive && currentUser.isLeader !== true) || !String(invitationCode).trim()) {
             window.location.replace("provision.html");
           } else {
-            return;
             user = currentUser;
             localStorage.setItem("user", JSON.stringify(currentUser));
             renderDashboard();
