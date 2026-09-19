@@ -1385,7 +1385,7 @@
             ""
           );
           const isLeader = currentUser?.isLeader === true || currentUser?.is_leader === true;
-          if ((!linkActive && !isLeader) || !String(invitationCode).trim()) {
+          if (!isLeader && (!linkActive || !String(invitationCode).trim())) {
             window.location.replace("provision.html");
           } else {
             user = currentUser;
