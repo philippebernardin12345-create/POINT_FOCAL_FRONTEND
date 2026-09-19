@@ -308,6 +308,13 @@
 
     const hasActivePointFocalLink = userHasPointFocalLink(currentUser);
 
+    const isLeader = currentUser?.isLeader === true || currentUser?.is_leader === true;
+
+    if (isLeader) {
+        window.location.replace("dashboard.html");
+        return;
+    }
+
     if (hasActivePointFocalLink) {
         window.location.replace("dashboard.html");
         return;
