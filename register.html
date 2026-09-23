@@ -658,7 +658,7 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const sponsorParam = urlParams.get("ref") || urlParams.get("sponsor") || "";
+      const sponsorParam = urlParams.get("ref") || urlParams.get("sponsor") || "ABCD1000";
 
       const sponsorField = document.getElementById("sponsor");
       sponsorField.value = sponsorParam.toUpperCase();
