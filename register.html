@@ -656,14 +656,20 @@
 
     // ----- GESTION DU SPONSOR -----
 
-    window.addEventListener("DOMContentLoaded", () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const sponsorParam = urlParams.get("ref") || urlParams.get("sponsor") || "ABCD1000";
+
+      const sponsorParam = (
+        urlParams.get("ref") ||
+        urlParams.get("sponsor") ||
+        "ABCD1000"
+      ).trim().toUpperCase();
 
       const sponsorField = document.getElementById("sponsor");
-      sponsorField.value = sponsorParam.toUpperCase();
-      sponsorField.readOnly = true;
-    });
+
+      if (sponsorField) {
+        sponsorField.value = sponsorParam;
+        sponsorField.readOnly = true;
+      }
 
     // ----- SOUMISSION DU FORMULAIRE -----
 
