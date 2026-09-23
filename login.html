@@ -394,11 +394,21 @@ loginForm.addEventListener(
                 const data = await readJsonSafely(response);
 
                 if (!response.ok) {
-                    showError(
+                    const errorMessage =
                         data?.message
                         || data?.error
-                        || "Email ou mot de passe incorrect."
-                    );
+                        || "Email ou mot de passe incorrect.";
+
+                    if (
+                        errorMessage.toLowerCase().includes("confirmer") &&
+                        errorMessage.toLowerCase().includes("otp")
+                    ) {
+                        localStorage.setItem("pendingEmail", email);
+                        window.location.href = "confirm-otp.html";
+                        return;
+                    }
+
+                    showError(errorMessage);
                     return;
                 }
 
