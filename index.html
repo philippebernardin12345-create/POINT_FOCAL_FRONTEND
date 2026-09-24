@@ -74,19 +74,58 @@
 </div>
 
 <script>
-    window.addEventListener('DOMContentLoaded', () => {
-        const token = localStorage.getItem('token');
-        const gateWayBtn = document.getElementById('gateWayBtn');
-        
-        if (token) {
-            gateWayBtn.innerText = "Aller au Tableau de Bord";
-            gateWayBtn.href = "dashboard.html";
-        } else {
-            gateWayBtn.innerText = "Commencer l'inscription";
-            gateWayBtn.href = "register.html";
-        }
-    });
-</script>
+      window.addEventListener('DOMContentLoaded', async () => {
+          const token = localStorage.getItem('token');
+          const gateWayBtn = document.getElementById('gateWayBtn');
+
+          const showRegistration = () => {
+              gateWayBtn.innerText = "Commencer l'inscription";
+              gateWayBtn.href = "register.html";
+          };
+
+          if (!token) {
+              showRegistration();
+              return;
+          }
+
+          try {
+              const response = await fetch(
+                  "https://point-focal.onrender.com/api/auth/me",
+                  {
+                      headers: {
+                          Authorization: "Bearer " + token,
+                          Accept: "application/json"
+                      }
+                  }
+              );
+
+              if (!response.ok) {
+                  throw new Error("HTTP " + response.status);
+              }
+
+              const data = await response.json();
+              const currentUser =
+                  data.user || data.data?.user || data.data || data;
+
+              if (!currentUser || !currentUser.id) {
+                  throw new Error("Utilisateur invalide");
+              }
+
+              localStorage.setItem(
+                  "user",
+                  JSON.stringify(currentUser)
+              );
+
+              gateWayBtn.innerText = "Aller au Tableau de Bord";
+              gateWayBtn.href = "dashboard.html";
+          } catch (error) {
+              console.warn("Session locale invalide :", error);
+              localStorage.removeItem("token");
+              localStorage.removeItem("user");
+              showRegistration();
+          }
+      });
+  </script>
 </body>
 </html>
 
