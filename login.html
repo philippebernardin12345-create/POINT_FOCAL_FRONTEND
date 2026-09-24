@@ -66,6 +66,36 @@
             border-color: #ffcc00;
         }
 
+        .password-wrapper {
+            position: relative;
+            margin-top: 10px;
+        }
+
+        .password-wrapper input {
+            margin-top: 0;
+            padding-right: 48px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 4px;
+            transform: translateY(-50%);
+            width: 42px;
+            height: 42px;
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+            color: #aaaaaa;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .password-toggle:focus {
+            outline: 2px solid #ffcc00;
+        }
+
         button {
             width: 100%;
             padding: 12px;
@@ -140,13 +170,22 @@
             required
         >
 
-        <input
-            id="password"
-            type="password"
-            placeholder="Mot de passe"
-            autocomplete="current-password"
-            required
-        >
+        <div class="password-wrapper">
+            <input
+                id="password"
+                type="password"
+                placeholder="Mot de passe"
+                autocomplete="current-password"
+                required
+            >
+            <button
+                id="togglePassword"
+                class="password-toggle"
+                type="button"
+                aria-label="Afficher le mot de passe"
+                aria-pressed="false"
+            >👁</button>
+        </div>
 
         <button id="loginBtn" type="submit">
             Se connecter
@@ -163,6 +202,27 @@
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const passwordInput = document.getElementById("password");
+        const togglePassword = document.getElementById("togglePassword");
+
+        togglePassword?.addEventListener("click", () => {
+            const isHidden = passwordInput.type === "password";
+
+            passwordInput.type = isHidden ? "text" : "password";
+            togglePassword.textContent = isHidden ? "🙈" : "👁";
+            togglePassword.setAttribute(
+                "aria-label",
+                isHidden ? "Masquer le mot de passe" : "Afficher le mot de passe"
+            );
+            togglePassword.setAttribute(
+                "aria-pressed",
+                String(isHidden)
+            );
+        });
+    });
+
+
     const BASE_API_URL = "https://point-focal.onrender.com/api";
 
     const loginForm = document.getElementById("loginForm");
