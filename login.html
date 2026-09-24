@@ -191,6 +191,25 @@
             Se connecter
         </button>
 
+        <div class="link">
+            <span id="forgotPasswordLink" style="cursor:pointer; color:#ffcc00;">
+                Mot de passe oublié ?
+            </span>
+        </div>
+
+        <div id="forgotPasswordBox" style="display:none;">
+            <input
+                id="forgotEmail"
+                type="email"
+                placeholder="Adresse e-mail du compte"
+                autocomplete="email"
+            >
+
+            <button id="forgotPasswordBtn" type="button">
+                Envoyer le lien de réinitialisation
+            </button>
+        </div>
+
         <div id="error" class="box"></div>
         <div id="success" class="box"></div>
     </form>
@@ -222,6 +241,83 @@
         });
     });
 
+
+    const forgotPasswordLink =
+        document.getElementById("forgotPasswordLink");
+    const forgotPasswordBox =
+        document.getElementById("forgotPasswordBox");
+    const forgotEmail =
+        document.getElementById("forgotEmail");
+    const forgotPasswordBtn =
+        document.getElementById("forgotPasswordBtn");
+
+    forgotPasswordLink?.addEventListener("click", () => {
+        const email = document.getElementById("email").value.trim();
+
+        forgotPasswordBox.style.display =
+            forgotPasswordBox.style.display === "none"
+                ? "block"
+                : "none";
+
+        if (forgotPasswordBox.style.display === "block") {
+            if (email) {
+                forgotEmail.value = email;
+            }
+            forgotEmail.focus();
+        }
+    });
+
+    forgotPasswordBtn?.addEventListener("click", async () => {
+        const email = forgotEmail.value.trim();
+
+        if (!email) {
+            showError("Veuillez saisir votre adresse e-mail.");
+            return;
+        }
+
+        forgotPasswordBtn.disabled = true;
+        forgotPasswordBtn.textContent = "Envoi en cours...";
+
+        try {
+            const response = await fetch(
+                "https://point-focal.onrender.com/api/auth/forgot-password",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ email })
+                }
+            );
+
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                showError(
+                    data.message ||
+                    data.error ||
+                    "Impossible d'envoyer le lien de réinitialisation."
+                );
+                return;
+            }
+
+            showSuccess(
+                data.message ||
+                "Un lien de réinitialisation a été envoyé à votre adresse e-mail."
+            );
+
+            forgotEmail.value = "";
+        } catch (error) {
+            console.error("Erreur mot de passe oublié :", error);
+            showError(
+                "Erreur réseau. Attendez quelques secondes puis réessayez."
+            );
+        } finally {
+            forgotPasswordBtn.disabled = false;
+            forgotPasswordBtn.textContent =
+                "Envoyer le lien de réinitialisation";
+        }
+    });
 
     const BASE_API_URL = "https://point-focal.onrender.com/api";
 
