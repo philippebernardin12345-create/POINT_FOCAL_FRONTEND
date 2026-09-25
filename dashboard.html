@@ -1076,25 +1076,33 @@
     const currentStepText =
         document.getElementById("currentStepText");
 
-    function getPointFocalLink(currentUser) {
-        if (!currentUser) {
-            return "";
-        }
+      function getPointFocalLink(currentUser) {
+          if (!currentUser) {
+              return "";
+          }
 
-        const code =
-            currentUser.invitationCode
-            || currentUser.invitation_code
-            || "";
+          const code =
+              currentUser.invitationCode
+              || currentUser.invitation_code
+              || "";
 
-        if (!code) {
-            return "";
-        }
+          const linkActive =
+              currentUser.linkActive === true
+              || currentUser.link_active === true
+              || currentUser.linkActive === 1
+              || currentUser.link_active === 1
+              || String(currentUser.linkActive).toLowerCase() === "true"
+              || String(currentUser.link_active).toLowerCase() === "true";
 
-        return (
-            "https://pointfocalapp.com/register.html?ref="
-            + encodeURIComponent(code)
-        );
-    }
+          if (!code || !linkActive) {
+              return "";
+          }
+
+          return (
+              "https://pointfocalapp.com/register.html?ref="
+              + encodeURIComponent(code)
+          );
+      }
 
     function formatLanguage(language) {
         const labels = {
