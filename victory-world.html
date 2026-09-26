@@ -209,16 +209,14 @@
     <h2>🌍 Victory World</h2>
 
     <p>
-        Inscrivez-vous à Victory World, enregistrez votre lien personnel,
-        puis validez votre paiement de 5 USDT.
+        Inscrivez-vous à Victory World, puis enregistrez votre lien personnel.
     </p>
 
     <div class="info-box">
         <strong>Important :</strong>
 
         <p>
-            L’opportunité suivante ne sera débloquée qu’après la validation
-            réelle du paiement sur la BNB Chain.
+            Après l’enregistrement de votre lien personnel, Point Focal valide votre progression.
         </p>
     </div>
 
@@ -234,30 +232,22 @@
             </span>
         </div>
 
-        <div class="status-line">
-            <span>Paiement minimum :</span>
 
-            <span class="status-value">
-                5 USDT
-            </span>
-        </div>
     </div>
 
     <div
         id="assignedLinkDisplay"
         class="link-box"
     >
-        https://victoryworld.club/longa01
+        Parrain Victory World non encore attribué
     </div>
 
     <a
         id="joinVictoryWorldBtn"
-        href="https://victoryworld.club/longa01"
-        target="_blank"
-        rel="noopener noreferrer"
+        href="#"
         class="btn btn-green"
     >
-        Rejoindre Victory World
+        💳 Rejoindre Victory World et effectuer mon paiement
     </a>
 
     <div class="section">
@@ -281,39 +271,6 @@
             type="button"
         >
             Enregistrer mon lien
-        </button>
-
-    </div>
-
-    <div
-        id="paymentSection"
-        class="section hidden"
-    >
-
-        <h3>2. Valider mon paiement</h3>
-
-        <p>
-            Après le paiement d’au moins 5 USDT, collez le hash de la
-            transaction ci-dessous.
-        </p>
-
-        <label for="transactionHash">
-            Hash de transaction
-        </label>
-
-        <input
-            id="transactionHash"
-            type="text"
-            placeholder="0x..."
-            autocomplete="off"
-        >
-
-        <button
-            id="validatePaymentBtn"
-            class="btn btn-yellow"
-            type="button"
-        >
-            Vérifier mon paiement
         </button>
 
     </div>
@@ -353,9 +310,6 @@
     const API_URL =
         "https://point-focal.onrender.com/api";
 
-    const ROOT_VICTORY_WORLD_LINK =
-        "https://victoryworld.club/longa01";
-
     const token =
         localStorage.getItem("token");
 
@@ -364,29 +318,19 @@
             "statusDisplay"
         );
 
+    const assignedLinkDisplay =
+        document.getElementById(
+            "assignedLinkDisplay"
+        );
+
+    const joinVictoryWorldBtn =
+        document.getElementById(
+            "joinVictoryWorldBtn"
+        );
+
     const personalVictoryWorldLink =
         document.getElementById(
             "personalVictoryWorldLink"
-        );
-
-    const transactionHash =
-        document.getElementById(
-            "transactionHash"
-        );
-
-    const saveVictoryWorldLinkBtn =
-        document.getElementById(
-            "saveVictoryWorldLinkBtn"
-        );
-
-    const validatePaymentBtn =
-        document.getElementById(
-            "validatePaymentBtn"
-        );
-
-    const paymentSection =
-        document.getElementById(
-            "paymentSection"
         );
 
     const validatedSection =
@@ -435,10 +379,6 @@
             return "Validé";
         }
 
-        if (status === "payment_pending") {
-            return "Paiement en attente";
-        }
-
         return "Non commencé";
     }
 
@@ -470,14 +410,6 @@
         } catch (error) {
             return false;
         }
-    }
-
-    function isValidTransactionHash(
-        value
-    ) {
-        return /^0x[a-fA-F0-9]{64}$/.test(
-            String(value || "").trim()
-        );
     }
 
     async function apiCall(
@@ -515,13 +447,70 @@
         return data;
     }
 
+      function showNextOpportunity(data) {
+        const existingButton =
+            document.getElementById(
+                "nextOpportunityButton"
+            );
+
+        if (existingButton) {
+            existingButton.remove();
+        }
+
+        const nextOpportunity =
+            data && data.nextOpportunity;
+
+        const destination =
+            nextOpportunity
+                ? (
+                    nextOpportunity.entry_url
+                    || nextOpportunity.opportunity_url
+                )
+                : null;
+
+        if (
+            !data
+            || !data.nextOpportunityUnlocked
+            || !nextOpportunity
+            || !destination
+        ) {
+            return;
+        }
+
+        const nextButton =
+            document.createElement("a");
+
+        nextButton.id =
+            "nextOpportunityButton";
+
+        nextButton.href =
+            destination;
+
+        nextButton.textContent =
+            `Je rejoins ${nextOpportunity.name}`;
+
+        nextButton.className =
+            "btn btn-green";
+
+        validatedSection.appendChild(
+            nextButton
+        );
+    }
+
     function applyStatus(data) {
         const status =
-            data.status
-            || "not_started";
+            data.status || "not_started";
 
         statusDisplay.textContent =
             translateStatus(status);
+
+        if (data.assignedLink) {
+            assignedLinkDisplay.textContent =
+                data.assignedLink;
+        } else {
+            assignedLinkDisplay.textContent =
+                "Parrain Victory World non encore attribué";
+        }
 
         if (data.victoryWorldLink) {
             personalVictoryWorldLink.value =
@@ -538,13 +527,11 @@
             saveVictoryWorldLinkBtn.textContent =
                 "Lien enregistré";
 
-            paymentSection.classList.add(
-                "hidden"
-            );
-
             validatedSection.classList.remove(
                 "hidden"
             );
+
+            showNextOpportunity(data);
 
             return;
         }
@@ -552,23 +539,6 @@
         validatedSection.classList.add(
             "hidden"
         );
-
-        if (status === "payment_pending") {
-            personalVictoryWorldLink.disabled =
-                true;
-
-            saveVictoryWorldLinkBtn.disabled =
-                true;
-
-            saveVictoryWorldLinkBtn.textContent =
-                "Lien enregistré";
-
-            paymentSection.classList.remove(
-                "hidden"
-            );
-
-            return;
-        }
 
         personalVictoryWorldLink.disabled =
             false;
@@ -578,10 +548,6 @@
 
         saveVictoryWorldLinkBtn.textContent =
             "Enregistrer mon lien";
-
-        paymentSection.classList.add(
-            "hidden"
-        );
     }
 
     async function loadStatus() {
@@ -621,6 +587,69 @@
             );
         }
     }
+
+    joinVictoryWorldBtn
+        .addEventListener(
+            "click",
+            async function (event) {
+                event.preventDefault();
+                hideMessage();
+
+                joinVictoryWorldBtn.style.pointerEvents =
+                    "none";
+
+                const originalText =
+                    joinVictoryWorldBtn.textContent;
+
+                joinVictoryWorldBtn.textContent =
+                    "Attribution du parrain...";
+
+                try {
+                    const data =
+                        await apiCall(
+                            "/victory-world/assign-sponsor",
+                            {
+                                method: "POST"
+                            }
+                        );
+
+                    if (
+                        !data.assignedLink
+                        || !isValidVictoryWorldLink(
+                            data.assignedLink
+                        )
+                    ) {
+                        throw new Error(
+                            "Lien du parrain Victory World invalide."
+                        );
+                    }
+
+                    assignedLinkDisplay.textContent =
+                        data.assignedLink;
+
+                    joinVictoryWorldBtn.textContent =
+                        originalText;
+
+                    joinVictoryWorldBtn.style.pointerEvents =
+                        "";
+
+                    window.location.href =
+                        data.assignedLink;
+
+                } catch (error) {
+                    joinVictoryWorldBtn.textContent =
+                        originalText;
+
+                    joinVictoryWorldBtn.style.pointerEvents =
+                        "";
+
+                    showMessage(
+                        error.message,
+                        "error"
+                    );
+                }
+            }
+        );
 
     saveVictoryWorldLinkBtn
         .addEventListener(
@@ -705,125 +734,7 @@
             }
         );
 
-    validatePaymentBtn
-        .addEventListener(
-            "click",
-            async function () {
-                hideMessage();
-
-                const txHash =
-                    String(
-                        transactionHash.value
-                        || ""
-                    ).trim();
-
-                if (!txHash) {
-                    showMessage(
-                        "Collez le hash de votre transaction.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-                if (
-                    !isValidTransactionHash(
-                        txHash
-                    )
-                ) {
-                    showMessage(
-                        "Le hash doit commencer par 0x et contenir 66 caractères.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-                validatePaymentBtn.disabled =
-                    true;
-
-                validatePaymentBtn.textContent =
-                    "Vérification blockchain...";
-
-                try {
-                    const data =
-                        await apiCall(
-                            "/victory-world/payment",
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
-
-                                body:
-                                    JSON.stringify({
-                                        txHash:
-                                            txHash
-                                    })
-                            }
-                        );
-
-                    showMessage(
-    data.message
-    || "Paiement Victory World validé.",
-    "success"
-);
-
-await loadStatus();
-
-if (
-    data.nextOpportunityUnlocked
-    && data.nextOpportunity
-) {
-    const existingButton =
-        document.getElementById(
-            "nextOpportunityButton"
-        );
-
-    if (!existingButton) {
-
-        const nextButton =
-            document.createElement(
-                "a"
-            );
-
-        nextButton.id =
-            "nextOpportunityButton";
-
-        nextButton.href =
-            data.nextOpportunity.entry_url;
-
-        nextButton.textContent =
-            `Je rejoins ${data.nextOpportunity.name}`;
-
-        nextButton.className =
-            "btn btn-green";
-
-        validatedSection.appendChild(
-            nextButton
-        );
-    }
-}
-
-                } catch (error) {
-                    showMessage(
-                        error.message,
-                        "error"
-                    );
-
-                } finally {
-                    validatePaymentBtn.disabled =
-                        false;
-
-                    validatePaymentBtn.textContent =
-                        "Vérifier mon paiement";
-                }
-            }
-        );
-
-    loadStatus();
+        loadStatus();
 </script>
 
 </body>
