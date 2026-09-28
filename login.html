@@ -398,21 +398,6 @@
         );
     }
 
-    function videoIsCompleted(videoResult) {
-        const session =
-            videoResult?.data
-            || videoResult?.session
-            || videoResult;
-
-        return (
-            session?.isCompleted === true
-            || session?.is_completed === true
-            || session?.completed === true
-            || Number(session?.watchedSeconds) >= 200
-            || Number(session?.watched_seconds) >= 200
-        );
-    }
-
     async function fetchCurrentUser(token, fallbackUser) {
         try {
             const response = await fetch(
@@ -451,63 +436,39 @@
     }
 
     async function redirectUser(token, loginUser) {
-    /*
-     * Parcours obligatoire :
-     * 1. Lien Point Focal actif : dashboard.html
-     *    => aucun popup, aucune vidéo.
-     * 2. Pas de lien actif :
-     *    - vidéo terminée : provision.html
-     *    - vidéo non terminée : popup-youtube.html
-     */
-    const currentUser = await fetchCurrentUser(token, loginUser);
-    localStorage.setItem("user", JSON.stringify(currentUser));
+        /*
+         * Parcours post-connexion :
+         *
+         * - lien Point Focal actif :
+         *     dashboard.html
+         *
+         * - lien Point Focal non actif :
+         *     provision.html
+         *
+         * La vidéo appartient au parcours préalable
+         * à la création du compte et ne doit pas être
+         * rejouée après confirmation OTP + connexion.
+         *
+         * Aucun bypass spécifique aux leaders.
+         */
+        const currentUser =
+            await fetchCurrentUser(token, loginUser);
 
-    const hasActivePointFocalLink = userHasPointFocalLink(currentUser);
+        localStorage.setItem(
+            "user",
+            JSON.stringify(currentUser)
+        );
 
-    const isLeader = currentUser?.isLeader === true || currentUser?.is_leader === true;
+        const hasActivePointFocalLink =
+            userHasPointFocalLink(currentUser);
 
-    if (isLeader) {
-        window.location.replace("dashboard.html");
-        return;
-    }
-
-    if (hasActivePointFocalLink) {
-        window.location.replace("dashboard.html");
-        return;
-    }
-
-    try {
-        const videoResponse = await fetch(`${BASE_API_URL}/video/session`, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: "application/json"
-            }
-        });
-
-        if (!videoResponse.ok) {
-            console.error(
-                "Erreur de vérification vidéo :",
-                videoResponse.status,
-                await videoResponse.text()
-            );
-            window.location.replace("popup-youtube.html");
+        if (hasActivePointFocalLink) {
+            window.location.replace("dashboard.html");
             return;
         }
 
-        const videoResult = await readJsonSafely(videoResponse);
-
-        if (videoIsCompleted(videoResult)) {
-            window.location.replace("provision.html");
-            return;
-        }
-
-        window.location.replace("popup-youtube.html");
-    } catch (error) {
-        console.error("Erreur de redirection :", error);
-        window.location.replace("popup-youtube.html");
+        window.location.replace("provision.html");
     }
-}
 
 loginForm.addEventListener(
         "submit",
