@@ -869,18 +869,24 @@
   async function redirectAfterLogin(token, loginUser) {
     const user = loginUser || {};
 
-    const linkActive =
-      user.linkActive === true ||
-      user.linkActive === 1 ||
-      String(user.linkActive).toLowerCase() === "true";
-
     const invitationCode =
       user.invitationCode ||
       user.invitation_code ||
       "";
 
-    if (linkActive && String(invitationCode).trim()) {
-      window.location.replace("dashboard.html");
+    if (String(invitationCode).trim()) {
+      try {
+        const response = await fetch(`${BASE_API_URL}/victory-world/status`, {
+          headers: { Authorization: `Bearer ${token}`, Accept: "application/json" }
+        });
+        if (!response.ok) throw new Error("Statut Victory World indisponible");
+        const world = await response.json();
+        window.location.replace(
+          world.status === "validated" ? "dashboard.html" : "victory-world.html"
+        );
+      } catch (error) {
+        showError("Impossible de vérifier la progression Victory World. Réessayez.");
+      }
       return;
     }
 
