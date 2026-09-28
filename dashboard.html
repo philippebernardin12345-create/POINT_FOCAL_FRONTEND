@@ -1186,7 +1186,15 @@
         activeCodes.textContent =
             String(countActiveCodes(user));
 
-        if (victoryWorldLink) {
+        if (user.victoryWorldStatus === "validated") {
+            victoryWorldStatus.textContent = "Validé";
+            victoryWorldStatus.style.color = "var(--green)";
+            joinedOpportunities.textContent = "2";
+            progressPercent.textContent = "100%";
+            progressBar.style.width = "100%";
+            progressLabel.textContent = "100 % terminé";
+            currentStepText.textContent = "Parcours terminé.";
+        } else if (victoryWorldLink) {
             victoryWorldStatus.textContent =
                 "En cours";
 
@@ -1247,7 +1255,7 @@
                 link || "Lien Point Focal actif";
         } else {
             accountStatusBadge.textContent =
-                "Compte en cours";
+                "Parcours terminé";
 
             accountStatusBadge.className =
                 "badge badge-warning";
@@ -1258,8 +1266,9 @@
             linkStatusBadge.className =
                 "badge badge-warning";
 
-            pointFocalLink.textContent =
-                "Votre lien Point Focal sera affiché ici.";
+            pointFocalLink.textContent = hasInvitationCode
+                ? "Lien Point Focal inactif pendant le prélancement."
+                : "Votre lien Point Focal sera affiché ici.";
         }
     }
 
@@ -1392,18 +1401,28 @@
             currentUser.invitation_code ||
             ""
           );
-          const isLeader = currentUser?.isLeader === true || currentUser?.is_leader === true;
-          if (!isLeader && (!linkActive || !String(invitationCode).trim())) {
+          if (!String(invitationCode).trim()) {
             window.location.replace("provision.html");
-          } else {
-            user = currentUser;
-            localStorage.setItem("user", JSON.stringify(currentUser));
-            renderDashboard();
+            return;
           }
+          const worldResponse = await fetch("https://point-focal.onrender.com/api/victory-world/status", {
+            headers: { Authorization: "Bearer " + token, Accept: "application/json" }
+          });
+          if (!worldResponse.ok) throw new Error("Statut Victory World indisponible");
+          const world = await worldResponse.json();
+          if (world.status !== "validated") {
+            window.location.replace("victory-world.html");
+            return;
+          }
+          user = {
+            ...currentUser,
+            victoryWorldLink: world.victoryWorldLink,
+            victoryWorldStatus: world.status
+          };
+          localStorage.setItem("user", JSON.stringify(user));
+          renderDashboard();
         } catch (error) {
           console.error("Accès dashboard refusé :", error);
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
           alert("ERREUR DASHBOARD : " + (error.stack || error.message || error));
         }
       }
@@ -1413,4 +1432,3 @@
 
 </body>
 </html>
-

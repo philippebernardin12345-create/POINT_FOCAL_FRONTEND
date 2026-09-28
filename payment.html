@@ -661,7 +661,6 @@ function saveActivatedUser(publicLink) {
     const user =
       JSON.parse(savedUser);
 
-    user.link_active = true;
     user.public_link = publicLink;
     user.point_focal_link = publicLink;
 
@@ -678,6 +677,12 @@ function saveActivatedUser(publicLink) {
 }
 
 function displayPublicLink(publicLink, message) {
+  const savedUser = JSON.parse(localStorage.getItem("user") || "null");
+  const inactivePrelaunchLeader = Boolean(
+    savedUser?.isPrelaunchLeader === true &&
+    savedUser?.linkActive !== true &&
+    savedUser?.link_active !== true
+  );
   localStorage.setItem(
     "publicLink",
     publicLink
@@ -690,6 +695,9 @@ function displayPublicLink(publicLink, message) {
 
   publicLinkBox.textContent =
     publicLink;
+
+  copyBtn.disabled = inactivePrelaunchLeader;
+  copyBtn.style.display = inactivePrelaunchLeader ? "none" : "block";
 
   linkSection.style.display =
     "block";
@@ -715,8 +723,9 @@ function displayPublicLink(publicLink, message) {
   saveActivatedUser(publicLink);
 
   showStatus(
-    message ||
-    "Paiement validé. Votre lien Point Focal est actif.",
+    inactivePrelaunchLeader
+      ? "Paiement validé. Votre lien Point Focal reste inactif pendant le prélancement. Poursuivez dans Victory World."
+      : (message || "Paiement validé. Poursuivez votre parcours dans Victory World."),
     "success"
   );
 }
