@@ -654,22 +654,72 @@
       }
     }
 
-    // ----- GESTION DU SPONSOR -----
+      // ----- GESTION DU SPONSOR S3 -----
 
       const urlParams = new URLSearchParams(window.location.search);
 
-      const sponsorParam = (
+      const sponsorFromUrl = (
         urlParams.get("ref") ||
         urlParams.get("sponsor") ||
-        "ABCD1000"
+        ""
       ).trim().toUpperCase();
 
       const sponsorField = document.getElementById("sponsor");
 
-      if (sponsorField) {
-        sponsorField.value = sponsorParam;
+      let sponsorRuntimeReady = false;
+      let sponsorRuntimeError = false;
+
+      async function initializeSponsorField() {
+        if (!sponsorField) {
+          sponsorRuntimeError = true;
+          return;
+        }
+
+        if (sponsorFromUrl) {
+          sponsorField.value = sponsorFromUrl;
+          sponsorField.readOnly = true;
+          sponsorRuntimeReady = true;
+          return;
+        }
+
+        sponsorField.value = "";
         sponsorField.readOnly = true;
+
+        try {
+          const response = await fetch(`${BASE_API}/runtime-state`);
+
+          if (!response.ok) {
+            throw new Error(`Runtime HTTP ${response.status}`);
+          }
+
+          const payload = await response.json();
+          const runtime = payload?.data || payload;
+          const phase = String(runtime?.phase || "").trim().toUpperCase();
+
+          if (phase === "LEADER_LAUNCH") {
+            sponsorField.value = "ABCD1000";
+            sponsorField.readOnly = true;
+            sponsorRuntimeReady = true;
+            return;
+          }
+
+          if (phase === "NORMAL_OPERATION") {
+            sponsorField.value = "";
+            sponsorField.readOnly = false;
+            sponsorRuntimeReady = true;
+            return;
+          }
+
+          throw new Error(`Phase runtime inconnue : ${phase || "VIDE"}`);
+        } catch (error) {
+          console.error("Runtime Point Focal indisponible :", error);
+          sponsorField.value = "";
+          sponsorField.readOnly = true;
+          sponsorRuntimeError = true;
+        }
       }
+
+      initializeSponsorField();
 
     // ----- SOUMISSION DU FORMULAIRE -----
 
@@ -692,6 +742,19 @@
 
       try {
         if (isRegisterMode) {
+
+          /* S3 — fail-closed runtime */
+          if (
+            !sponsorFromUrl &&
+            (!sponsorRuntimeReady || sponsorRuntimeError)
+          ) {
+            showError(
+              "Impossible de déterminer la phase Point Focal. Réessayez dans quelques secondes."
+            );
+            btn.disabled = false;
+            return;
+          }
+
           let whatsapp = phoneInput.value.trim();
           whatsapp = whatsapp.replace(/\s+/g, "").replace("+", "");
 
