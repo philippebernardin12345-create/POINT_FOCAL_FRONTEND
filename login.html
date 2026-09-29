@@ -436,6 +436,21 @@
     }
 
     async function redirectUser(token, loginUser) {
+        /*
+         * Parcours post-connexion :
+         *
+         * - lien Point Focal actif :
+         *     dashboard.html
+         *
+         * - lien Point Focal non actif :
+         *     provision.html
+         *
+         * La vidéo appartient au parcours préalable
+         * à la création du compte et ne doit pas être
+         * rejouée après confirmation OTP + connexion.
+         *
+         * Aucun bypass spécifique aux leaders.
+         */
         const currentUser =
             await fetchCurrentUser(token, loginUser);
 
@@ -444,36 +459,15 @@
             JSON.stringify(currentUser)
         );
 
-        const invitationCode =
-            currentUser?.invitationCode || currentUser?.invitation_code;
+        const hasActivePointFocalLink =
+            userHasPointFocalLink(currentUser);
 
-        if (!invitationCode) {
-            const videoResponse = await fetch(
-                `${BASE_API_URL}/video/session`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            if (!videoResponse.ok) {
-                throw new Error("Impossible de vérifier la progression vidéo.");
-            }
-            const videoResult = await readJsonSafely(videoResponse);
-            const session = videoResult?.data || videoResult?.session || videoResult;
-            window.location.replace(
-                session?.isCompleted === true ? "provision.html" : "popup-youtube.html"
-            );
+        if (hasActivePointFocalLink) {
+            window.location.replace("dashboard.html");
             return;
         }
 
-        const response = await fetch(
-            `${BASE_API_URL}/victory-world/status`,
-            { headers: { Authorization: `Bearer ${token}` } }
-        );
-        if (!response.ok) {
-            throw new Error("Impossible de vérifier la progression Victory World.");
-        }
-        const world = await readJsonSafely(response);
-        window.location.replace(
-            world.status === "validated" ? "dashboard.html" : "victory-world.html"
-        );
+        window.location.replace("provision.html");
     }
 
 loginForm.addEventListener(
