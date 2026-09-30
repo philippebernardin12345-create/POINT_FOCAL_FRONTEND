@@ -1186,15 +1186,7 @@
         activeCodes.textContent =
             String(countActiveCodes(user));
 
-        if (user.victoryWorldStatus === "validated") {
-            victoryWorldStatus.textContent = "Validé";
-            victoryWorldStatus.style.color = "var(--green)";
-            joinedOpportunities.textContent = "2";
-            progressPercent.textContent = "100%";
-            progressBar.style.width = "100%";
-            progressLabel.textContent = "100 % terminé";
-            currentStepText.textContent = "Parcours terminé.";
-        } else if (victoryWorldLink) {
+        if (victoryWorldLink) {
             victoryWorldStatus.textContent =
                 "En cours";
 
@@ -1253,23 +1245,42 @@
 
             pointFocalLink.textContent =
                 link || "Lien Point Focal actif";
-        } else {
-            accountStatusBadge.textContent =
-                "Parcours terminé";
+        } else if (hasInvitationCode) {
+              /*
+               * Code déjà généré :
+               * parcours terminé, mais recrutement éventuellement
+               * verrouillé pendant LEADER_LAUNCH.
+               */
+              accountStatusBadge.textContent =
+                  "Compte actif";
 
-            accountStatusBadge.className =
-                "badge badge-warning";
+              accountStatusBadge.className =
+                  "badge badge-success";
 
-            linkStatusBadge.textContent =
-                "Lien non activé";
+              linkStatusBadge.textContent =
+                  "Lien créé — activation au lancement";
 
-            linkStatusBadge.className =
-                "badge badge-warning";
+              linkStatusBadge.className =
+                  "badge badge-warning";
 
-            pointFocalLink.textContent = hasInvitationCode
-                ? "Lien Point Focal inactif pendant le prélancement."
-                : "Votre lien Point Focal sera affiché ici.";
-        }
+              pointFocalLink.textContent =
+                  "Votre lien Point Focal est réservé et sera activé automatiquement au lancement.";
+          } else {
+              accountStatusBadge.textContent =
+                  "Compte en cours";
+
+              accountStatusBadge.className =
+                  "badge badge-warning";
+
+              linkStatusBadge.textContent =
+                  "Lien non généré";
+
+              linkStatusBadge.className =
+                  "badge badge-warning";
+
+              pointFocalLink.textContent =
+                  "Votre lien Point Focal sera affiché ici.";
+          }
     }
 
     copyLinkBtn.addEventListener(
@@ -1402,27 +1413,77 @@
             ""
           );
           if (!String(invitationCode).trim()) {
-            window.location.replace("provision.html");
-            return;
+            /*
+             * VIDEO-ONCE :
+             * le dashboard ne peut pas contourner la validation vidéo.
+             * Le serveur reste la source de vérité.
+             */
+            try {
+              const videoResponse = await fetch(
+                "https://point-focal.onrender.com/api/video/session",
+                {
+                  method: "GET",
+                  headers: {
+                    Authorization: "Bearer " + token,
+                    Accept: "application/json"
+                  }
+                }
+              );
+
+              if (!videoResponse.ok) {
+                throw new Error(
+                  "Statut vidéo indisponible : " + videoResponse.status
+                );
+              }
+
+              const videoData = await videoResponse.json();
+
+              const session =
+                videoData?.data
+                || videoData?.session
+                || videoData?.videoSession
+                || videoData;
+
+              const videoCompleted =
+                session?.isCompleted === true
+                || session?.is_completed === true
+                || session?.completed === true
+                || session?.videoCompleted === true
+                || session?.video_completed === true
+                || Number(session?.watchedSeconds) >= 200
+                || Number(session?.watched_seconds) >= 200;
+
+              if (videoCompleted) {
+                window.location.replace("provision.html");
+                return;
+              }
+
+              window.location.replace("popup-youtube.html");
+              return;
+
+            } catch (videoError) {
+              console.error(
+                "Impossible de vérifier l'état vidéo depuis le dashboard :",
+                videoError
+              );
+
+              /*
+               * Fail-closed :
+               * aucune erreur de vérification ne permet de contourner
+               * le parcours vidéo.
+               */
+              window.location.replace("popup-youtube.html");
+              return;
+            }
           }
-          const worldResponse = await fetch("https://point-focal.onrender.com/api/victory-world/status", {
-            headers: { Authorization: "Bearer " + token, Accept: "application/json" }
-          });
-          if (!worldResponse.ok) throw new Error("Statut Victory World indisponible");
-          const world = await worldResponse.json();
-          if (world.status !== "validated") {
-            window.location.replace("victory-world.html");
-            return;
-          }
-          user = {
-            ...currentUser,
-            victoryWorldLink: world.victoryWorldLink,
-            victoryWorldStatus: world.status
-          };
-          localStorage.setItem("user", JSON.stringify(user));
+
+            user = currentUser;
+          localStorage.setItem("user", JSON.stringify(currentUser));
           renderDashboard();
         } catch (error) {
           console.error("Accès dashboard refusé :", error);
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
           alert("ERREUR DASHBOARD : " + (error.stack || error.message || error));
         }
       }

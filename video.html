@@ -153,7 +153,7 @@
 
     const videoDejaValidee = await verifierVideoDejaVue();
 
-    if (videoDejaValidee) {
+    if (videoDejaValidee !== false) {
       return;
     }
 
@@ -208,7 +208,7 @@
 
   async function verifierVideoDejaVue() {
     if (verificationEnCours) {
-      return false;
+      return null;
     }
 
     verificationEnCours = true;
@@ -241,7 +241,7 @@
           errorText
         );
 
-        return false;
+        return null;
       }
 
       const result = await res.json();
@@ -272,7 +272,13 @@
       return false;
     } catch (error) {
       console.error("Erreur vérification vidéo :", error);
-      return false;
+
+      alert(
+        "Impossible de vérifier votre progression vidéo. " +
+        "Réessayez dans quelques instants."
+      );
+
+      return null;
     } finally {
       verificationEnCours = false;
     }

@@ -286,13 +286,12 @@ async function initializePopup() {
       );
     }
 
-    if (hasPointFocalLink(currentUser)) {
-      window.location.replace(
-        "./dashboard.html"
-      );
-      return;
-    }
-    const videoCompletee =
+    /*
+       * VIDEO-ONCE :
+       * le lien Point Focal ne décide jamais si la vidéo doit être vue.
+       * Seule la validation vidéo persistante côté serveur fait foi.
+       */
+      const videoCompletee =
       await videoAlreadyCompleted();
 
     if (videoCompletee) {

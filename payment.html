@@ -661,9 +661,10 @@ function saveActivatedUser(publicLink) {
     const user =
       JSON.parse(savedUser);
 
-    user.public_link = publicLink;
-    user.point_focal_link = publicLink;
-
+    /*
+     * Ne jamais transformer localement un lien généré
+     * en lien actif. /auth/me reste la source de vérité.
+     */
     localStorage.setItem(
       "user",
       JSON.stringify(user)
@@ -676,13 +677,27 @@ function saveActivatedUser(publicLink) {
   }
 }
 
-function displayPublicLink(publicLink, message) {
-  const savedUser = JSON.parse(localStorage.getItem("user") || "null");
-  const inactivePrelaunchLeader = Boolean(
-    savedUser?.isPrelaunchLeader === true &&
-    savedUser?.linkActive !== true &&
-    savedUser?.link_active !== true
+function displayPublicLink(publicLink, message, authoritativeUser = null) {
+  const savedUser =
+    authoritativeUser ||
+    JSON.parse(localStorage.getItem("user") || "null");
+
+  const isPrelaunchLeader = Boolean(
+    savedUser?.isPrelaunchLeader === true ||
+    savedUser?.is_prelaunch_leader === true
   );
+
+  const linkIsActive = Boolean(
+    savedUser?.linkActive === true ||
+    savedUser?.link_active === true ||
+    savedUser?.linkActive === 1 ||
+    savedUser?.link_active === 1 ||
+    String(savedUser?.linkActive).toLowerCase() === "true" ||
+    String(savedUser?.link_active).toLowerCase() === "true"
+  );
+
+  const inactivePrelaunchLeader =
+    isPrelaunchLeader && !linkIsActive;
   localStorage.setItem(
     "publicLink",
     publicLink
@@ -1001,14 +1016,16 @@ async function validerPaiement() {
     const alreadyValidated =
       extractAlreadyValidated(data);
 
+    const refreshedUser =
+      await refreshCurrentUser();
+
     displayPublicLink(
       publicLink,
       alreadyValidated
         ? "Votre paiement avait déjà été validé. Votre lien Point Focal a été récupéré."
-        : "Paiement validé. Votre lien Point Focal a été généré automatiquement."
+        : "Paiement validé. Votre lien Point Focal a été généré automatiquement.",
+      refreshedUser
     );
-
-    await refreshCurrentUser();
 
   } catch (error) {
     console.error(
@@ -1212,20 +1229,41 @@ window.addEventListener(
         "victoryPaymentValidated"
       ) === "true";
 
+    const currentUser =
+      await refreshCurrentUser();
+
+    const currentInvitationCode =
+      currentUser?.invitationCode ||
+      currentUser?.invitation_code ||
+      "";
+
+    const currentLinkActive = Boolean(
+      currentUser?.linkActive === true ||
+      currentUser?.link_active === true ||
+      currentUser?.linkActive === 1 ||
+      currentUser?.link_active === 1 ||
+      String(currentUser?.linkActive).toLowerCase() === "true" ||
+      String(currentUser?.link_active).toLowerCase() === "true"
+    );
+
+    /*
+     * Code présent = parcours PF terminé.
+     * link_active = droit actuel de recruter.
+     */
     if (
-      alreadyValidated &&
+      String(currentInvitationCode).trim() &&
       existingPublicLink
     ) {
       displayPublicLink(
         existingPublicLink,
-        "Votre lien Point Focal est déjà actif."
+        currentLinkActive
+          ? "Votre lien Point Focal est actif."
+          : "Votre lien Point Focal est créé mais reste inactif pendant le prélancement.",
+        currentUser
       );
 
       return;
     }
-
-    const currentUser =
-      await refreshCurrentUser();
 
     if (hasPointFocalLink(currentUser)) {
       const currentPublicLink =

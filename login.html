@@ -462,12 +462,91 @@
         const hasActivePointFocalLink =
             userHasPointFocalLink(currentUser);
 
-        if (hasActivePointFocalLink) {
-            window.location.replace("dashboard.html");
+        const invitationCode =
+              currentUser?.invitationCode
+              || currentUser?.invitation_code
+              || "";
+
+          /*
+           * invitation_code présent = parcours PF terminé.
+           * link_active=false peut être volontaire pendant
+           * LEADER_LAUNCH.
+           */
+          if (
+              hasActivePointFocalLink
+              || String(invitationCode).trim()
+          ) {
+              window.location.replace("dashboard.html");
+              return;
+          }
+
+        /*
+         * Règle VIDEO-ONCE :
+         * - vidéo déjà validée côté serveur -> provision
+         * - vidéo jamais validée -> popup + vidéo obligatoire
+         *
+         * Le serveur est la source de vérité afin qu'une vidéo déjà
+         * validée ne soit jamais rejouée après reconnexion.
+         */
+        try {
+            const videoResponse = await fetch(
+                `${BASE_API_URL}/video/session`,
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json"
+                    }
+                }
+            );
+
+            if (!videoResponse.ok) {
+                throw new Error(
+                    "Statut vidéo indisponible : " +
+                    videoResponse.status
+                );
+            }
+
+            const videoData =
+                await readJsonSafely(videoResponse);
+
+            const session =
+                videoData?.data
+                || videoData?.session
+                || videoData?.videoSession
+                || videoData;
+
+            const videoCompleted =
+                session?.isCompleted === true
+                || session?.is_completed === true
+                || session?.completed === true
+                || session?.videoCompleted === true
+                || session?.video_completed === true
+                || Number(session?.watchedSeconds) >= 200
+                || Number(session?.watched_seconds) >= 200;
+
+            if (videoCompleted) {
+                window.location.replace("provision.html");
+                return;
+            }
+
+            window.location.replace("popup-youtube.html");
+            return;
+
+        } catch (error) {
+            console.error(
+                "Impossible de vérifier l'état vidéo :",
+                error
+            );
+
+            /*
+             * Fail-closed :
+             * une panne de vérification ne doit jamais permettre
+             * de contourner la vidéo obligatoire.
+             */
+            window.location.replace("popup-youtube.html");
             return;
         }
-
-        window.location.replace("provision.html");
     }
 
 loginForm.addEventListener(
