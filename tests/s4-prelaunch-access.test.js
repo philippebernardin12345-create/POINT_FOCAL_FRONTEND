@@ -65,6 +65,6 @@ test("login et dashboard utilisent la même règle d'accès", () => {
 
   for (const html of [login, dashboard]) {
     assert.match(html, /<script src=["']js\/prelaunch-access\.js["']><\/script>/);
-    assert.match(html, /PointFocalAccess\.canAccessDashboard\(currentUser\)/);
+    assert.match(html, /PointFocalAccess\??\.canAccessDashboard\(currentUser\)/);
   }
 });
