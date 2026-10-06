@@ -220,6 +220,7 @@
     </div>
 </div>
 
+<script src="js/prelaunch-access.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const passwordInput = document.getElementById("password");
@@ -437,19 +438,12 @@
 
     async function redirectUser(token, loginUser) {
         /*
-         * Parcours post-connexion :
+         * Accès au dashboard :
+         * - lien Point Focal actif ;
+         * - exception pour un leader pré-lancement dont le
+         *   lien reste inactif jusqu'à NORMAL_OPERATION.
          *
-         * - lien Point Focal actif :
-         *     dashboard.html
-         *
-         * - lien Point Focal non actif :
-         *     provision.html
-         *
-         * La vidéo appartient au parcours préalable
-         * à la création du compte et ne doit pas être
-         * rejouée après confirmation OTP + connexion.
-         *
-         * Aucun bypass spécifique aux leaders.
+         * Les indicateurs issus de /auth/me font foi.
          */
         const currentUser =
             await fetchCurrentUser(token, loginUser);
@@ -459,26 +453,13 @@
             JSON.stringify(currentUser)
         );
 
-        const hasActivePointFocalLink =
-            userHasPointFocalLink(currentUser);
+        const canAccessDashboard =
+            window.PointFocalAccess?.canAccessDashboard(currentUser) === true;
 
-        const invitationCode =
-              currentUser?.invitationCode
-              || currentUser?.invitation_code
-              || "";
-
-          /*
-           * invitation_code présent = parcours PF terminé.
-           * link_active=false peut être volontaire pendant
-           * LEADER_LAUNCH.
-           */
-          if (
-              hasActivePointFocalLink
-              || String(invitationCode).trim()
-          ) {
-              window.location.replace("dashboard.html");
-              return;
-          }
+        if (canAccessDashboard) {
+            window.location.replace("dashboard.html");
+            return;
+        }
 
         /*
          * Règle VIDEO-ONCE :
