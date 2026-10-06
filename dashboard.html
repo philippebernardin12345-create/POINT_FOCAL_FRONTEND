@@ -974,6 +974,7 @@
 
 </div>
 
+<script src="js/prelaunch-access.js"></script>
 <script>
     let user = null;
 
@@ -1399,19 +1400,19 @@
           if (!response.ok) throw new Error("HTTP " + response.status);
           const data = await response.json();
           const currentUser = data.user || data.data?.user || data.data || data;
-          const linkActive = currentUser && (
-            currentUser.linkActive === true ||
-            currentUser.link_active === true ||
-            currentUser.linkActive === 1 ||
-            currentUser.link_active === 1 ||
-            String(currentUser.linkActive).toLowerCase() === "true" ||
-            String(currentUser.link_active).toLowerCase() === "true"
-          );
           const invitationCode = currentUser && (
             currentUser.invitationCode ||
             currentUser.invitation_code ||
             ""
           );
+          const canAccessDashboard =
+            window.PointFocalAccess?.canAccessDashboard(currentUser) === true;
+
+          if (String(invitationCode).trim() && !canAccessDashboard) {
+            window.location.replace("provision.html");
+            return;
+          }
+
           if (!String(invitationCode).trim()) {
             /*
              * VIDEO-ONCE :
