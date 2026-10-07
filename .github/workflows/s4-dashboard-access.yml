@@ -21,4 +21,4 @@ jobs:
         with:
           node-version: '20'
       - name: Test S4 dashboard access policy
-        run: node --test tests/s4-prelaunch-access.test.js
+        run: node --test tests/s4-prelaunch-access.test.js tests/pwa-installability.test.js
