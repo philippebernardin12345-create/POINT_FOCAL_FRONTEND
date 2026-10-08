@@ -5,6 +5,7 @@ const path = require("node:path");
 
 const root = path.join(__dirname, "..");
 const blog = fs.readFileSync(path.join(root, "blog.html"), "utf8");
+const academy = fs.readFileSync(path.join(root, "academie.html"), "utf8");
 const home = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const sitemap = fs.readFileSync(path.join(root, "sitemap.xml"), "utf8");
 const robots = fs.readFileSync(path.join(root, "robots.txt"), "utf8");
@@ -39,4 +40,18 @@ test("the public home page links to the blog and crawlers can find it", () => {
   assert.match(sitemap, /https:\/\/www\.pointfocalapp\.com\/blog\.html/);
   assert.match(robots, /Sitemap: https:\/\/www\.pointfocalapp\.com\/sitemap\.xml/);
   assert.match(robots, /Disallow: \/dashboard\.html/);
+});
+
+test("the academy is linked from public entry points and offers saved course progress", () => {
+  assert.match(academy, /<html lang="fr">/);
+  assert.match(academy, /<title>Académie Point Focal/);
+  assert.match(academy, /rel="canonical" href="https:\/\/www\.pointfocalapp\.com\/academie\.html"/);
+  assert.match(academy, /Prendre ses repères/);
+  assert.match(academy, /Utiliser le lien unique/);
+  assert.match(academy, /Lire sa progression/);
+  assert.match(academy, /localStorage\.setItem/);
+  assert.match(academy, /id="completeButton"/);
+  assert.match(home, /href="academie\.html">Découvrir l’Académie Point Focal/);
+  assert.match(blog, /href="academie\.html"/);
+  assert.match(sitemap, /https:\/\/www\.pointfocalapp\.com\/academie\.html/);
 });

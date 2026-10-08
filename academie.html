@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0B0E11">
+    <meta name="description" content="Apprenez à utiliser Point Focal grâce à des parcours guidés, des leçons courtes et une progression enregistrée sur votre appareil.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.pointfocalapp.com/academie.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Académie Point Focal">
+    <meta property="og:description" content="Des parcours guidés pour comprendre Point Focal, son lien unique et le suivi de progression.">
+    <meta property="og:url" content="https://www.pointfocalapp.com/academie.html">
+    <meta property="og:image" content="https://www.pointfocalapp.com/icons/icon-512.png">
+    <meta name="twitter:card" content="summary">
+    <title>Académie Point Focal — apprendre à son rythme</title>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <style>
+        * { box-sizing: border-box; }
+        :root {
+            color-scheme: dark;
+            --background: #0b0e11;
+            --surface: #1e2329;
+            --surface-soft: #151a20;
+            --border: #2b3139;
+            --yellow: #f0b90b;
+            --text: #eaecef;
+            --muted: #a7b0ba;
+            --green: #39b980;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            background:
+                radial-gradient(ellipse at 15% 0%, rgba(240,185,11,.09), transparent 34rem),
+                var(--background);
+            color: var(--text);
+            font: 16px/1.6 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+        a { color: inherit; }
+        button { font: inherit; }
+        .skip-link {
+            position: absolute; left: -9999px; top: 8px; z-index: 100;
+            padding: 10px 14px; background: var(--yellow); color: #111; border-radius: 8px;
+        }
+        .skip-link:focus { left: 8px; }
+        .topbar {
+            position: sticky; top: 0; z-index: 10;
+            background: rgba(11,14,17,.92); backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav {
+            width: min(1120px, calc(100% - 40px)); min-height: 72px;
+            margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 24px;
+        }
+        .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+        .brand-mark {
+            display: grid; place-items: center; width: 40px; height: 40px;
+            border: 1px solid rgba(240,185,11,.4); border-radius: 12px;
+            background: rgba(240,185,11,.1); color: var(--yellow); font-weight: 900;
+        }
+        .brand strong { display: block; font-size: 14px; letter-spacing: .08em; }
+        .brand small { color: var(--muted); font-size: 11px; }
+        .nav-links { display: flex; align-items: center; gap: 8px; }
+        .nav-links a {
+            padding: 9px 12px; border-radius: 8px; text-decoration: none;
+            color: var(--muted); font-size: 14px;
+        }
+        .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--text); background: var(--surface); }
+        .nav-links .nav-cta { background: var(--yellow); color: #101010; font-weight: 800; }
+        main { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+        .hero {
+            display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(250px, .6fr);
+            align-items: center; gap: 34px; padding: 62px 0 44px;
+        }
+        .eyebrow {
+            margin: 0 0 10px; color: var(--yellow); text-transform: uppercase;
+            font-size: 12px; font-weight: 800; letter-spacing: .15em;
+        }
+        h1 { max-width: 700px; margin: 0; font-size: clamp(38px, 6vw, 66px); line-height: 1.04; letter-spacing: -.045em; }
+        .hero-copy { max-width: 650px; margin: 18px 0 0; color: var(--muted); font-size: 17px; }
+        .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+        .button {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            min-height: 46px; padding: 11px 16px; border: 1px solid var(--border);
+            border-radius: 10px; background: var(--surface); color: var(--text);
+            text-decoration: none; font-weight: 750; cursor: pointer;
+            transition: transform .16s ease, border-color .16s ease, background .16s ease;
+        }
+        .button:hover { transform: translateY(-1px); border-color: #59616b; }
+        .button-primary { background: var(--yellow); color: #101010; border-color: var(--yellow); }
+        .button-primary:hover { background: #ffd447; border-color: #ffd447; }
+        .hero-stat {
+            padding: 23px; border: 1px solid rgba(240,185,11,.28); border-radius: 18px;
+            background: linear-gradient(145deg, rgba(240,185,11,.12), rgba(30,35,41,.92) 55%);
+        }
+        .stat-number { display: block; color: var(--yellow); font-size: 38px; line-height: 1; font-weight: 850; letter-spacing: -.04em; }
+        .stat-label { display: block; margin-top: 8px; color: var(--muted); font-size: 14px; }
+        .stat-detail { margin: 19px 0 0; padding-top: 17px; border-top: 1px solid rgba(240,185,11,.2); font-size: 13px; color: var(--muted); }
+        .section-head { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin: 8px 0 17px; }
+        .section-head h2 { margin: 0; font-size: 24px; letter-spacing: -.02em; }
+        .section-head p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+        .progress-card {
+            padding: 18px 20px; margin-bottom: 32px; background: var(--surface);
+            border: 1px solid var(--border); border-radius: 14px;
+        }
+        .progress-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .progress-top strong { font-size: 14px; }
+        .progress-value { color: var(--yellow); font-weight: 800; font-variant-numeric: tabular-nums; }
+        .progress-track { height: 8px; margin-top: 11px; overflow: hidden; border-radius: 20px; background: #30363e; }
+        .progress-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #f0b90b, #ffe06b); transition: width .25s ease; }
+        .progress-note { margin: 9px 0 0; color: var(--muted); font-size: 12px; }
+        .academy-layout { display: grid; grid-template-columns: minmax(250px, .82fr) minmax(0, 1.18fr); gap: 18px; align-items: start; }
+        .course-list { display: grid; gap: 12px; }
+        .course-card {
+            width: 100%; padding: 18px; text-align: left; cursor: pointer;
+            color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+            transition: border-color .16s ease, background .16s ease, transform .16s ease;
+        }
+        .course-card:hover { border-color: #5b626b; transform: translateY(-1px); }
+        .course-card[aria-pressed="true"] { border-color: var(--yellow); background: linear-gradient(145deg, rgba(240,185,11,.1), var(--surface) 70%); }
+        .course-meta { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .course-level { color: var(--yellow); font-size: 11px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+        .course-count { color: var(--muted); font-size: 12px; }
+        .course-card h3 { margin: 11px 0 5px; font-size: 17px; line-height: 1.3; }
+        .course-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+        .course-progress { height: 4px; margin-top: 14px; overflow: hidden; background: #30363e; border-radius: 10px; }
+        .course-progress span { display: block; width: 0; height: 100%; background: var(--green); }
+        .lesson-panel {
+            min-height: 410px; padding: 22px; background: var(--surface);
+            border: 1px solid var(--border); border-radius: 16px;
+        }
+        .lesson-panel-head { display: flex; justify-content: space-between; align-items: start; gap: 14px; }
+        .lesson-panel-head h2 { margin: 3px 0 0; font-size: 22px; line-height: 1.25; }
+        .lesson-panel-head p { margin: 0; color: var(--muted); font-size: 13px; }
+        .lesson-list { display: grid; gap: 7px; margin: 17px 0 21px; }
+        .lesson-choice {
+            display: flex; align-items: center; gap: 11px; width: 100%; padding: 10px 11px;
+            border: 1px solid transparent; border-radius: 9px; background: var(--surface-soft);
+            color: var(--text); text-align: left; cursor: pointer; font-size: 13px;
+        }
+        .lesson-choice:hover { border-color: #434a53; }
+        .lesson-choice[aria-pressed="true"] { border-color: rgba(240,185,11,.6); background: rgba(240,185,11,.08); }
+        .lesson-number {
+            display: grid; place-items: center; flex: 0 0 24px; width: 24px; height: 24px;
+            border: 1px solid #414852; border-radius: 50%; color: var(--muted); font-size: 11px; font-weight: 800;
+        }
+        .lesson-choice.is-complete .lesson-number { border-color: var(--green); background: rgba(57,185,128,.14); color: var(--green); }
+        .lesson-body { padding-top: 18px; border-top: 1px solid var(--border); }
+        .lesson-body h3 { margin: 0 0 11px; font-size: 20px; }
+        .lesson-body p { margin: 0 0 12px; color: #c1c7cf; font-size: 14px; }
+        .lesson-callout { margin: 14px 0 0; padding: 12px 14px; border-left: 3px solid var(--yellow); border-radius: 0 8px 8px 0; background: rgba(240,185,11,.07); color: var(--muted); font-size: 13px; }
+        .lesson-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 19px; }
+        .button-small { min-height: 40px; padding: 8px 12px; font-size: 13px; }
+        .button-quiet { background: transparent; color: var(--muted); }
+        .save-note { margin: 11px 0 0; color: var(--muted); font-size: 12px; }
+        .more-learning {
+            display: flex; align-items: center; justify-content: space-between; gap: 20px;
+            margin: 36px 0 54px; padding: 22px; border: 1px solid var(--border);
+            border-radius: 14px; background: var(--surface-soft);
+        }
+        .more-learning h2 { margin: 0; font-size: 18px; }
+        .more-learning p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+        .footer { padding: 23px 20px 30px; border-top: 1px solid var(--border); color: var(--muted); text-align: center; font-size: 12px; }
+        .footer nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; margin-top: 10px; }
+        .footer a { color: var(--muted); text-decoration: none; }
+        .footer a:hover { color: var(--yellow); }
+        :focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; }
+        @media (max-width: 760px) {
+            .nav { width: min(100% - 28px, 1120px); min-height: 64px; }
+            .nav-links { gap: 2px; }
+            .nav-links a { padding: 8px; font-size: 12px; }
+            .nav-links a:not(.nav-cta):not([aria-current="page"]) { display: none; }
+            main { width: min(100% - 28px, 1120px); }
+            .hero { grid-template-columns: 1fr; gap: 23px; padding: 42px 0 32px; }
+            .hero-stat { max-width: 440px; }
+            .academy-layout { grid-template-columns: 1fr; }
+            .lesson-panel { min-height: 0; }
+            .more-learning { align-items: start; flex-direction: column; }
+            .section-head { align-items: start; flex-direction: column; }
+        }
+        @media (max-width: 420px) {
+            .nav-links .nav-cta { font-size: 11px; padding: 8px 9px; }
+            .brand { gap: 7px; }
+            .brand-mark { width: 34px; height: 34px; }
+            .brand strong { font-size: 12px; }
+            .hero-actions .button { width: 100%; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after { transition-duration: .01ms !important; }
+        }
+    </style>
+</head>
+<body>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<header class="topbar">
+    <nav class="nav" aria-label="Navigation principale">
+        <a class="brand" href="index.html">
+            <span class="brand-mark" aria-hidden="true">PF</span>
+            <span><strong>POINT FOCAL</strong><small>Académie</small></span>
+        </a>
+        <div class="nav-links">
+            <a href="academie.html" aria-current="page">Académie</a>
+            <a href="blog.html">Blog</a>
+            <a href="faq.html">FAQ</a>
+            <a href="login.html">Connexion</a>
+            <a class="nav-cta" href="register.html">Créer un compte</a>
+        </div>
+    </nav>
+</header>
+<main id="contenu">
+    <section class="hero" aria-labelledby="page-title">
+        <div>
+            <p class="eyebrow">Apprendre à son rythme</p>
+            <h1 id="page-title">Bienvenue à l’Académie Point Focal</h1>
+            <p class="hero-copy">Des parcours guidés pour comprendre votre espace, utiliser votre lien unique et suivre les étapes de votre progression. Choisissez une leçon, avancez à votre rythme et retrouvez votre avancement sur cet appareil.</p>
+            <div class="hero-actions">
+                <button class="button button-primary" id="resumeButton" type="button">Commencer à apprendre <span aria-hidden="true">→</span></button>
+                <a class="button" href="blog.html">Lire les articles du blog</a>
+            </div>
+        </div>
+        <aside class="hero-stat" aria-label="Contenu de l’académie">
+            <span class="stat-number">03</span>
+            <span class="stat-label">parcours pratiques</span>
+            <p class="stat-detail">9 leçons courtes pour prendre ses repères, partager son lien et lire son tableau de bord.</p>
+        </aside>
+    </section>
+
+    <section aria-labelledby="progress-title">
+        <div class="section-head">
+            <div>
+                <h2 id="progress-title">Votre progression</h2>
+                <p>Elle est enregistrée dans ce navigateur, sans créer de compte supplémentaire.</p>
+            </div>
+        </div>
+        <div class="progress-card">
+            <div class="progress-top">
+                <strong id="progressSummary">0 leçon terminée</strong>
+                <span class="progress-value" id="progressValue">0 %</span>
+            </div>
+            <div class="progress-track" id="overallProgress" role="progressbar" aria-label="Progression de l’académie" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="progress-note" id="progressNote">Choisissez un parcours ci-dessous pour commencer.</p>
+        </div>
+    </section>
+
+    <section aria-labelledby="courses-title">
+        <div class="section-head">
+            <div>
+                <h2 id="courses-title">Choisissez votre parcours</h2>
+                <p>Chaque parcours comprend trois leçons à suivre dans l’ordre ou selon vos besoins.</p>
+            </div>
+        </div>
+        <div class="academy-layout">
+            <div class="course-list" id="courseList" aria-label="Parcours de l’académie"></div>
+            <section class="lesson-panel" id="lessonPanel" aria-labelledby="courseTitle">
+                <div class="lesson-panel-head">
+                    <div>
+                        <p id="courseMeta">PARCOURS 1 · 3 LEÇONS</p>
+                        <h2 id="courseTitle">Prendre ses repères</h2>
+                    </div>
+                </div>
+                <div class="lesson-list" id="lessonList" aria-label="Leçons du parcours"></div>
+                <article class="lesson-body" id="lessonBody" aria-live="polite"></article>
+                <div class="lesson-actions">
+                    <button class="button button-primary button-small" id="completeButton" type="button">Terminer la leçon</button>
+                    <button class="button button-small" id="nextButton" type="button">Leçon suivante <span aria-hidden="true">→</span></button>
+                </div>
+                <p class="save-note">Votre avancement reste sur cet appareil. Il ne synchronise pas entre plusieurs navigateurs.</p>
+            </section>
+        </div>
+    </section>
+
+    <section class="more-learning" aria-labelledby="more-title">
+        <div>
+            <h2 id="more-title">Besoin d’un autre repère ?</h2>
+            <p>La FAQ répond aux questions courantes. Le blog propose des articles plus détaillés.</p>
+        </div>
+        <div class="hero-actions" style="margin:0">
+            <a class="button button-small" href="faq.html">Consulter la FAQ</a>
+            <a class="button button-small" href="aide.html">Contacter l’aide</a>
+        </div>
+    </section>
+</main>
+<footer class="footer">
+    <span>POINT FOCAL · Académie d’apprentissage</span>
+    <nav aria-label="Liens de pied de page">
+        <a href="index.html">Accueil</a>
+        <a href="blog.html">Blog</a>
+        <a href="faq.html">FAQ</a>
+        <a href="login.html">Connexion</a>
+    </nav>
+</footer>
+<script>
+(function () {
+    "use strict";
+    const courses = [
+        {
+            id: "reperes",
+            level: "Les bases",
+            title: "Prendre ses repères",
+            description: "Comprendre votre espace, votre compte et le fonctionnement des étapes.",
+            lessons: [
+                {
+                    id: "reperes-role",
+                    title: "À quoi sert Point Focal ?",
+                    paragraphs: [
+                        "Point Focal rassemble dans un même espace votre parcours, les opportunités configurées et les liens associés. Le tableau de bord vous aide à retrouver les informations de votre compte et à voir ce qui est proposé ensuite.",
+                        "Les services et opportunités restent distincts. Point Focal donne des repères pour s’y retrouver ; il ne remplace pas les conditions propres à chaque service."
+                    ],
+                    takeaway: "Point Focal organise les informations du parcours. Prenez connaissance des conditions affichées avant chaque démarche."
+                },
+                {
+                    id: "reperes-compte",
+                    title: "Créer et retrouver son compte",
+                    paragraphs: [
+                        "Lors de la création du compte, renseignez les informations demandées et vérifiez l’adresse e-mail et le numéro indiqués avant de continuer. Utilisez un mot de passe personnel que vous ne réutilisez pas sur un autre service.",
+                        "Après connexion, le tableau de bord devient votre point de repère. Si une information ne semble pas à jour, actualisez la page et vérifiez que vous êtes connecté au bon compte."
+                    ],
+                    takeaway: "Gardez vos identifiants privés et vérifiez les informations saisies avant de valider le formulaire."
+                },
+                {
+                    id: "reperes-etapes",
+                    title: "Suivre un parcours par étapes",
+                    paragraphs: [
+                        "Les étapes sont présentées dans un ordre qui dépend de la configuration active et de votre progression enregistrée. Une étape proposée indique la prochaine action disponible dans Point Focal.",
+                        "Avant d’ouvrir un service externe, vérifiez son adresse et lisez ses conditions. Effectuer une étape ailleurs ne met pas toujours à jour Point Focal automatiquement : revenez au tableau de bord pour enregistrer les informations demandées."
+                    ],
+                    takeaway: "Après une démarche auprès d’un service, revenez dans Point Focal et contrôlez que le statut reflète bien votre action."
+                }
+            ]
+        },
+        {
+            id: "lien",
+            level: "Partager",
+            title: "Utiliser le lien unique",
+            description: "Retrouver le lien, le partager clairement et expliquer ce qu’il permet.",
+            lessons: [
+                {
+                    id: "lien-trouver",
+                    title: "Retrouver son lien personnel",
+                    paragraphs: [
+                        "Votre lien Point Focal est associé à votre compte. Retrouvez-le depuis l’espace prévu dans le tableau de bord et utilisez la fonction de copie lorsqu’elle est proposée.",
+                        "Avant de partager, ouvrez le lien ou relisez-le pour vérifier qu’il est complet. Si vous ne trouvez pas encore votre lien, vérifiez les étapes précédentes et les informations demandées dans votre compte."
+                    ],
+                    takeaway: "Partagez uniquement le lien affiché dans votre propre espace Point Focal."
+                },
+                {
+                    id: "lien-partager",
+                    title: "Partager avec un message clair",
+                    paragraphs: [
+                        "Accompagnez le lien d’une explication simple : dites à la personne qu’elle arrivera sur le parcours Point Focal et qu’elle pourra consulter les informations disponibles avant de poursuivre.",
+                        "Laissez à chacun le temps de lire les conditions et de décider. Évitez les promesses de résultat ou de revenu : le lien sert à accéder au parcours, pas à garantir un résultat."
+                    ],
+                    takeaway: "Soyez transparent sur la destination du lien et laissez chacun choisir librement."
+                },
+                {
+                    id: "lien-limites",
+                    title: "Comprendre les limites du lien",
+                    paragraphs: [
+                        "Le lien unique relie une invitation au parcours Point Focal. Il n’effectue pas automatiquement une inscription, un paiement ou une validation auprès d’un service tiers.",
+                        "Les actions nécessaires et les conditions d’accès dépendent du service concerné. Vérifiez que la personne arrive sur la bonne page et qu’elle comprend les étapes qui lui sont proposées."
+                    ],
+                    takeaway: "Un lien facilite l’accès à l’information ; il ne remplace pas les démarches auprès des services concernés."
+                }
+            ]
+        },
+        {
+            id: "progression",
+            level: "Tableau de bord",
+            title: "Lire sa progression",
+            description: "Interpréter les statuts, le pourcentage et les prochaines actions.",
+            lessons: [
+                {
+                    id: "progression-statuts",
+                    title: "Comprendre les statuts",
+                    paragraphs: [
+                        "Le statut « À rejoindre » indique qu’un lien ou une étape n’a pas encore été enregistré ou reconnu dans Point Focal. « Verrouillé » signale qu’une étape n’est pas encore disponible dans la configuration actuelle du parcours.",
+                        "Un statut décrit l’état connu par la plateforme. Si vous venez de terminer une action externe, revenez dans votre compte et enregistrez les informations demandées pour actualiser cet état."
+                    ],
+                    takeaway: "Un statut est un repère de suivi, pas une évaluation de la personne ou une promesse de résultat."
+                },
+                {
+                    id: "progression-pourcentage",
+                    title: "Lire le pourcentage",
+                    paragraphs: [
+                        "Le pourcentage compare les opportunités actives rejointes au nombre total d’opportunités actives configurées. Il résume la progression enregistrée dans Point Focal au moment de la consultation.",
+                        "Cet indicateur ne mesure pas un revenu, un rendement ou une probabilité de résultat. Il peut évoluer si les opportunités actives ou les statuts changent."
+                    ],
+                    takeaway: "Le pourcentage mesure l’avancement enregistré, et rien d’autre."
+                },
+                {
+                    id: "progression-blocage",
+                    title: "Que faire si une étape ne s’ouvre pas ?",
+                    paragraphs: [
+                        "Vérifiez que l’adresse de démarrage est configurée et que votre connexion Internet fonctionne. Actualisez le tableau de bord si le parcours a changé depuis son chargement.",
+                        "Si le problème persiste, consultez la FAQ ou contactez l’équipe d’assistance par le canal habituel. Ne saisissez pas vos identifiants Point Focal sur une page externe."
+                    ],
+                    takeaway: "Vérifiez l’adresse et votre connexion avant de réessayer. En cas de doute, demandez de l’aide via un canal connu."
+                }
+            ]
+        }
+    ];
+    const storageKey = "pointfocal-academy-progress-v1";
+    const validLessonIds = new Set(courses.flatMap(function (course) {
+        return course.lessons.map(function (lesson) { return lesson.id; });
+    }));
+    let completed = [];
+    try {
+        const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
+        if (Array.isArray(saved)) completed = saved.filter(function (id) { return validLessonIds.has(id); });
+    } catch (error) {
+        completed = [];
+    }
+    let currentCourseId = courses[0].id;
+    let currentLessonId = null;
+
+    const courseList = document.getElementById("courseList");
+    const lessonList = document.getElementById("lessonList");
+    const lessonBody = document.getElementById("lessonBody");
+
+    function courseById(id) {
+        return courses.find(function (course) { return course.id === id; }) || courses[0];
+    }
+    function firstIncomplete(course) {
+        return course.lessons.find(function (lesson) { return !completed.includes(lesson.id); }) || course.lessons[0];
+    }
+    function currentLesson() {
+        const course = courseById(currentCourseId);
+        return course.lessons.find(function (lesson) { return lesson.id === currentLessonId; }) || firstIncomplete(course);
+    }
+    function updateProgress() {
+        const total = courses.reduce(function (sum, course) { return sum + course.lessons.length; }, 0);
+        const count = completed.length;
+        const percent = Math.round((count / total) * 100);
+        document.getElementById("progressSummary").textContent = count + (count > 1 ? " leçons terminées" : " leçon terminée");
+        document.getElementById("progressValue").textContent = percent + " %";
+        document.getElementById("overallProgress").setAttribute("aria-valuenow", String(percent));
+        document.getElementById("progressFill").style.width = percent + "%";
+        document.getElementById("progressNote").textContent = count === total
+            ? "Bravo, vous avez terminé les trois parcours."
+            : count === 0
+                ? "Choisissez un parcours ci-dessous pour commencer."
+                : (total - count) + " leçon" + (total - count > 1 ? "s" : "") + " restante" + (total - count > 1 ? "s" : "") + " dans votre académie.";
+        courses.forEach(function (course) {
+            const done = course.lessons.filter(function (lesson) { return completed.includes(lesson.id); }).length;
+            const card = courseList.querySelector('[data-course="' + course.id + '"]');
+            if (card) {
+                card.querySelector(".course-count").textContent = done + "/" + course.lessons.length + " leçons";
+                card.querySelector(".course-progress span").style.width = Math.round((done / course.lessons.length) * 100) + "%";
+            }
+        });
+        const resume = document.getElementById("resumeButton");
+        resume.innerHTML = count ? "Reprendre mon parcours <span aria-hidden=\"true\">→</span>" : "Commencer à apprendre <span aria-hidden=\"true\">→</span>";
+    }
+    function renderCourses() {
+        courseList.innerHTML = courses.map(function (course) {
+            return '<button class="course-card" type="button" data-course="' + course.id + '" aria-pressed="' + (course.id === currentCourseId) + '">' +
+                '<span class="course-meta"><span class="course-level">' + course.level + '</span><span class="course-count">0/' + course.lessons.length + ' leçons</span></span>' +
+                '<h3>' + course.title + '</h3><p>' + course.description + '</p>' +
+                '<span class="course-progress" aria-hidden="true"><span></span></span></button>';
+        }).join("");
+        courseList.querySelectorAll("[data-course]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                currentCourseId = button.dataset.course;
+                currentLessonId = firstIncomplete(courseById(currentCourseId)).id;
+                render();
+                document.getElementById("lessonPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+        });
+    }
+    function renderLesson() {
+        const course = courseById(currentCourseId);
+        const lesson = currentLesson();
+        currentLessonId = lesson.id;
+        document.getElementById("courseTitle").textContent = course.title;
+        document.getElementById("courseMeta").textContent = course.level.toUpperCase() + " · " + course.lessons.length + " LEÇONS";
+        lessonList.innerHTML = course.lessons.map(function (entry, index) {
+            const isDone = completed.includes(entry.id);
+            return '<button class="lesson-choice' + (isDone ? ' is-complete' : '') + '" type="button" data-lesson="' + entry.id + '" aria-pressed="' + (entry.id === lesson.id) + '">' +
+                '<span class="lesson-number" aria-hidden="true">' + (isDone ? '✓' : String(index + 1).padStart(2, "0")) + '</span><span>' + entry.title + '</span></button>';
+        }).join("");
+        lessonList.querySelectorAll("[data-lesson]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                currentLessonId = button.dataset.lesson;
+                render();
+            });
+        });
+        lessonBody.replaceChildren();
+        const heading = document.createElement("h3");
+        heading.textContent = lesson.title;
+        lessonBody.appendChild(heading);
+        lesson.paragraphs.forEach(function (paragraph) {
+            const p = document.createElement("p");
+            p.textContent = paragraph;
+            lessonBody.appendChild(p);
+        });
+        const takeaway = document.createElement("p");
+        takeaway.className = "lesson-callout";
+        takeaway.textContent = "À retenir · " + lesson.takeaway;
+        lessonBody.appendChild(takeaway);
+        const completeButton = document.getElementById("completeButton");
+        const isDone = completed.includes(lesson.id);
+        completeButton.textContent = isDone ? "Leçon terminée ✓" : "Terminer la leçon";
+        completeButton.setAttribute("aria-pressed", String(isDone));
+        completeButton.disabled = isDone;
+        const nextButton = document.getElementById("nextButton");
+        const next = course.lessons.find(function (entry) { return !completed.includes(entry.id) && entry.id !== lesson.id; }) ||
+            course.lessons[course.lessons.indexOf(lesson) + 1];
+        nextButton.disabled = !next;
+        nextButton.textContent = next ? "Leçon suivante →" : "Parcours terminé ✓";
+        nextButton.dataset.nextLesson = next ? next.id : "";
+    }
+    function render() {
+        renderCourses();
+        renderLesson();
+        updateProgress();
+    }
+    document.getElementById("resumeButton").addEventListener("click", function () {
+        const course = courses.find(function (entry) { return entry.lessons.some(function (lesson) { return !completed.includes(lesson.id); }); }) || courses[0];
+        currentCourseId = course.id;
+        currentLessonId = firstIncomplete(course).id;
+        render();
+        document.getElementById("lessonPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    document.getElementById("completeButton").addEventListener("click", function () {
+        const lesson = currentLesson();
+        if (!completed.includes(lesson.id)) completed.push(lesson.id);
+        try { localStorage.setItem(storageKey, JSON.stringify(completed)); } catch (error) {}
+        const course = courseById(currentCourseId);
+        const nextLesson = course.lessons.find(function (entry) { return !completed.includes(entry.id); });
+        if (nextLesson) currentLessonId = nextLesson.id;
+        render();
+    });
+    document.getElementById("nextButton").addEventListener("click", function () {
+        const id = document.getElementById("nextButton").dataset.nextLesson;
+        if (!id) return;
+        currentLessonId = id;
+        render();
+    });
+    currentLessonId = firstIncomplete(courses[0]).id;
+    render();
+})();
+</script>
+<script src="/js/pwa.js" defer></script>
+</body>
+</html>
