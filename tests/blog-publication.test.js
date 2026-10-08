@@ -38,4 +38,5 @@ test("the public home page links to the blog and crawlers can find it", () => {
   assert.match(home, /href="blog\.html">Découvrir le blog Point Focal/);
   assert.match(sitemap, /https:\/\/www\.pointfocalapp\.com\/blog\.html/);
   assert.match(robots, /Sitemap: https:\/\/www\.pointfocalapp\.com\/sitemap\.xml/);
+  assert.match(robots, /Disallow: \/dashboard\.html/);
 });
