@@ -2,233 +2,337 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POINT FOCAL - Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0B0E11">
+    <meta name="description" content="Le blog officiel de Point Focal : comprendre le lien unique, le parcours d’opportunités et les outils du réseau.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.pointfocalapp.com/blog.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Le blog Point Focal">
+    <meta property="og:description" content="Des repères pratiques pour comprendre Point Focal et son parcours d’opportunités.">
+    <meta property="og:url" content="https://www.pointfocalapp.com/blog.html">
+    <meta property="og:image" content="https://www.pointfocalapp.com/icons/icon-512.png">
+    <meta name="twitter:card" content="summary">
+    <title>Blog Point Focal — comprendre le parcours et le lien unique</title>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "Le blog Point Focal",
+      "url": "https://www.pointfocalapp.com/blog.html",
+      "description": "Repères et actualités sur Point Focal, son lien unique et son parcours d’opportunités.",
+      "inLanguage": "fr"
+    }
+    </script>
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
+        * { box-sizing: border-box; }
         :root {
+            color-scheme: dark;
             --background: #0b0e11;
             --surface: #1e2329;
             --surface-soft: #151a20;
             --border: #2b3139;
             --yellow: #f0b90b;
+            --yellow-dark: #d9a600;
             --text: #eaecef;
             --muted: #a7b0ba;
+            --focus: #fff1a8;
         }
-
+        html { scroll-behavior: smooth; scroll-padding-top: 24px; }
         body {
             margin: 0;
             min-height: 100vh;
             background: var(--background);
             color: var(--text);
             font-family: Arial, sans-serif;
+            line-height: 1.6;
         }
-
+        a { color: inherit; }
+        a:focus-visible {
+            outline: 3px solid var(--focus);
+            outline-offset: 4px;
+        }
+        .skip-link {
+            position: absolute;
+            left: 12px;
+            top: -60px;
+            z-index: 10;
+            padding: 10px 14px;
+            background: var(--yellow);
+            color: #121212;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+        .skip-link:focus { top: 12px; }
         .topbar {
-            padding: 18px 16px;
-            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 5;
             background: rgba(11, 14, 17, 0.97);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(8px);
         }
-
-        .brand {
-            max-width: 1180px;
+        .nav {
+            width: min(100% - 28px, 1180px);
+            min-height: 72px;
             margin: 0 auto;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
+            gap: 20px;
         }
-
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
         .logo {
-            width: 44px;
-            height: 44px;
+            width: 42px;
+            height: 42px;
             border-radius: 10px;
             object-fit: cover;
         }
-
-        .brand strong {
-            display: block;
-            color: var(--yellow);
-            font-size: 18px;
-        }
-
-        .brand span {
-            display: block;
+        .brand strong { display: block; color: var(--yellow); font-size: 16px; }
+        .brand span { display: block; color: var(--muted); font-size: 12px; }
+        .nav-links { display: flex; align-items: center; gap: 10px; }
+        .nav-links a {
+            padding: 9px 12px;
+            border-radius: 9px;
             color: var(--muted);
-            font-size: 12px;
-            margin-top: 3px;
+            text-decoration: none;
+            font-size: 14px;
         }
-
+        .nav-links a:hover, .nav-links a[aria-current="page"] {
+            color: var(--text);
+            background: var(--surface);
+        }
+        .nav-links .nav-cta {
+            color: #121212;
+            background: var(--yellow);
+            font-weight: 700;
+        }
+        .nav-links .nav-cta:hover { background: var(--yellow-dark); color: #121212; }
         main {
-            width: 100%;
-            max-width: 1180px;
+            width: min(100% - 28px, 1000px);
             margin: 0 auto;
-            padding: 24px 14px 50px;
+            padding: 32px 0 64px;
         }
-
         .hero {
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(240, 185, 11, 0.20),
-                    rgba(240, 185, 11, 0.03)
-                ),
-                var(--surface);
+            padding: clamp(24px, 5vw, 48px);
+            margin-bottom: 28px;
             border: 1px solid rgba(240, 185, 11, 0.35);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 20px;
+            border-radius: 18px;
+            background:
+                radial-gradient(ellipse at top right, rgba(240, 185, 11, 0.13), transparent 55%),
+                var(--surface);
         }
-
+        .eyebrow, .category {
+            margin: 0 0 8px;
+            color: var(--yellow);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        h1, h2, h3 { line-height: 1.25; }
         h1 {
             margin: 0;
-            color: var(--yellow);
-            font-size: 28px;
+            max-width: 720px;
+            color: var(--text);
+            font-size: clamp(30px, 5vw, 46px);
+            letter-spacing: -0.03em;
         }
-
         .hero p {
-            margin: 10px 0 0;
+            max-width: 700px;
+            margin: 14px 0 0;
             color: var(--muted);
-            line-height: 1.6;
+            font-size: 17px;
         }
-
-        .articles {
+        .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+        .button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 44px;
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface-soft);
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .button-primary { border-color: var(--yellow); background: var(--yellow); color: #121212; }
+        .button-primary:hover { background: var(--yellow-dark); }
+        .section-heading { margin: 0 0 14px; font-size: 22px; }
+        .article-index {
             display: grid;
             grid-template-columns: 1fr;
             gap: 14px;
+            margin-bottom: 42px;
         }
-
-        .article {
-            background: var(--surface);
+        .article-card {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-height: 210px;
+            padding: 20px;
             border: 1px solid var(--border);
             border-radius: 14px;
-            padding: 18px;
-        }
-
-        .category {
-            display: inline-block;
-            color: var(--yellow);
-            font-size: 11px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .article h2 {
-            margin: 0;
-            font-size: 18px;
-        }
-
-        .article p {
-            color: var(--muted);
-            line-height: 1.55;
-            font-size: 13px;
-        }
-
-        .back {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 11px 15px;
-            border-radius: 10px
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            background: var(--yellow);
-            color: #121212;
+            background: var(--surface);
             text-decoration: none;
-            font-weight: bold;
+            transition: border-color 0.15s ease, transform 0.15s ease;
+        }
+        .article-card:hover { border-color: rgba(240, 185, 11, 0.65); transform: translateY(-2px); }
+        .article-card h3 { margin: 0; font-size: 19px; }
+        .article-card p { margin: 10px 0 18px; color: var(--muted); font-size: 14px; }
+        .read-link { margin-top: auto; color: var(--yellow); font-size: 14px; font-weight: 700; }
+        .post-list { display: grid; gap: 18px; }
+        .post {
+            padding: clamp(20px, 4vw, 34px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--surface);
+            scroll-margin-top: 90px;
+        }
+        .post h2 { margin: 0; font-size: clamp(23px, 4vw, 31px); }
+        .post-meta { margin: 8px 0 20px; color: var(--muted); font-size: 13px; }
+        .post p { max-width: 76ch; color: #d5d9df; }
+        .post h3 { margin: 24px 0 8px; font-size: 18px; }
+        .post a { color: var(--yellow); }
+        .post-end { margin-top: 22px; }
+        .footer {
+            padding: 22px 14px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            text-align: center;
             font-size: 13px;
         }
-
-        @media (min-width: 700px) {
-            main {
-                padding-left: 20px;
-                padding-right: 20px;
-            }
-
-            .articles {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .footer a { color: var(--yellow); margin: 0 8px; }
+        @media (min-width: 720px) {
+            .article-index { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+        @media (max-width: 520px) {
+            .nav { width: min(100% - 20px, 1180px); min-height: 64px; gap: 8px; }
+            .brand span { display: none; }
+            .nav-links { gap: 2px; }
+            .nav-links a { padding: 8px 9px; font-size: 12px; }
+            main { width: min(100% - 20px, 1000px); padding-top: 20px; }
+            .hero p { font-size: 15px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after { transition-duration: 0.01ms !important; }
         }
     </style>
-    <meta name="theme-color" content="#0B0E11">
-    <link rel="manifest" href="/manifest.webmanifest">
-    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
-    <link rel="apple-touch-icon" href="/icons/icon-192.png">
 </head>
-
 <body>
-
+<a class="skip-link" href="#contenu">Aller au contenu</a>
 <header class="topbar">
-    <div class="brand">
-        <img
-            class="logo"
-            src="logo.jpg"
-            alt="Point Focal"
-        >
-        <div>
-            <strong>POINT FOCAL</strong>
-            <span>Blog officiel</span>
+    <nav class="nav" aria-label="Navigation principale">
+        <a class="brand" href="index.html">
+            <img class="logo" src="/logo.jpg" alt="">
+            <span><strong>POINT FOCAL</strong><span>Blog officiel</span></span>
+        </a>
+        <div class="nav-links">
+            <a href="blog.html" aria-current="page">Blog</a>
+            <a href="login.html">Connexion</a>
+            <a class="nav-cta" href="register.html">Créer un compte</a>
         </div>
-    </div>
+    </nav>
 </header>
 
-<main>
-
-    <section class="hero">
-        <h1>Le Blog Point Focal</h1>
-        <p>
-            Découvrez les idées, les stratégies et les actualités
-            qui accompagnent l'évolution du marketing relationnel,
-            du financement participatif et de Point Focal.
-        </p>
+<main id="contenu">
+    <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow">Le blog officiel</p>
+        <h1 id="page-title">Comprendre Point Focal, simplement</h1>
+        <p>Des repères pratiques sur le lien unique, le parcours d’opportunités et les outils qui aident chacun à suivre son activité dans l’écosystème.</p>
+        <div class="hero-actions">
+            <a class="button button-primary" href="#articles">Lire les articles</a>
+            <a class="button" href="faq.html">Consulter la FAQ</a>
+        </div>
     </section>
 
-    <section class="articles">
+    <section id="articles" aria-labelledby="articles-title">
+        <h2 class="section-heading" id="articles-title">À lire</h2>
+        <div class="article-index">
+            <a class="article-card" href="#pourquoi-point-focal">
+                <p class="category">Point Focal</p>
+                <h3>Pourquoi Point Focal a été créé</h3>
+                <p>Le rôle d’un point d’entrée commun pour retrouver son parcours et ses opportunités.</p>
+                <span class="read-link">Lire l’article <span aria-hidden="true">→</span></span>
+            </a>
+            <a class="article-card" href="#lien-unique">
+                <p class="category">Follow Me</p>
+                <h3>Un lien unique, plusieurs étapes</h3>
+                <p>Comment le lien Point Focal et le suivi du parcours se complètent.</p>
+                <span class="read-link">Lire l’article <span aria-hidden="true">→</span></span>
+            </a>
+            <a class="article-card" href="#suivre-progression">
+                <p class="category">Guide pratique</p>
+                <h3>Lire sa progression dans le dashboard</h3>
+                <p>Ce que montrent les étapes, les statuts et l’indicateur de progression.</p>
+                <span class="read-link">Lire l’article <span aria-hidden="true">→</span></span>
+            </a>
+        </div>
+    </section>
 
-        <article class="article">
-            <span class="category">POINT FOCAL</span>
+    <section class="post-list" aria-label="Articles du blog">
+        <article class="post" id="pourquoi-point-focal">
+            <p class="category">Point Focal</p>
             <h2>Pourquoi Point Focal a été créé</h2>
-            <p>
-                Comprendre le problème que Point Focal cherche à résoudre
-                dans le développement des réseaux et l'acquisition de nouveaux membres.
-            </p>
+            <p class="post-meta"><time datetime="2026-10-09">9 octobre 2026</time> · 3 min de lecture</p>
+            <p>Quand une personne découvre plusieurs opportunités, les informations peuvent vite se disperser : plusieurs liens à conserver, des étapes différentes et peu de visibilité sur ce qui a déjà été fait. Point Focal a été conçu pour réunir ces repères dans un espace commun.</p>
+            <h3>Un point d’entrée et un espace de suivi</h3>
+            <p>Le compte Point Focal rassemble le lien de partage, les opportunités configurées et l’état du parcours associé au compte. Le dashboard aide à retrouver la prochaine étape proposée et à suivre les statuts enregistrés.</p>
+            <p>Cette organisation vise à rendre le parcours plus lisible. Elle ne remplace pas les règles propres à chaque opportunité : les conditions d’accès, les inscriptions et les actions demandées restent celles de l’opportunité concernée.</p>
+            <h3>Une plateforme évolutive</h3>
+            <p>Les opportunités affichées dépendent de la configuration active de la plateforme. Le parcours peut donc évoluer lorsque de nouvelles étapes sont ajoutées ou que leur statut change.</p>
+            <p class="post-end"><a href="#articles">Retour aux articles ↑</a></p>
         </article>
 
-        <article class="article">
-            <span class="category">FOLLOW ME</span>
-            <h2>La puissance du Follow Me</h2>
-            <p>
-                Comment un seul lien Point Focal peut accompagner un utilisateur
-                à travers plusieurs opportunités.
-            </p>
+        <article class="post" id="lien-unique">
+            <p class="category">Follow Me</p>
+            <h2>Un lien unique, plusieurs étapes</h2>
+            <p class="post-meta"><time datetime="2026-10-09">9 octobre 2026</time> · 3 min de lecture</p>
+            <p>Le lien Point Focal sert de lien de partage commun. Il permet à une personne intéressée de rejoindre l’écosystème et de retrouver, dans son compte, les étapes qui sont actives et accessibles.</p>
+            <h3>Ce que le lien fait</h3>
+            <p>Il relie l’invitation au parcours Point Focal et évite de devoir commencer par chercher un lien distinct pour chaque étape. Une fois connecté, l’utilisateur peut consulter les opportunités configurées et leur progression depuis le dashboard.</p>
+            <h3>Ce que le lien ne remplace pas</h3>
+            <p>Chaque opportunité peut avoir ses propres conditions et son propre service. Le lien Point Focal ne valide pas automatiquement une inscription, un paiement ou une action auprès d’un service tiers. L’utilisateur doit examiner les informations affichées et effectuer lui-même les démarches requises.</p>
+            <p>Avant de poursuivre une étape, vérifiez toujours son adresse, ses conditions et les informations fournies par le service concerné.</p>
+            <p class="post-end"><a href="#articles">Retour aux articles ↑</a></p>
         </article>
 
-        <article class="article">
-            <span class="category">MARKETING RELATIONNEL</span>
-            <h2>Construire un réseau autrement</h2>
-            <p>
-                Réflexions et stratégies autour de la duplication,
-                du recrutement et du développement des réseaux.
-            </p>
+        <article class="post" id="suivre-progression">
+            <p class="category">Guide pratique</p>
+            <h2>Lire sa progression dans le dashboard</h2>
+            <p class="post-meta"><time datetime="2026-10-09">9 octobre 2026</time> · 3 min de lecture</p>
+            <p>La section « Mes opportunités » présente les opportunités actives et le statut associé à votre compte. L’étape mise en avant indique celle que le système propose ensuite selon la configuration du parcours et les étapes déjà rejointes.</p>
+            <h3>Comment lire le pourcentage</h3>
+            <p>Le pourcentage compare le nombre d’opportunités actives rejointes au nombre total d’opportunités actives configurées. Il décrit l’avancement du parcours enregistré dans Point Focal.</p>
+            <p>Cet indicateur ne mesure ni un revenu, ni un rendement, ni une probabilité de résultat. Il ne constitue pas une promesse de gain ou de résultat.</p>
+            <h3>Si une étape ne s’ouvre pas</h3>
+            <p>Une adresse de démarrage doit être configurée pour que le bouton « Continuer mon parcours » puisse ouvrir l’étape. Si elle manque, ou si le parcours a changé depuis le chargement de la page, actualisez le dashboard. Si le problème persiste, utilisez la <a href="faq.html">FAQ</a> ou contactez l’équipe Point Focal par le canal d’assistance habituel.</p>
+            <p class="post-end"><a href="#articles">Retour aux articles ↑</a></p>
         </article>
-
-        <article class="article">
-            <span class="category">ACTUALITÉS</span>
-            <h2>Actualités Point Focal</h2>
-            <p>
-                Retrouvez progressivement ici les nouveautés,
-                évolutions et annonces importantes de Point Focal.
-            </p>
-        </article>
-
     </section>
-
-    <a class="back" href="dashboard.html">
-        ← Retour au tableau de bord
-    </a>
-
 </main>
 
+<footer class="footer">
+    <p>POINT FOCAL · Informations et guides pratiques</p>
+    <nav aria-label="Liens de pied de page">
+        <a href="index.html">Accueil</a>
+        <a href="faq.html">FAQ</a>
+        <a href="aide.html">Aide</a>
+        <a href="login.html">Connexion</a>
+    </nav>
+</footer>
 <script src="/js/pwa.js" defer></script>
 </body>
 </html>
