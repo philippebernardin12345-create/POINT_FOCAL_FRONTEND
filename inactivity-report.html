@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>POINT FOCAL — Signaler un lien inactif</title>
+<style>
+:root{--bg:#0b0e11;--surface:#1e2329;--border:#2b3139;--yellow:#f0b90b;--text:#eaecef;--muted:#a7b0ba;--green:#2ebd85;--red:#f6465d}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}.wrap{max-width:620px;margin:auto;padding:20px 14px}.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px}h1{font-size:21px;color:var(--yellow);margin:0 0 10px}p{color:var(--muted);line-height:1.5}.field{margin-top:18px}label{display:block;font-size:13px;margin-bottom:7px}select,button{width:100%;padding:13px;border-radius:10px;font:inherit}select{background:#151a20;color:var(--text);border:1px solid var(--border)}button{margin-top:14px;border:0;background:var(--yellow);font-weight:700;cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}.back{display:block;margin-top:14px;text-align:center;color:var(--yellow);text-decoration:none}.status{display:none;margin-top:16px;padding:12px;border-radius:10px;background:#151a20;border:1px solid var(--border);line-height:1.5}.status.active{display:block}.ok{color:var(--green)}.warn{color:var(--yellow)}.bad{color:var(--red)}
+</style>
+</head>
+<body>
+<main class="wrap"><section class="card">
+<h1>Signaler un lien business inactif</h1>
+<p>Utilisez ce signalement uniquement lorsque le lien du compte que POINT FOCAL vous a attribué dans une opportunité ne fonctionne plus. POINT FOCAL retrouvera lui-même le compte destinataire et vérifiera son lien public.</p>
+<div class="field"><label for="opportunity">Opportunité concernée</label><select id="opportunity"><option value="">Chargement…</option></select></div>
+<button id="reportBtn" type="button" disabled>Signaler et vérifier</button>
+<div id="status" class="status" aria-live="polite"></div>
+<a class="back" href="dashboard.html">Retour au tableau de bord</a>
+</section></main>
+<script>
+const API='https://point-focal.onrender.com/api';
+const token=localStorage.getItem('token');
+const opportunity=document.getElementById('opportunity');
+const reportBtn=document.getElementById('reportBtn');
+const statusBox=document.getElementById('status');
+if(!token) location.replace('login.html');
+function show(text,kind='warn'){statusBox.className='status active '+kind;statusBox.textContent=text}
+async function loadOpportunities(){
+ try{
+  const r=await fetch(API+'/opportunities/active',{headers:{Authorization:'Bearer '+token,Accept:'application/json'}});
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  const j=await r.json(); const list=j.data||j.opportunities||j;
+  const rows=Array.isArray(list)?list:[];
+  opportunity.innerHTML='<option value="">Choisir une opportunité</option>';
+  rows.forEach(o=>{const opt=document.createElement('option');opt.value=o.id;opt.textContent=o.name||o.slug||'Opportunité';opportunity.appendChild(opt)});
+  reportBtn.disabled=false;
+ }catch(e){show('Impossible de charger les opportunités. Réessayez plus tard.','bad')}
+}
+reportBtn.addEventListener('click',async()=>{
+ const opportunityId=opportunity.value;
+ if(!opportunityId){show('Choisissez d’abord l’opportunité concernée.','warn');return}
+ reportBtn.disabled=true; show('Vérification du lien attribué en cours…','warn');
+ try{
+  const r=await fetch(API+'/opportunities/inactivity/report',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({opportunityId})});
+  const j=await r.json(); if(!r.ok) throw new Error(j.message||'Erreur HTTP '+r.status);
+  const result=(j.data&&j.data.result)||j.result;
+  if(result==='active') show('ACTIF — Le compte destinataire est actif. Le signalement est rejeté et aucun FIFO 2 n’est déclenché.','ok');
+  else if(result==='indeterminate') show('INDÉTERMINÉ — POINT FOCAL ne peut pas confirmer l’inactivité. Aucun FIFO 2 n’est déclenché.','warn');
+  else if(result==='confirmed') show('INACTIF CONFIRMÉ — Le compte destinataire est déclaré indisponible uniquement dans cette opportunité. Le Relais FIFO V1 peut maintenant s’appliquer.','bad');
+  else show('Vérification terminée.','warn');
+ }catch(e){show(e.message||'La vérification a échoué. Aucun FIFO 2 n’est déclenché.','bad')}
+ finally{reportBtn.disabled=false}
+});
+loadOpportunities();
+</script>
+</body>
+</html>
