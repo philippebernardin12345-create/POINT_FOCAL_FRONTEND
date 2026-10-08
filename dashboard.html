@@ -389,7 +389,7 @@
         }
 
         .progress-bar {
-            width: 35%;
+            width: 0%;
             height: 100%;
             background: var(--yellow);
             border-radius: 999px;
@@ -585,7 +585,7 @@
 
                     <div class="stat-box">
                         <span>Opportunités rejointes</span>
-                        <strong id="joinedOpportunities">1</strong>
+                        <strong id="joinedOpportunities">—</strong>
                     </div>
 
                     <div class="stat-box">
@@ -595,7 +595,7 @@
 
                     <div class="stat-box">
                         <span>Progression</span>
-                        <strong id="progressPercent">35%</strong>
+                        <strong id="progressPercent">—</strong>
                     </div>
                 </div>
             </article>
@@ -656,7 +656,7 @@
                     id="currentStepText"
                     class="empty-text"
                 >
-                    Étape actuelle : finalisation du lien personnel.
+                    Chargement de votre parcours…
                 </p>
 
                 <div class="progress">
@@ -668,7 +668,7 @@
 
                 <div class="progress-text">
                     <span>Début</span>
-                    <span id="progressLabel">35 % terminé</span>
+                    <span id="progressLabel">—</span>
                     <span>Terminé</span>
                 </div>
 
@@ -695,54 +695,8 @@
                     </div>
                 </div>
 
-                <div class="opportunity-list">
-
-                    <div class="opportunity">
-                        <div class="opportunity-icon">
-                            VA
-                        </div>
-
-                        <div class="opportunity-content">
-                            <strong>Victory Automatic</strong>
-
-                            <span>
-                                Première opportunité du parcours Point Focal
-                            </span>
-                        </div>
-
-                        <div
-                            id="victoryAutomaticStatus"
-                            class="opportunity-status"
-                            style="color: var(--green);"
-                        >
-                            En cours
-                        </div>
-                    </div>
-
-                    <div class="opportunity">
-                        <div class="opportunity-icon">
-                            VW
-                        </div>
-
-                        <div class="opportunity-content">
-                            <strong>Victory World</strong>
-
-                            <span>
-                                Deuxième opportunité disponible
-                            </span>
-                        </div>
-
-                        <div
-                            id="victoryWorldStatus"
-                            class="opportunity-status"
-                            style="color: var(--yellow);"
-                        >
-                            À rejoindre
-                        </div>
-                    </div>
-
-
-
+                <div id="opportunityList" class="opportunity-list" aria-live="polite">
+                    <p class="empty-text">Chargement des opportunités…</p>
                 </div>
             </article>
 
@@ -978,6 +932,7 @@
 
 </div>
 
+<script src="js/opportunity-dashboard.js"></script>
 <script src="js/prelaunch-access.js"></script>
 <script>
     let user = null;
@@ -1048,10 +1003,7 @@
     const invitationCodeElement =
         document.getElementById("invitationCode");
 
-    const victoryWorldStatus =
-        document.getElementById("victoryWorldStatus");
-
-    const copyLinkBtn =
+victory status binding    const copyLinkBtn =
         document.getElementById("copyLinkBtn");
 
     const shareLinkBtn =
@@ -1162,78 +1114,11 @@
             )
             && hasInvitationCode;
 
-        const victoryWorldLink =
-            user.victoryWorldLink
-            || user.victory_world_link
-            || "";
-
-        welcomeTitle.textContent =
-            `Bienvenue, ${email}`;
-
-        profileEmail.textContent =
-            user.email || "—";
-
-        profileWhatsapp.textContent =
-            user.whatsapp || "—";
-
-        profileLanguage.textContent =
-            formatLanguage(user.language);
-
-        profileStatus.textContent =
-            user.status || "En vérification";
-        if (invitationCodeElement) {
-            invitationCodeElement.textContent =
-                user.invitationCode
-                || user.invitation_code
-                || "Non généré";
-        }
-
-        activeCodes.textContent =
-            String(countActiveCodes(user));
-
-        if (victoryWorldLink) {
-            victoryWorldStatus.textContent =
-                "En cours";
-
-            victoryWorldStatus.style.color =
-                "var(--green)";
-
-            joinedOpportunities.textContent =
-                "2";
-
-            progressPercent.textContent =
-                "65%";
-
-            progressBar.style.width =
-                "65%";
-
-            progressLabel.textContent =
-                "65 % terminé";
-
-            currentStepText.textContent =
-                "Étape actuelle : progression dans Victory World.";
-        } else {
-            victoryWorldStatus.textContent =
-                "À rejoindre";
-
-            victoryWorldStatus.style.color =
-                "var(--yellow)";
-
-            joinedOpportunities.textContent =
-                "1";
-
-            progressPercent.textContent =
-                "35%";
-
-            progressBar.style.width =
-                "35%";
-
-            progressLabel.textContent =
-                "35 % terminé";
-
-            currentStepText.textContent =
-                "Étape actuelle : rejoindre Victory World.";
-        }
+        joinedOpportunities.textContent = "—";
+        progressPercent.textContent = "—";
+        progressBar.style.width = "0%";
+        progressLabel.textContent = "—";
+        currentStepText.textContent = "Chargement de votre parcours…";
 
         if (linkActive) {
             accountStatusBadge.textContent =
@@ -1286,6 +1171,145 @@
               pointFocalLink.textContent =
                   "Votre lien Point Focal sera affiché ici.";
           }
+    }
+
+    const opportunityList = document.getElementById("opportunityList");
+
+    function renderOpportunityProgress(opportunities) {
+        const model =
+            window.PointFocalOpportunityDashboard.getProgressModel(opportunities);
+
+        joinedOpportunities.textContent =
+            String(model.joinedCount);
+
+        progressPercent.textContent =
+            String(model.progressPercent) + "%";
+
+        progressBar.style.width =
+            String(model.progressPercent) + "%";
+
+        progressLabel.textContent =
+            String(model.progressPercent) + " % terminé";
+
+        if (model.nextOpportunity) {
+            currentStepText.textContent =
+                "Prochaine opportunité : "
+                + (model.nextOpportunity.name || model.nextOpportunity.slug)
+                + ".";
+        } else if (model.totalCount > 0) {
+            currentStepText.textContent =
+                "Parcours des opportunités actives terminé.";
+        } else {
+            currentStepText.textContent =
+                "Aucune opportunité active n’est configurée.";
+        }
+
+        opportunityList.replaceChildren();
+
+        if (model.totalCount === 0) {
+            const empty = document.createElement("p");
+            empty.className = "empty-text";
+            empty.textContent = "Aucune opportunité active n’est disponible.";
+            opportunityList.appendChild(empty);
+            return;
+        }
+
+        for (const opportunity of model.opportunities) {
+            const row = document.createElement("div");
+            row.className = "opportunity";
+            row.dataset.opportunityId = String(opportunity.id);
+
+            const icon = document.createElement("div");
+            icon.className = "opportunity-icon";
+            icon.textContent = String(
+                opportunity.name || opportunity.slug || "PF"
+            ).trim().slice(0, 2).toUpperCase();
+
+            const content = document.createElement("div");
+            content.className = "opportunity-content";
+
+            const title = document.createElement("strong");
+            title.textContent = opportunity.name || opportunity.slug || "Opportunité";
+
+            const detail = document.createElement("span");
+            const isJoined =
+                String(opportunity.user_opportunity_status || "").toLowerCase()
+                === "active";
+            const isNext =
+                model.nextOpportunity
+                && String(model.nextOpportunity.id) === String(opportunity.id);
+            const isEntry =
+                opportunity.is_entry === true
+                || String(opportunity.is_entry).toLowerCase() === "true";
+
+            detail.textContent = isJoined
+                ? "Opportunité rejointe"
+                : isNext
+                    ? (isEntry ? "Opportunité d’entrée" : "Étape suivante")
+                    : "Étape à venir";
+
+            content.append(title, detail);
+
+            const status = document.createElement("div");
+            status.className = "opportunity-status";
+            status.textContent = isJoined
+                ? "Rejointe"
+                : isNext
+                    ? "À rejoindre"
+                    : "À venir";
+            status.style.color = isJoined
+                ? "var(--green)"
+                : isNext
+                    ? "var(--yellow)"
+                    : "var(--muted)";
+
+            row.append(icon, content, status);
+            opportunityList.appendChild(row);
+        }
+    }
+
+    async function loadOpportunityProgress() {
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch(
+                "https://point-focal.onrender.com/api/opportunities/my-progress",
+                {
+                    headers: {
+                        Authorization: "Bearer " + token,
+                        Accept: "application/json"
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("HTTP " + response.status);
+            }
+
+            const payload = await response.json();
+            const opportunities = payload?.data?.opportunities;
+
+            if (!Array.isArray(opportunities)) {
+                throw new Error("Réponse de progression invalide");
+            }
+
+            renderOpportunityProgress(opportunities);
+        } catch (error) {
+            console.error("Chargement des opportunités impossible :", error);
+            joinedOpportunities.textContent = "—";
+            progressPercent.textContent = "—";
+            progressBar.style.width = "0%";
+            progressLabel.textContent = "Indisponible";
+            currentStepText.textContent =
+                "La progression des opportunités n’a pas pu être chargée.";
+
+            opportunityList.replaceChildren();
+            const message = document.createElement("p");
+            message.className = "empty-text";
+            message.textContent =
+                "Impossible de charger les opportunités. Réessayez lorsque la connexion sera rétablie.";
+            opportunityList.appendChild(message);
+        }
     }
 
     copyLinkBtn.addEventListener(
@@ -1363,22 +1387,12 @@
         }
     );
 
-   continueJourneyBtn.addEventListener(
-    "click",
-    function () {
-
-        window.location.href =
-            "provision.html";
-    }
-);
-
-    victoryWorldStatus.addEventListener(
-        "click",
-        function () {
-            window.location.href =
-                "victory-world.html";
-        }
-    );
+    continueJourneyBtn.addEventListener("click", function () {
+        document.getElementById("opportunitiesCard").scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    });
 
     logoutBtn.addEventListener(
         "click",
@@ -1485,6 +1499,7 @@
             user = currentUser;
           localStorage.setItem("user", JSON.stringify(currentUser));
           renderDashboard();
+          await loadOpportunityProgress();
         } catch (error) {
           console.error("Accès dashboard refusé :", error);
           localStorage.removeItem("token");
