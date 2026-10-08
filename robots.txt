@@ -1,3 +1,10 @@
 User-agent: *
 Allow: /
+Disallow: /dashboard.html
+Disallow: /confirm-otp.html
+Disallow: /reset-password.html
+Disallow: /payment.html
+Disallow: /provision.html
+Disallow: /popup-youtube.html
+Disallow: /pages/
 Sitemap: https://www.pointfocalapp.com/sitemap.xml
