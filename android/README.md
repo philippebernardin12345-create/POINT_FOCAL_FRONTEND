@@ -4,7 +4,7 @@ The Android target is a Trusted Web Activity (TWA) for the existing PWA.
 
 - Website origin: `https://www.pointfocalapp.com`
 - Android application ID: `com.pointfocalapp.mobile`
-- Bubblewrap: `@bubblewrap/cli 1.26.0`
+- Bubblewrap: `@bubblewrap/cli 1.25.0`
 - Generated project: `android/generated/` (created by the build; do not hand-edit generated files)
 
 ## Generate and compile an unsigned bundle
