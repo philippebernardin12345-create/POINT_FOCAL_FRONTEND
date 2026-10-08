@@ -1387,11 +1387,41 @@ victory status binding    const copyLinkBtn =
         }
     );
 
-    continueJourneyBtn.addEventListener("click", function () {
-        document.getElementById("opportunitiesCard").scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
+    continueJourneyBtn.addEventListener("click", async function () {
+        const token = localStorage.getItem("token");
+        const originalLabel = continueJourneyBtn.textContent;
+        continueJourneyBtn.disabled = true;
+        continueJourneyBtn.textContent = "Chargement…";
+
+        try {
+            const action =
+                await window.PointFocalOpportunityDashboard.getContinueAction({ token });
+
+            if (action.status === "complete") {
+                currentStepText.textContent =
+                    "Parcours des opportunités actives terminé.";
+                return;
+            }
+
+            if (action.status === "unconfigured") {
+                currentStepText.textContent =
+                    "Aucune adresse HTTPS n’est configurée pour cette opportunité.";
+                document.getElementById("opportunitiesCard").scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+                return;
+            }
+
+            window.location.assign(action.url);
+        } catch (error) {
+            console.error("Ouverture de la prochaine opportunité impossible :", error);
+            currentStepText.textContent =
+                "Impossible d’ouvrir l’étape suivante. Actualisez la page et réessayez.";
+        } finally {
+            continueJourneyBtn.disabled = false;
+            continueJourneyBtn.textContent = originalLabel;
+        }
     });
 
     logoutBtn.addEventListener(
