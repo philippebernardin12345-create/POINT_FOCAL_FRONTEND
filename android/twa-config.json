@@ -1,0 +1,17 @@
+{
+  "origin": "https://www.pointfocalapp.com",
+  "packageId": "com.pointfocalapp.mobile",
+  "name": "POINT FOCAL",
+  "launcherName": "Point Focal",
+  "versionCode": 1,
+  "versionName": "1.0.0",
+  "startUrl": "/?source=pwa",
+  "minSdkVersion": 23,
+  "display": "standalone",
+  "orientation": "portrait",
+  "themeColor": "#F0B90B",
+  "navigationColor": "#0B0E11",
+  "backgroundColor": "#0B0E11",
+  "uploadKeyPath": "./android-upload-key.jks",
+  "uploadKeyAlias": "pointfocalapp_upload"
+}
