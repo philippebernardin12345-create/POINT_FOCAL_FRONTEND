@@ -65,3 +65,95 @@ test("dashboard markup has no hardcoded Victory opportunity or progress values",
   assert.match(html, /id="joinedOpportunities">—/);
   assert.match(html, /id="progressPercent">—/);
 });
+
+
+test("continue action opens the configured entry URL from the generic entry route", async () => {
+  const calls = [];
+  const result = await getContinueAction({
+    token: "token",
+    fetchImpl: async (url) => {
+      calls.push(url);
+      return {
+        ok: true,
+        async json() {
+          return url.endsWith("/my-progress")
+            ? { data: { opportunities: [
+                { id: "entry", status: "active", position: 2, is_entry: true }
+              ] } }
+            : { data: { id: "entry", entry_url: "https://entry.example/start" } };
+        }
+      };
+    }
+  });
+
+  assert.deepEqual(calls, [
+    "https://point-focal.onrender.com/api/opportunities/my-progress",
+    "https://point-focal.onrender.com/api/opportunities/entry"
+  ]);
+  assert.equal(result.status, "ready");
+  assert.equal(result.url, "https://entry.example/start");
+});
+
+test("continue action requests the step after the user's latest joined opportunity", async () => {
+  const calls = [];
+  const result = await getContinueAction({
+    token: "token",
+    fetchImpl: async (url) => {
+      calls.push(url);
+      return {
+        ok: true,
+        async json() {
+          return url.endsWith("/my-progress")
+            ? { data: { opportunities: [
+                { id: "first", status: "active", position: 1, user_opportunity_status: "active" },
+                { id: "second", status: "active", position: 2, opportunity_url: "https://step.example/join" }
+              ] } }
+            : { data: { id: "second", opportunity_url: "https://step.example/join" } };
+        }
+      };
+    }
+  });
+
+  assert.equal(calls[1],
+    "https://point-focal.onrender.com/api/opportunities/next?currentOpportunityId=first");
+  assert.equal(result.status, "ready");
+  assert.equal(result.url, "https://step.example/join");
+});
+
+test("continue action refuses to redirect when backend selection differs from the dashboard", async () => {
+  await assert.rejects(
+    getContinueAction({
+      token: "token",
+      fetchImpl: async (url) => ({
+        ok: true,
+        async json() {
+          return url.endsWith("/my-progress")
+            ? { data: { opportunities: [
+                { id: "entry", status: "active", position: 1, is_entry: true }
+              ] } }
+            : { data: { id: "different-entry", entry_url: "https://entry.example/start" } };
+        }
+      })
+    }),
+    /parcours a changé/
+  );
+});
+
+test("continue action does not redirect to an unconfigured or non-HTTPS URL", async () => {
+  for (const entryUrl of [null, "javascript:alert(1)", "http://entry.example/start"]) {
+    const result = await getContinueAction({
+      token: "token",
+      fetchImpl: async (url) => ({
+        ok: true,
+        async json() {
+          return url.endsWith("/my-progress")
+            ? { data: { opportunities: [
+                { id: "entry", status: "active", position: 1, is_entry: true }
+              ] } }
+            : { data: { id: "entry", entry_url: entryUrl } };
+        }
+      })
+    });
+    assert.equal(result.status, "unconfigured");
+  }
+});
