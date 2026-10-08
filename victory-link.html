@@ -121,6 +121,16 @@ h2 {
 .btn-victory {
   background: #02c076;
   color: #ffffff;
+  border: 1px solid #02c076;
+  box-shadow: 0 0 0 3px rgba(2, 192, 118, 0.18);
+}
+
+.link-box.locked {
+  background: #2b3139;
+  color: #848e9c;
+  border-color: #474d57;
+  box-shadow: none;
+  opacity: 0.7;
 }
 
 .btn-next {
@@ -361,6 +371,7 @@ function formatRemainingTime(milliseconds) {
 function lockVictoryButton(message) {
   linkDisplay.href = "#";
   linkDisplay.classList.add("locked");
+  linkDisplay.classList.remove("btn", "btn-victory");
 
   linkDisplay.setAttribute(
     "aria-disabled",
@@ -384,6 +395,7 @@ function unlockVictoryButton() {
     assignedVictoryLink;
 
   linkDisplay.classList.remove("locked");
+  linkDisplay.classList.add("btn", "btn-victory");
 
   linkDisplay.setAttribute(
     "aria-disabled",
@@ -391,7 +403,7 @@ function unlockVictoryButton() {
   );
 
   linkDisplay.textContent =
-    "Créer mon compte Victory Automatic";
+    "Je crée mon compte Victory Automatic";
 }
 
 function showExpiredState() {
