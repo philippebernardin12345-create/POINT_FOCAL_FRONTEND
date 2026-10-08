@@ -340,9 +340,40 @@
                 <span>Que signifie « Verrouillé » ?</span>
                 <span>+</span>
             </button>
-</article>
+
+            <div class="faq-answer">
+                Cela signifie que cette étape n’est pas encore disponible.
+                Terminez les étapes précédentes et vérifiez que les informations
+                demandées ont bien été enregistrées.
+            </div>
+        </article>
 </section>
 </main>
+<script>
+    document.querySelectorAll(".faq-item").forEach((item, index) => {
+        const question = item.querySelector(".faq-question");
+        const answer = item.querySelector(".faq-answer");
+        if (!question || !answer) return;
+
+        const answerId = "faq-answer-" + (index + 1);
+        answer.id = answerId;
+        question.setAttribute("aria-controls", answerId);
+        question.setAttribute("aria-expanded", "false");
+
+        question.addEventListener("click", () => {
+            const isOpen = item.classList.toggle("open");
+            question.setAttribute("aria-expanded", String(isOpen));
+        });
+    });
+
+    document.getElementById("backBtn")?.addEventListener("click", () => {
+        if (document.referrer && new URL(document.referrer).origin === location.origin) {
+            history.back();
+        } else {
+            location.href = "index.html";
+        }
+    });
+</script>
 <script src="/js/pwa.js" defer></script>
 </body>
 </html>
