@@ -35,7 +35,7 @@ jobs:
       - name: Accept Android SDK licenses and install build tools
         run: |
           yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
 
       - name: Install pinned Bubblewrap dependencies
         working-directory: android
@@ -65,7 +65,7 @@ jobs:
         with:
           name: point-focal-android-unsigned
           path: |
-            android/generated/app-release-unsigned.apk
-            android/generated/app-release-unsigned.aab
+            android/generated/app-release-unsigned-aligned.apk
+            android/generated/app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: warn
           retention-days: 7
