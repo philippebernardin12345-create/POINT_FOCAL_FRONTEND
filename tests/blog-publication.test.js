@@ -6,6 +6,8 @@ const path = require("node:path");
 const root = path.join(__dirname, "..");
 const blog = fs.readFileSync(path.join(root, "blog.html"), "utf8");
 const academy = fs.readFileSync(path.join(root, "academie.html"), "utf8");
+const register = fs.readFileSync(path.join(root, "register.html"), "utf8");
+const languagePreference = fs.readFileSync(path.join(root, "js/language-preference.js"), "utf8");
 const home = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const sitemap = fs.readFileSync(path.join(root, "sitemap.xml"), "utf8");
 const robots = fs.readFileSync(path.join(root, "robots.txt"), "utf8");
@@ -54,4 +56,15 @@ test("the academy is linked from public entry points and offers saved course pro
   assert.match(home, /href="academie\.html">Découvrir l’Académie Point Focal/);
   assert.match(blog, /href="academie\.html"/);
   assert.match(sitemap, /https:\/\/www\.pointfocalapp\.com\/academie\.html/);
+});
+
+test("language preference carries from registration to the blog and academy", () => {
+  assert.match(register, /localStorage\.setItem\(SITE_LANGUAGE_KEY, lang\.toLowerCase\(\)\)/);
+  assert.match(languagePreference, /pointfocal-language/);
+  assert.match(languagePreference, /data-language-preference/);
+  assert.match(languagePreference, /\["fr", "en", "es", "pt", "ar", "hi"\]/);
+  assert.match(blog, /data-language-preference/);
+  assert.match(academy, /data-language-preference/);
+  assert.match(blog, /js\/language-preference\.js/);
+  assert.match(academy, /js\/language-preference\.js/);
 });

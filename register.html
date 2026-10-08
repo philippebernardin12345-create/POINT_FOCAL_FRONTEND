@@ -303,7 +303,22 @@
     const BASE_API = "https://point-focal.onrender.com/api/auth";
 
     let isRegisterMode = true;
-    let currentLang = "FR";
+    const SITE_LANGUAGE_KEY = "pointfocal-language";
+    const SUPPORTED_LANGUAGES = ["fr", "en", "es", "pt", "ar", "hi"];
+    function getSavedLanguage() {
+      try {
+        const saved = String(localStorage.getItem(SITE_LANGUAGE_KEY) || "").toLowerCase().split(/[-_]/)[0];
+        if (SUPPORTED_LANGUAGES.includes(saved)) return saved.toUpperCase();
+        const user = JSON.parse(localStorage.getItem("user") || "null");
+        const accountLanguage = String(user && (user.language || user.preferredLanguage || user.locale) || "").toLowerCase().split(/[-_]/)[0];
+        if (SUPPORTED_LANGUAGES.includes(accountLanguage)) {
+          localStorage.setItem(SITE_LANGUAGE_KEY, accountLanguage);
+          return accountLanguage.toUpperCase();
+        }
+      } catch (error) {}
+      return "FR";
+    }
+    let currentLang = getSavedLanguage();
 
     const translations = {
       FR: {
@@ -496,6 +511,7 @@
 
     function changeLanguage(lang, btnElement) {
       currentLang = lang;
+      try { localStorage.setItem(SITE_LANGUAGE_KEY, lang.toLowerCase()); } catch (error) {}
 
       document.querySelectorAll(".lang-btn").forEach(btn => {
         btn.classList.remove("active");
@@ -926,6 +942,12 @@
     window.location.replace("popup-youtube.html");
   }
 
+  currentLang = getSavedLanguage();
+  if (currentLang !== "FR") updateTexts();
+  document.querySelectorAll(".lang-btn").forEach(btn => {
+    const match = (btn.getAttribute("onclick") || "").match(/changeLanguage\('([A-Z]{2})'/);
+    btn.classList.toggle("active", Boolean(match && match[1] === currentLang));
+  });
 </script>
 <script src="/js/pwa.js" defer></script>
 </body>
