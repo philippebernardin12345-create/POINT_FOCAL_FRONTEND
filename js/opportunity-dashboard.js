@@ -32,7 +32,19 @@
       String(opportunity.user_opportunity_status || "").toLowerCase() === "active";
 
     const joinedCount = active.filter(isJoined).length;
-    const nextOpportunity = active.find((opportunity) => !isJoined(opportunity)) || null;
+    const notJoined = active.filter((opportunity) => !isJoined(opportunity));
+    const entryCandidates = notJoined
+      .filter((opportunity) => opportunity.is_entry === true
+        || String(opportunity.is_entry).toLowerCase() === "true")
+      .slice()
+      .sort((a, b) =>
+        numericOrder(a.priority) - numericOrder(b.priority)
+        || numericOrder(a.position) - numericOrder(b.position)
+        || String(a.id || "").localeCompare(String(b.id || ""))
+      );
+    const nextOpportunity = joinedCount === 0
+      ? (entryCandidates[0] || notJoined[0] || null)
+      : (notJoined[0] || null);
 
     return {
       opportunities: active,
