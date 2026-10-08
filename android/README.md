@@ -18,7 +18,7 @@ cd generated
 ../node_modules/.bin/bubblewrap build --skipPwaValidation --skipSigning --manifest=./twa-manifest.json
 ```
 
-The workflow `.github/workflows/android-twa-build.yml` runs this build and stores the unsigned APK/AAB as a CI artifact for build verification. It is not a Play Store release and cannot be installed as a release build.
+The workflow `.github/workflows/android-twa-build.yml` runs this build and stores the unsigned APK/AAB as a CI artifact for build verification. The unsigned APK is not installable until it is signed; the AAB is not ready for Play Store upload.
 
 ## Release prerequisites
 
