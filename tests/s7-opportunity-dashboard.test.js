@@ -50,3 +50,18 @@ test("empty opportunity configuration does not invent a step or progress", () =>
   assert.equal(model.progressPercent, 0);
   assert.equal(model.nextOpportunity, null);
 });
+
+test("dashboard markup has no hardcoded Victory opportunity or progress values", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const html = fs.readFileSync(
+    path.join(__dirname, "..", "dashboard.html"),
+    "utf8"
+  );
+
+  assert.doesNotMatch(html, /Victory Automatic|Victory World/);
+  assert.match(html, /api\/opportunities\/my-progress/);
+  assert.match(html, /js\/opportunity-dashboard\.js/);
+  assert.match(html, /id="joinedOpportunities">—/);
+  assert.match(html, /id="progressPercent">—/);
+});
