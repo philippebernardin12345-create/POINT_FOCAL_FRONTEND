@@ -44,11 +44,14 @@ jobs:
         run: npm install --no-audit --no-fund
 
       - name: Configure Bubblewrap tool paths
-        working-directory: android
         run: |
-          ./node_modules/.bin/bubblewrap updateConfig \
-            --jdkPath="$JAVA_HOME" \
-            --androidSdkPath="$ANDROID_HOME"
+          mkdir -p "$HOME/.bubblewrap"
+          cat > "$HOME/.bubblewrap/config.json" <<EOF
+          {
+            "jdkPath": "$JAVA_HOME",
+            "androidSdkPath": "$ANDROID_HOME"
+          }
+          EOF
 
       - name: Generate Android TWA project
         working-directory: android
