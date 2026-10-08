@@ -18,6 +18,19 @@ test("dashboard progress uses active opportunities in configured position order"
   assert.equal(model.nextOpportunity.id, "second");
 });
 
+test("before enrollment, entry opportunity priority selects the common starting point", () => {
+  const model = getProgressModel([
+    { id: "later", name: "Later", status: "active", position: 1, priority: 9 },
+    { id: "entry-low", name: "Entry low priority", status: "active", position: 2,
+      priority: 5, is_entry: true },
+    { id: "entry-high", name: "Entry high priority", status: "active", position: 3,
+      priority: 1, is_entry: true }
+  ]);
+
+  assert.equal(model.joinedCount, 0);
+  assert.equal(model.nextOpportunity.id, "entry-high");
+});
+
 test("dashboard progress shows no next opportunity after all active steps are joined", () => {
   const model = getProgressModel([
     { id: "one", status: "active", position: 1, user_opportunity_status: "active" },
