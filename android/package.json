@@ -7,7 +7,7 @@
     "generate": "node generate-twa.cjs"
   },
   "dependencies": {
-    "@bubblewrap/cli": "1.26.0",
+    "@bubblewrap/cli": "1.25.0",
     "@bubblewrap/core": "1.25.0",
     "color": "3.2.1"
   }
