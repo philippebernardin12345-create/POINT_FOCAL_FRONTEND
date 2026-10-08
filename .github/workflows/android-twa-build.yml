@@ -37,7 +37,7 @@ jobs:
       - name: Accept Android SDK licenses and install build tools
         run: |
           yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.1.0"
 
       - name: Install pinned Bubblewrap dependencies
         working-directory: android
@@ -46,6 +46,9 @@ jobs:
       - name: Configure Bubblewrap tool paths
         run: |
           mkdir -p "$HOME/.bubblewrap"
+          SDKMANAGER_PATH="$(command -v sdkmanager)"
+          mkdir -p "$ANDROID_HOME/bin"
+          ln -sf "$SDKMANAGER_PATH" "$ANDROID_HOME/bin/sdkmanager"
           cat > "$HOME/.bubblewrap/config.json" <<EOF
           {
             "jdkPath": "$JAVA_HOME",
