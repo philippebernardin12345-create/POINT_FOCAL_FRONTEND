@@ -2,6 +2,7 @@
 
 const fs = require("node:fs/promises");
 const path = require("node:path");
+const crypto = require("node:crypto");
 const Color = require("color");
 const { ConsoleLog, TwaGenerator, TwaManifest } = require("@bubblewrap/core");
 
@@ -51,6 +52,9 @@ async function main() {
   await fs.mkdir(outputDirectory, { recursive: true });
   const manifestPath = path.join(outputDirectory, "twa-manifest.json");
   await twa.saveToFile(manifestPath);
+  const manifestBytes = await fs.readFile(manifestPath);
+  const checksum = crypto.createHash("sha1").update(manifestBytes).digest("hex");
+  await fs.writeFile(path.join(outputDirectory, "manifest-checksum.txt"), checksum);
 
   const generator = new TwaGenerator();
   await generator.createTwaProject(
