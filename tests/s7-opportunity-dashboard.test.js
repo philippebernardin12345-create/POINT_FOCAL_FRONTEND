@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { getProgressModel } = require("../js/opportunity-dashboard");
+const { getProgressModel, getContinueAction } = require("../js/opportunity-dashboard");
 
 test("dashboard progress uses active opportunities in configured position order", () => {
   const model = getProgressModel([
