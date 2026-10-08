@@ -1,0 +1,71 @@
+name: Android TWA build
+
+on:
+  pull_request:
+    paths:
+      - "android/**"
+      - ".github/workflows/android-twa-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-unsigned:
+    name: Generate and compile unsigned TWA
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept Android SDK licenses and install build tools
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Install pinned Bubblewrap dependencies
+        working-directory: android
+        run: npm install --no-audit --no-fund
+
+      - name: Configure Bubblewrap tool paths
+        working-directory: android
+        run: |
+          ./node_modules/.bin/bubblewrap updateConfig \
+            --jdkPath="$JAVA_HOME" \
+            --androidSdkPath="$ANDROID_HOME"
+
+      - name: Generate Android TWA project
+        working-directory: android
+        run: npm run generate
+
+      - name: Compile unsigned APK and AAB
+        working-directory: android/generated
+        run: |
+          ../node_modules/.bin/bubblewrap build \
+            --skipPwaValidation \
+            --skipSigning \
+            --manifest=./twa-manifest.json
+
+      - name: Upload unsigned build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: point-focal-android-unsigned
+          path: |
+            android/generated/app-release-unsigned.apk
+            android/generated/app-release-unsigned.aab
+          if-no-files-found: warn
+          retention-days: 7
