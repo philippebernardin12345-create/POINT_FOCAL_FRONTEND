@@ -323,6 +323,7 @@
     const translations = {
       FR: {
         titleReg: "Créer un compte",
+        inviteRequired: "Cette inscription nécessite un lien d'invitation personnel. Demandez une invitation à Point Focal.",
         subtitleReg: "Inscription avec le code du parrain facultatif. Sans code, le système attribue automatiquement le parrain.",
         titleLog: "Connexion",
         subtitleLog: "Accédez à votre espace membre Point Focal.",
@@ -349,6 +350,7 @@
       },
       EN: {
         titleReg: "Create an account",
+        inviteRequired: "Registration requires a personal invitation link. Please request an invitation from Point Focal.",
         subtitleReg: "Registration requires your real sponsor code.",
         titleLog: "Login",
         subtitleLog: "Access your Point Focal member area.",
@@ -375,6 +377,7 @@
       },
       ES: {
         titleReg: "Crear una cuenta",
+        inviteRequired: "El registro requiere un enlace de invitación personal. Solicite una invitación a Point Focal.",
         subtitleReg: "El registro requiere el código real de su patrocinador.",
         titleLog: "Conexión",
         subtitleLog: "Acceda a su espacio Point Focal.",
@@ -401,6 +404,7 @@
       },
       PT: {
         titleReg: "Criar uma conta",
+        inviteRequired: "O registro exige um link de convite pessoal. Solicite um convite à Point Focal.",
         subtitleReg: "O registro exige o código real do seu patrocinador.",
         titleLog: "Conexão",
         subtitleLog: "Acesse sua área Point Focal.",
@@ -427,6 +431,7 @@
       },
       AR: {
         titleReg: "إنشاء حساب",
+        inviteRequired: "يتطلب التسجيل رابط دعوة شخصيًا. يُرجى طلب دعوة من Point Focal.",
         subtitleReg: "التسجيل يتطلب رمز الراعي الحقيقي.",
         titleLog: "تسجيل الدخول",
         subtitleLog: "ادخل إلى مساحة Point Focal الخاصة بك.",
@@ -453,6 +458,7 @@
       },
       HI: {
         titleReg: "खाता बनाएं",
+        inviteRequired: "पंजीकरण के लिए व्यक्तिगत आमंत्रण लिंक आवश्यक है। कृपया Point Focal से आमंत्रण मांगें।",
         subtitleReg: "पंजीकरण के लिए आपके वास्तविक sponsor code की आवश्यकता है।",
         titleLog: "लॉगिन",
         subtitleLog: "अपने Point Focal सदस्य क्षेत्र में प्रवेश करें।",
@@ -683,11 +689,14 @@
         urlParams.get("sponsor") ||
         ""
       ).trim().toUpperCase();
+      const prelaunchInviteToken =
+        String(urlParams.get("invite") || "").trim();
 
       const sponsorField = document.getElementById("sponsor");
 
       let sponsorRuntimeReady = false;
       let sponsorRuntimeError = false;
+      let registrationPhase = "";
 
       async function initializeSponsorField() {
         if (!sponsorField) {
@@ -715,6 +724,7 @@
           const payload = await response.json();
           const runtime = payload?.data || payload;
           const phase = String(runtime?.phase || "").trim().toUpperCase();
+          registrationPhase = phase;
 
           if (phase === "LEADER_LAUNCH") {
             sponsorField.value = "ABCD1000";
@@ -763,6 +773,15 @@
       try {
         if (isRegisterMode) {
 
+          if (
+            registrationPhase === "LEADER_LAUNCH" &&
+            !prelaunchInviteToken
+          ) {
+            showError(t.inviteRequired);
+            btn.disabled = false;
+            return;
+          }
+
           /* S3 — fail-closed runtime */
           if (
             !sponsorFromUrl &&
@@ -809,6 +828,7 @@
               password,
               confirmPassword,
               invitationCode: sponsorCode,
+              prelaunchInviteToken,
               language: currentLang.toLowerCase()
             })
           });
