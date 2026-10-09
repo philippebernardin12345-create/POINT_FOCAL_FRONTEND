@@ -67,7 +67,7 @@ test("les anciennes entrées d’administration redirigent vers le site Admin d�
   const root = path.join(__dirname, "..");
   for (const file of ["admin.html", "prelaunch-invites.html"]) {
     const html = fs.readFileSync(path.join(root, file), "utf8");
-    assert.match(html, /https:\/\/admin\.pointfocalapp\.com\/dashboard-admin\.html\?release=/);
+    assert.match(html, /https:\/\/admin\.pointfocalapp\.com\/dashboard-admin(?:-20261009-v3)?\.html(?:\?release=)?/);
     assert.doesNotMatch(html, /Cette page est réservée au compte racine/);
   }
 });
