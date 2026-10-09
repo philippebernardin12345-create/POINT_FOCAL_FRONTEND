@@ -731,6 +731,9 @@
             sponsorField.value = "";
             sponsorField.readOnly = true;
             document.getElementById("sponsorGroup").style.display = "none";
+            if (!prelaunchInviteToken) {
+              showError(translations[currentLang].inviteRequired);
+            }
             sponsorRuntimeReady = true;
             return;
           }
