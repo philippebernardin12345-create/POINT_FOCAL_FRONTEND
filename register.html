@@ -969,7 +969,7 @@
   }
 
   currentLang = getSavedLanguage();
-  if (currentLang !== "FR") updateTexts();
+  updateTexts();
   document.querySelectorAll(".lang-btn").forEach(btn => {
     const match = (btn.getAttribute("onclick") || "").match(/changeLanguage\('([A-Z]{2})'/);
     btn.classList.toggle("active", Boolean(match && match[1] === currentLang));
