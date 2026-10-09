@@ -10,6 +10,13 @@
       return false;
     }
 
+    const isRoot = isTrue(
+      user.isRoot !== undefined ? user.isRoot : user.is_root
+    );
+    if (isRoot) {
+      return true;
+    }
+
     const invitationCode = String(
       user.invitationCode || user.invitation_code || ""
     ).trim();

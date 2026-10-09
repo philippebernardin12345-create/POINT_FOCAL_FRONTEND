@@ -1461,7 +1461,12 @@ victory status binding    const copyLinkBtn =
             return;
           }
 
-          if (!String(invitationCode).trim()) {
+          const isRoot =
+            currentUser.isRoot === true ||
+            currentUser.is_root === true ||
+            String(currentUser.is_root).toLowerCase() === "true";
+
+          if (!String(invitationCode).trim() && !isRoot) {
             /*
              * VIDEO-ONCE :
              * le dashboard ne peut pas contourner la validation vidéo.
