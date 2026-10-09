@@ -4,6 +4,11 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { canAccessDashboard } = require("../js/prelaunch-access");
 
+test("le compte racine garde accès au dashboard sans code", () => {
+  assert.equal(canAccessDashboard({ isRoot: true }), true);
+  assert.equal(canAccessDashboard({ is_root: true }), true);
+});
+
 test("un lien PF actif donne accès au dashboard", () => {
   assert.equal(canAccessDashboard({
     invitationCode: "ABCD1234",
