@@ -63,13 +63,13 @@ test("après transition, le lien actif autorise l'accès même sans marqueur", (
   }), true);
 });
 
-test("le générateur d’invitations est placé dans l’espace administrateur", () => {
+test("les anciennes entrées d’administration redirigent vers le site Admin dédié", () => {
   const root = path.join(__dirname, "..");
-  const admin = fs.readFileSync(path.join(root, "admin.html"), "utf8");
-  const shortcut = fs.readFileSync(path.join(root, "js/prelaunch-invites.js"), "utf8");
-  assert.match(admin, /\/prelaunch-invites/);
-  assert.match(admin, /Cette page est réservée au compte racine/);
-  assert.match(shortcut, /link\.href = "admin\.html"/);
+  for (const file of ["admin.html", "prelaunch-invites.html"]) {
+    const html = fs.readFileSync(path.join(root, file), "utf8");
+    assert.match(html, /https:\/\/admin\.pointfocalapp\.com\/dashboard-admin\.html\?release=/);
+    assert.doesNotMatch(html, /Cette page est réservée au compte racine/);
+  }
 });
 
 test("login et dashboard utilisent la même règle d'accès", () => {
