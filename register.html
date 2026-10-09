@@ -323,7 +323,8 @@
     const translations = {
       FR: {
         titleReg: "Créer un compte",
-        subtitleReg: "Inscription avec le code du parrain facultatif. Sans code, le système attribue automatiquement le parrain.",
+        inviteRequired: "Cette inscription nécessite un lien d'invitation personnel. Demandez une invitation à Point Focal.",
+        subtitleReg: "Inscription réservée aux personnes invitées. Pendant le prélancement, le rattachement à la racine est automatique.",
         titleLog: "Connexion",
         subtitleLog: "Accédez à votre espace membre Point Focal.",
         email: "Adresse e-mail",
@@ -349,12 +350,13 @@
       },
       EN: {
         titleReg: "Create an account",
-        subtitleReg: "Registration requires your real sponsor code.",
+        inviteRequired: "Registration requires a personal invitation link. Please request an invitation from Point Focal.",
+        subtitleReg: "Registration is by invitation only. During prelaunch, your account is automatically linked to the root.",
         titleLog: "Login",
         subtitleLog: "Access your Point Focal member area.",
         email: "Email address",
         whatsapp: "WhatsApp number",
-        sponsor: "Required sponsor code",
+        sponsor: "Sponsor code (optional)",
         password: "Password",
         confirmPassword: "Confirm password",
         btnReg: "Create my account",
@@ -375,12 +377,13 @@
       },
       ES: {
         titleReg: "Crear una cuenta",
-        subtitleReg: "El registro requiere el código real de su patrocinador.",
+        inviteRequired: "El registro requiere un enlace de invitación personal. Solicite una invitación a Point Focal.",
+        subtitleReg: "El registro es solo por invitación. Durante el prelanzamiento, la cuenta se vincula automáticamente a la raíz.",
         titleLog: "Conexión",
         subtitleLog: "Acceda a su espacio Point Focal.",
         email: "Correo electrónico",
         whatsapp: "Número de WhatsApp",
-        sponsor: "Código obligatorio del patrocinador",
+        sponsor: "Código de patrocinador (opcional)",
         password: "Contraseña",
         confirmPassword: "Confirmar contraseña",
         btnReg: "Crear mi cuenta",
@@ -401,12 +404,13 @@
       },
       PT: {
         titleReg: "Criar uma conta",
-        subtitleReg: "O registro exige o código real do seu patrocinador.",
+        inviteRequired: "O registro exige um link de convite pessoal. Solicite um convite à Point Focal.",
+        subtitleReg: "O cadastro é somente por convite. Durante o pré-lançamento, a conta é vinculada automaticamente à raiz.",
         titleLog: "Conexão",
         subtitleLog: "Acesse sua área Point Focal.",
         email: "Endereço de e-mail",
         whatsapp: "Número do WhatsApp",
-        sponsor: "Código obrigatório do patrocinador",
+        sponsor: "Código do patrocinador (opcional)",
         password: "Senha",
         confirmPassword: "Confirmar senha",
         btnReg: "Criar minha conta",
@@ -427,12 +431,13 @@
       },
       AR: {
         titleReg: "إنشاء حساب",
-        subtitleReg: "التسجيل يتطلب رمز الراعي الحقيقي.",
+        inviteRequired: "يتطلب التسجيل رابط دعوة شخصيًا. يُرجى طلب دعوة من Point Focal.",
+        subtitleReg: "التسجيل بالدعوة فقط. أثناء ما قبل الإطلاق، يُربط الحساب تلقائيًا بالجذر.",
         titleLog: "تسجيل الدخول",
         subtitleLog: "ادخل إلى مساحة Point Focal الخاصة بك.",
         email: "البريد الإلكتروني",
         whatsapp: "رقم واتساب",
-        sponsor: "رمز الراعي إجباري",
+        sponsor: "رمز الراعي (اختياري)",
         password: "كلمة المرور",
         confirmPassword: "تأكيد كلمة المرور",
         btnReg: "إنشاء حسابي",
@@ -453,12 +458,13 @@
       },
       HI: {
         titleReg: "खाता बनाएं",
-        subtitleReg: "पंजीकरण के लिए आपके वास्तविक sponsor code की आवश्यकता है।",
+        inviteRequired: "पंजीकरण के लिए व्यक्तिगत आमंत्रण लिंक आवश्यक है। कृपया Point Focal से आमंत्रण मांगें।",
+        subtitleReg: "पंजीकरण केवल आमंत्रण द्वारा है। प्रीलॉन्च के दौरान खाता अपने आप रूट से जुड़ जाएगा।",
         titleLog: "लॉगिन",
         subtitleLog: "अपने Point Focal सदस्य क्षेत्र में प्रवेश करें।",
         email: "ईमेल पता",
         whatsapp: "WhatsApp नंबर",
-        sponsor: "आवश्यक sponsor code",
+        sponsor: "sponsor code (वैकल्पिक)",
         password: "पासवर्ड",
         confirmPassword: "पासवर्ड पुष्टि करें",
         btnReg: "मेरा खाता बनाएं",
@@ -560,7 +566,8 @@
       });
 
       document.getElementById("whatsappGroup").style.display = isRegisterMode ? "block" : "none";
-      document.getElementById("sponsorGroup").style.display = isRegisterMode ? "block" : "none";
+      document.getElementById("sponsorGroup").style.display =
+        isRegisterMode && registrationPhase !== "LEADER_LAUNCH" ? "block" : "none";
       document.getElementById("confirmGroup").style.display = isRegisterMode ? "block" : "none";
 
       document.getElementById("whatsapp").required = isRegisterMode;
@@ -683,11 +690,14 @@
         urlParams.get("sponsor") ||
         ""
       ).trim().toUpperCase();
+      const prelaunchInviteToken =
+        String(urlParams.get("invite") || "").trim();
 
       const sponsorField = document.getElementById("sponsor");
 
       let sponsorRuntimeReady = false;
       let sponsorRuntimeError = false;
+      let registrationPhase = "";
 
       async function initializeSponsorField() {
         if (!sponsorField) {
@@ -715,10 +725,15 @@
           const payload = await response.json();
           const runtime = payload?.data || payload;
           const phase = String(runtime?.phase || "").trim().toUpperCase();
+          registrationPhase = phase;
 
           if (phase === "LEADER_LAUNCH") {
-            sponsorField.value = "ABCD1000";
+            sponsorField.value = "";
             sponsorField.readOnly = true;
+            document.getElementById("sponsorGroup").style.display = "none";
+            if (!prelaunchInviteToken) {
+              showError(translations[currentLang].inviteRequired);
+            }
             sponsorRuntimeReady = true;
             return;
           }
@@ -726,6 +741,7 @@
           if (phase === "NORMAL_OPERATION") {
             sponsorField.value = "";
             sponsorField.readOnly = false;
+            document.getElementById("sponsorGroup").style.display = isRegisterMode ? "block" : "none";
             sponsorRuntimeReady = true;
             return;
           }
@@ -762,6 +778,15 @@
 
       try {
         if (isRegisterMode) {
+
+          if (
+            registrationPhase === "LEADER_LAUNCH" &&
+            !prelaunchInviteToken
+          ) {
+            showError(t.inviteRequired);
+            btn.disabled = false;
+            return;
+          }
 
           /* S3 — fail-closed runtime */
           if (
@@ -809,6 +834,7 @@
               password,
               confirmPassword,
               invitationCode: sponsorCode,
+              prelaunchInviteToken,
               language: currentLang.toLowerCase()
             })
           });
