@@ -755,6 +755,10 @@
                         <span>Statut</span>
                         <strong id="profileStatus">En vérification</strong>
                     </div>
+                    <div class="info-item">
+                        <span>Parrain POINT FOCAL</span>
+                        <strong id="profileSponsor">Chargement…</strong>
+                    </div>
                 </div>
             </article>
 
@@ -1000,10 +1004,12 @@
 
     const profileStatus =
         document.getElementById("profileStatus");
+    const profileSponsor =
+        document.getElementById("profileSponsor");
     const invitationCodeElement =
         document.getElementById("invitationCode");
 
-victory status binding    const copyLinkBtn =
+    const copyLinkBtn =
         document.getElementById("copyLinkBtn");
 
     const shareLinkBtn =
@@ -1098,6 +1104,17 @@ victory status binding    const copyLinkBtn =
 
         const email =
             user.email || "Utilisateur";
+
+        profileEmail.textContent = email;
+        profileWhatsapp.textContent = user.whatsapp || "Non renseigné";
+        profileLanguage.textContent = formatLanguage(user.language);
+        profileStatus.textContent = user.status || "Statut inconnu";
+        profileSponsor.textContent =
+            user.sponsorEmail
+            || user.sponsor_email
+            || (user.isRoot === true || user.is_root === true
+                ? "Compte racine POINT FOCAL"
+                : "Parrain non renseigné");
 
         const link =
             getPointFocalLink(user);
