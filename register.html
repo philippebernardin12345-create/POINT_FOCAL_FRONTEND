@@ -566,7 +566,8 @@
       });
 
       document.getElementById("whatsappGroup").style.display = isRegisterMode ? "block" : "none";
-      document.getElementById("sponsorGroup").style.display = isRegisterMode ? "block" : "none";
+      document.getElementById("sponsorGroup").style.display =
+        isRegisterMode && registrationPhase !== "LEADER_LAUNCH" ? "block" : "none";
       document.getElementById("confirmGroup").style.display = isRegisterMode ? "block" : "none";
 
       document.getElementById("whatsapp").required = isRegisterMode;
@@ -727,8 +728,9 @@
           registrationPhase = phase;
 
           if (phase === "LEADER_LAUNCH") {
-            sponsorField.value = "ABCD1000";
+            sponsorField.value = "";
             sponsorField.readOnly = true;
+            document.getElementById("sponsorGroup").style.display = "none";
             sponsorRuntimeReady = true;
             return;
           }
@@ -736,6 +738,7 @@
           if (phase === "NORMAL_OPERATION") {
             sponsorField.value = "";
             sponsorField.readOnly = false;
+            document.getElementById("sponsorGroup").style.display = isRegisterMode ? "block" : "none";
             sponsorRuntimeReady = true;
             return;
           }
