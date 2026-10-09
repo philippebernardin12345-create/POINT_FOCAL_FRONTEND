@@ -20,14 +20,14 @@
     const language = String(user.language || localStorage.getItem("pointfocal-language") || "fr")
       .toLowerCase().split(/[-_]/)[0];
     const labels = {
-      fr: ["Invitations de prélancement", "Créer un lien individuel pour le prochain leader invité."],
-      en: ["Prelaunch invitations", "Create a personal link for the next invited leader."],
-      es: ["Invitaciones de prelanzamiento", "Cree un enlace personal para el próximo líder invitado."],
-      pt: ["Convites de pré-lançamento", "Crie um link pessoal para o próximo líder convidado."],
-      ar: ["دعوات ما قبل الإطلاق", "أنشئ رابطًا شخصيًا للقائد المدعو التالي."],
-      hi: ["प्रीलॉन्च आमंत्रण", "अगले आमंत्रित लीडर के लिए निजी लिंक बनाएं।"]
+      fr: ["Espace Administrateur", "Gérer les invitations de prélancement.", "Gérer les invitations"],
+      en: ["Administrator area", "Manage prelaunch invitations.", "Manage invitations"],
+      es: ["Espacio de administración", "Gestionar las invitaciones de prelanzamiento.", "Gestionar invitaciones"],
+      pt: ["Área de administração", "Gerir os convites de pré-lançamento.", "Gerir convites"],
+      ar: ["مساحة الإدارة", "إدارة دعوات ما قبل الإطلاق.", "إدارة الدعوات"],
+      hi: ["प्रशासक क्षेत्र", "प्रीलॉन्च आमंत्रण प्रबंधित करें।", "आमंत्रण प्रबंधित करें"]
     };
-    const [titleText, descriptionText] = labels[language] || labels.fr;
+    const [titleText, descriptionText, actionText] = labels[language] || labels.fr;
 
     const card = document.createElement("section");
     card.className = "card";
@@ -40,8 +40,8 @@
     description.style.margin = "8px 0 12px";
     const link = document.createElement("a");
     link.className = "btn btn-primary";
-    link.href = "prelaunch-invites.html";
-    link.textContent = titleText;
+    link.href = "admin.html";
+    link.textContent = actionText;
     card.append(title, description, link);
 
     const main = document.querySelector("main.main");

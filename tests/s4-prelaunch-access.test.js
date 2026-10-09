@@ -63,6 +63,15 @@ test("après transition, le lien actif autorise l'accès même sans marqueur", (
   }), true);
 });
 
+test("le générateur d’invitations est placé dans l’espace administrateur", () => {
+  const root = path.join(__dirname, "..");
+  const admin = fs.readFileSync(path.join(root, "admin.html"), "utf8");
+  const shortcut = fs.readFileSync(path.join(root, "js/prelaunch-invites.js"), "utf8");
+  assert.match(admin, /\/prelaunch-invites/);
+  assert.match(admin, /Cette page est réservée au compte racine/);
+  assert.match(shortcut, /link\.href = "admin\.html"/);
+});
+
 test("login et dashboard utilisent la même règle d'accès", () => {
   const root = path.join(__dirname, "..");
   const login = fs.readFileSync(path.join(root, "login.html"), "utf8");

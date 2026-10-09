@@ -2,96 +2,13 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0;url=admin.html">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0B0E11">
-  <title>Invitations de prélancement — Point Focal</title>
-  <style>
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;background:#0b0e11;color:#eaecef;font:16px Arial,sans-serif;padding:20px}
-    main{max-width:620px;margin:8vh auto;background:#1e2329;border:1px solid #2b3139;border-radius:16px;padding:24px}
-    h1{font-size:24px;color:#f0b90b;margin:0 0 10px}
-    p{color:#a7b0ba;line-height:1.55}
-    button,a.button{display:block;width:100%;padding:14px;margin-top:12px;border:0;border-radius:10px;background:#f0b90b;color:#111;font-weight:700;text-align:center;text-decoration:none;cursor:pointer}
-    button.secondary{background:#2b3139;color:#eaecef;border:1px solid #3b424c}
-    button:disabled{opacity:.6;cursor:wait}
-    #result{display:none;margin-top:18px;padding:14px;border:1px solid #3b424c;border-radius:10px;background:#151a20;overflow-wrap:anywhere}
-    #message{min-height:24px;color:#f0b90b}
-    .small{font-size:13px}
-  </style>
+  <title>Redirection — Point Focal</title>
 </head>
 <body>
-  <main>
-    <h1 id="title">Inviter un leader</h1>
-    <p id="description">Créez un lien personnel à transmettre à l’influenceur que vous venez de convaincre. Ce lien ne permet qu’une seule inscription et ne modifie pas les comptes déjà créés.</p>
-    <p id="message" role="status"></p>
-    <button id="generate">Générer un lien d’invitation</button>
-    <section id="result" aria-live="polite">
-      <p id="link"></p>
-      <button class="secondary" id="copy">Copier le lien</button>
-      <button class="secondary" id="share">Partager le lien</button>
-    </section>
-    <a class="button" href="dashboard.html" id="back">Retour au tableau de bord</a>
-    <p class="small" id="security">Le lien est vérifié par le serveur et devient inutilisable après sa première inscription.</p>
-  </main>
-  <script>
-    const API = "https://point-focal.onrender.com/api/auth";
-    const token = localStorage.getItem("token") || "";
-    const language = String(localStorage.getItem("pointfocal-language") || "fr").toLowerCase().split(/[-_]/)[0];
-    const messages = {
-      fr: {title:"Inviter un leader",description:"Créez un lien personnel à transmettre à l’influenceur que vous venez de convaincre. Ce lien ne permet qu’une seule inscription et ne modifie pas les comptes déjà créés.",generate:"Générer un lien d’invitation",copy:"Copier le lien",share:"Partager le lien",back:"Retour au tableau de bord",security:"Le lien est vérifié par le serveur et devient inutilisable après sa première inscription.",loading:"Vérification du compte racine…",denied:"Cette page est réservée au compte racine.",created:"Lien prêt. Transmettez-le uniquement à la personne invitée.",copied:"Lien copié.",copyError:"Copie impossible. Sélectionnez le lien pour le copier.",failed:"Impossible de créer le lien. Réessayez.",login:"Connectez-vous avec le compte racine.",shareTitle:"Invitation Point Focal"},
-      en: {title:"Invite a leader",description:"Create a personal link for the influencer you have invited. The link allows one registration and does not change existing accounts.",generate:"Create invitation link",copy:"Copy link",share:"Share link",back:"Back to dashboard",security:"The server validates the link and disables it after its first registration.",loading:"Checking root account…",denied:"This page is reserved for the root account.",created:"Link ready. Send it only to the invited person.",copied:"Link copied.",copyError:"Could not copy. Select the link and copy it.",failed:"Could not create the link. Try again.",login:"Log in with the root account.",shareTitle:"Point Focal invitation"},
-      es: {title:"Invitar a un líder",description:"Cree un enlace personal para el influencer invitado. Solo permite un registro y no modifica las cuentas existentes.",generate:"Crear enlace de invitación",copy:"Copiar enlace",share:"Compartir enlace",back:"Volver al panel",security:"El servidor valida el enlace y lo desactiva después del primer registro.",loading:"Verificando la cuenta raíz…",denied:"Esta página está reservada para la cuenta raíz.",created:"Enlace listo. Envíelo solo a la persona invitada.",copied:"Enlace copiado.",copyError:"No se pudo copiar. Seleccione y copie el enlace.",failed:"No se pudo crear el enlace. Inténtelo de nuevo.",login:"Inicie sesión con la cuenta raíz.",shareTitle:"Invitación Point Focal"},
-      pt: {title:"Convidar um líder",description:"Crie um link pessoal para o influenciador convidado. Ele permite um único cadastro e não altera as contas existentes.",generate:"Criar link de convite",copy:"Copiar link",share:"Compartilhar link",back:"Voltar ao painel",security:"O servidor valida o link e o desativa após o primeiro cadastro.",loading:"Verificando a conta raiz…",denied:"Esta página é reservada à conta raiz.",created:"Link pronto. Envie apenas à pessoa convidada.",copied:"Link copiado.",copyError:"Não foi possível copiar. Selecione e copie o link.",failed:"Não foi possível criar o link. Tente novamente.",login:"Entre com a conta raiz.",shareTitle:"Convite Point Focal"},
-      ar: {title:"دعوة قائد",description:"أنشئ رابطًا شخصيًا للمؤثر الذي دعوته. يسمح الرابط بتسجيل واحد ولا يغيّر الحسابات الحالية.",generate:"إنشاء رابط دعوة",copy:"نسخ الرابط",share:"مشاركة الرابط",back:"العودة إلى لوحة التحكم",security:"يتحقق الخادم من الرابط ويعطله بعد أول تسجيل.",loading:"جارٍ التحقق من حساب الجذر…",denied:"هذه الصفحة مخصصة لحساب الجذر.",created:"الرابط جاهز. أرسله إلى الشخص المدعو فقط.",copied:"تم نسخ الرابط.",copyError:"تعذر النسخ. حدد الرابط وانسخه.",failed:"تعذر إنشاء الرابط. حاول مرة أخرى.",login:"سجل الدخول بحساب الجذر.",shareTitle:"دعوة Point Focal"},
-      hi: {title:"लीडर को आमंत्रित करें",description:"जिस इन्फ्लुएंसर को आपने आमंत्रित किया है, उसके लिए निजी लिंक बनाएं। इससे केवल एक पंजीकरण होगा और मौजूदा खाते नहीं बदलेंगे।",generate:"आमंत्रण लिंक बनाएं",copy:"लिंक कॉपी करें",share:"लिंक साझा करें",back:"डैशबोर्ड पर लौटें",security:"सर्वर लिंक की पुष्टि करेगा और पहले पंजीकरण के बाद इसे निष्क्रिय कर देगा।",loading:"रूट खाते की जाँच…",denied:"यह पेज केवल रूट खाते के लिए है।",created:"लिंक तैयार है। इसे केवल आमंत्रित व्यक्ति को भेजें।",copied:"लिंक कॉपी हो गया।",copyError:"कॉपी नहीं हुआ। लिंक चुनकर कॉपी करें।",failed:"लिंक नहीं बन सका। फिर कोशिश करें।",login:"रूट खाते से लॉग इन करें।",shareTitle:"Point Focal आमंत्रण"}
-    };
-    const t = messages[language] || messages.fr;
-    document.documentElement.lang = language;
-    for (const [id,key] of [["title","title"],["description","description"],["generate","generate"],["copy","copy"],["share","share"],["back","back"],["security","security"]]) document.getElementById(id).textContent=t[key];
-    const message=document.getElementById("message");
-    const button=document.getElementById("generate");
-    const result=document.getElementById("result");
-    const linkNode=document.getElementById("link");
-    let inviteUrl="";
-    if (!token) {
-      message.textContent=t.login;
-      button.disabled=true;
-    } else {
-      (async()=>{
-        message.textContent=t.loading;
-        try {
-          const response=await fetch(API+"/me",{headers:{Authorization:"Bearer "+token,Accept:"application/json"}});
-          const body=await response.json().catch(()=>({}));
-          const user=body.data?.user||body.data||body.user||body;
-          const isRoot=user.isRoot===true||user.is_root===true||String(user.is_root).toLowerCase()==="true";
-          if(!response.ok||!isRoot){message.textContent=t.denied;button.disabled=true;return;}
-          message.textContent="";
-        } catch(error) { message.textContent=t.denied;button.disabled=true; }
-      })();
-    }
-    button.addEventListener("click",async()=>{
-      button.disabled=true;
-      try {
-        const response=await fetch(API+"/prelaunch-invites",{method:"POST",headers:{Authorization:"Bearer "+token,Accept:"application/json"}});
-        const body=await response.json().catch(()=>({}));
-        if(!response.ok) throw new Error(body.message||body.error||t.failed);
-        const data=body.data||body;
-        inviteUrl=data.invitationUrl;
-        if(!inviteUrl) throw new Error(t.failed);
-        linkNode.textContent=inviteUrl;
-        result.style.display="block";
-        message.textContent=t.created;
-      } catch(error) { message.textContent=error.message||t.failed; }
-      finally { button.disabled=false; }
-    });
-    document.getElementById("copy").addEventListener("click",async()=>{
-      try { await navigator.clipboard.writeText(inviteUrl); message.textContent=t.copied; }
-      catch(error) { message.textContent=t.copyError; }
-    });
-    document.getElementById("share").addEventListener("click",async()=>{
-      if(navigator.share){try{await navigator.share({title:t.shareTitle,url:inviteUrl});}catch(error){}}
-      else {try{await navigator.clipboard.writeText(inviteUrl);message.textContent=t.copied;}catch(error){message.textContent=t.copyError;}}
-    });
-  </script>
+  <p>La gestion des invitations se trouve dans l’espace Administrateur.</p>
+  <a href="admin.html">Ouvrir l’espace Administrateur</a>
+  <script>window.location.replace("admin.html" + window.location.search + window.location.hash);</script>
 </body>
 </html>
