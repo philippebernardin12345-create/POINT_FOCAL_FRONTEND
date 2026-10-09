@@ -502,6 +502,31 @@
     }
 
     function applyStatus(data) {
+        if (data.victoryAutomaticEligible !== true) {
+            statusDisplay.textContent = "Verrouillé";
+            assignedLinkDisplay.textContent =
+                "Victory World sera accessible après validation de Victory Automatic.";
+            joinVictoryWorldBtn.style.pointerEvents = "none";
+            joinVictoryWorldBtn.setAttribute("aria-disabled", "true");
+            joinVictoryWorldBtn.style.opacity = "0.45";
+            personalVictoryWorldLink.disabled = true;
+            saveVictoryWorldLinkBtn.disabled = true;
+            validatedSection.classList.add("hidden");
+
+            showMessage(
+                data.eligibilityMessage
+                    || "Terminez et faites valider Victory Automatic avant de rejoindre Victory World.",
+                "warning"
+            );
+            return;
+        }
+
+        joinVictoryWorldBtn.style.pointerEvents = "";
+        joinVictoryWorldBtn.removeAttribute("aria-disabled");
+        joinVictoryWorldBtn.style.opacity = "";
+        personalVictoryWorldLink.disabled = false;
+        saveVictoryWorldLinkBtn.disabled = false;
+
         const status =
             data.status || "not_started";
 
