@@ -129,5 +129,49 @@
     return { status: "ready", opportunity, url: url.href };
   }
 
-  return { getProgressModel, getContinueAction };
+
+  async function getOpportunityAction({ slug, fetchImpl = fetch } = {}) {
+    if (!slug) throw new Error("Identifiant d’opportunité absent");
+
+    const response = await fetchImpl(
+      "https://point-focal.onrender.com/api/opportunities/" + encodeURIComponent(slug),
+      { headers: { Accept: "application/json" } }
+    );
+
+    if (!response.ok) {
+      throw new Error("Impossible de charger l’opportunité (HTTP " + response.status + ")");
+    }
+
+    const payload = await response.json();
+    const opportunity = payload?.data?.opportunity || payload?.data;
+
+    if (!opportunity) throw new Error("Réponse d’opportunité invalide");
+
+    const isEntry = opportunity.is_entry === true
+      || opportunity.isEntry === true
+      || String(opportunity.is_entry ?? opportunity.isEntry).toLowerCase() === "true";
+
+    const candidates = isEntry
+      ? [opportunity.entry_url, opportunity.entryUrl, opportunity.opportunity_url, opportunity.opportunityUrl]
+      : [opportunity.opportunity_url, opportunity.opportunityUrl, opportunity.entry_url, opportunity.entryUrl];
+
+    const configuredUrl = candidates.find(
+      value => typeof value === "string" && value.trim()
+    );
+
+    if (!configuredUrl) return { status: "unconfigured", opportunity };
+
+    let url;
+    try {
+      url = new URL(configuredUrl.trim(), "https://pointfocalapp.com");
+    } catch {
+      return { status: "unconfigured", opportunity };
+    }
+
+    if (url.protocol !== "https:") return { status: "unconfigured", opportunity };
+
+    return { status: "ready", opportunity, url: url.href };
+  }
+
+  return { getProgressModel, getContinueAction, getOpportunityAction };
 });
